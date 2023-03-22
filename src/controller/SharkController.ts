@@ -71,8 +71,10 @@ class SharkController
             if(await SharkDAO.userExists({email: shark.getEmail()}))
             {
                 if(shark.getId())
+                {
                     if( !(await SharkDAO.verifyIfDataIsFromOwnUser(shark.getId()!, {email: shark.getEmail()})) )
                         throw ("E-mail já cadastrado.");
+                }
                 else
                     throw ("E-mail já cadastrado.");
             }
@@ -81,8 +83,10 @@ class SharkController
             if(await SharkDAO.userExists({matricula: shark.getMatricula()}))
             {
                 if(shark.getId())
+                {
                     if( !(await SharkDAO.verifyIfDataIsFromOwnUser(shark.getId()!, {matricula: shark.getMatricula()})) )
                         throw ("Matrícula já cadastrada.");
+                }
                 else
                     throw ("Matrícula já cadastrada.");
             }
