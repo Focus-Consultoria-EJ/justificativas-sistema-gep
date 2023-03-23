@@ -77,6 +77,7 @@ class OcorrenciaController
             valueExists(ocorrencia.getTipoAssunto(), "Tipo do assunto não informado.");
             valueExists(ocorrencia.getMensagem(), "Mensagem não informada.");
 
+            // Bloqueia o usuário comum de enviar uma ocorrência que não seja do tipo justificativa
             if((req.shark.admin != 1) && (ocorrencia.getTipoOcorrencia().getId() != 1))
                 throw "Usuário não administrador só pode enviar ocorrências do tipo justificativa.";
         } 
