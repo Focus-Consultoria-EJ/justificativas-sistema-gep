@@ -72,8 +72,7 @@ CREATE TABLE shark_log (
     data_acao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_shark_log__tipo_acao_log_id FOREIGN KEY (id_tipo_acao_log)
 		REFERENCES tipo_acao_log(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_shark_log__shark_id FOREIGN KEY (id_shark)
-		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    -- CONSTRAINT fk_shark_log__shark_id FOREIGN KEY (id_shark) REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_shark_log__shark_id_editor FOREIGN KEY (id_shark_editor)
 		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;

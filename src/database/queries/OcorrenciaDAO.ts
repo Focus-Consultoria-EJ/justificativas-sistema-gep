@@ -3,7 +3,7 @@ import Ocorrencia from "../../model/Ocorrencia";
 
 class OcorrenciaDAO
 {
-    async select(): Promise<Ocorrencia[] | undefined>
+    async select(limit?:string): Promise<Ocorrencia[] | undefined>
     {
         return await db.raw(`
         SELECT 
@@ -15,7 +15,8 @@ class OcorrenciaDAO
         INNER JOIN tipo_ocorrencia toc ON (oc.id_tipo_ocorrencia = toc.id)
         INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
         INNER JOIN shark s ON (oc.id_shark = s.id)
-        WHERE s.membro_ativo <> 0;
+        WHERE s.membro_ativo <> 0
+        LIMIT ${limit ? limit : 1000};
         `)
         .then(result => { return result[0]; }); // ignora os buffers
     }      

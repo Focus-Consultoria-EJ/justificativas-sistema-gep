@@ -15,7 +15,7 @@ class SharkDAO
             .first();
     }
 
-    async selectWithImage(): Promise<Shark[] | undefined>
+    async selectWithImage(limit?:string): Promise<Shark[] | undefined>
     {
         return await db.raw(`
         SELECT 
@@ -23,7 +23,8 @@ class SharkDAO
             si.id AS "image_id", si.filename AS "image_filename", si.size AS "image_hashname", si.url AS "image_url", si.data_criacao as "image_data_criacao"
         FROM shark s
         LEFT JOIN shark_image si ON (si.id_shark = s.id)
-        WHERE s.id <> 1`)
+        WHERE s.id <> 1
+        LIMIT ${limit ? limit : 1000};`)
         .then(result => { return result[0]; }); // ignora os buffers
     }
 

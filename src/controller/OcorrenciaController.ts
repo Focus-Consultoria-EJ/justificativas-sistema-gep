@@ -14,6 +14,9 @@ class OcorrenciaController
     /* Pega todos os usuários ou apenas um usuário */
     async select(req: Request, res: Response)
     { 
+        // ?limit=[número_máximo] ou ?limit=[valor_a_pular],[número_máximo]
+        const { limit } = req.query;
+        
         try
         {
             if(req.params.id)
@@ -26,7 +29,7 @@ class OcorrenciaController
             }
             else
             {
-                await OcorrenciaDAO.select()
+                await OcorrenciaDAO.select(String(limit))
                     .then(ocorrencia => {
                         return res.status(200).json(ocorrencia);
                     })
