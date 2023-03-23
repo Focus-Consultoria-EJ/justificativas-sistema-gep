@@ -1,55 +1,63 @@
+import Shark from "./Shark";
+import TipoAssunto from "./TipoAssunto";
+import TipoOcorrencia from "./TipoOcorrencia";
 
 export interface IOcorrenciaDTO
 {
     id: number;
-    data_ocorrido: string;
-    id_tipo_ocorrencia: number;
-    id_tipo_assunto: number;
+    dataOcorrido: string;
+    tipoOcorrencia: TipoOcorrencia;
+    tipoAssunto: TipoAssunto;
     mensagem: string;
-    valor_metragem: number;
-    id_shark: number;
+    valorMetragem: number;
+    shark: Shark;
+    dataCriacao?: Date;
 }
 
 class Ocorrencia 
 {
     private id?: number;
-    private data_ocorrido?: Date;
-    private id_tipo_ocorrencia: number;
-    private id_tipo_assunto: number;
+    private dataOcorrido?: Date;
+    private tipoOcorrencia: TipoOcorrencia;
+    private tipoAssunto: TipoAssunto;
     private mensagem: string;
-    private valor_metragem?: number;
-    private id_shark: number;
+    private valorMetragem?: number;
+    private shark: Shark;
+    private dataCriacao?: Date;
 
-    constructor({ id, data_ocorrido, id_tipo_ocorrencia, id_tipo_assunto, mensagem, valor_metragem, id_shark }: IOcorrenciaDTO)
+    constructor({ id, dataOcorrido, tipoOcorrencia, tipoAssunto, mensagem, valorMetragem, shark, dataCriacao}: IOcorrenciaDTO)
     {
         this.id = id;
-        this.data_ocorrido = new Date(data_ocorrido)
-        this.id_tipo_ocorrencia = id_tipo_ocorrencia;
-        this.id_tipo_assunto = id_tipo_assunto;     
+        this.dataOcorrido = dataOcorrido ? new Date(dataOcorrido) : new Date();
+        this.tipoOcorrencia = tipoOcorrencia;
+        this.tipoAssunto = tipoAssunto;     
         this.mensagem = mensagem;     
-        this.valor_metragem = valor_metragem;        
-        this.id_shark = id_shark;     
+        this.valorMetragem = valorMetragem;        
+        this.shark = shark;     
+        this.dataCriacao = dataCriacao ? new Date(dataCriacao) : new Date();
     }
     
     public getId(): number | undefined { return this.id; }
 
-    public setDataOcorrido(dataOcorrido:Date): void { this.data_ocorrido = dataOcorrido; }
-    public getDataOcorrido(): Date | undefined { return this.data_ocorrido; }
+    public setDataOcorrido(dataOcorrido:Date): void { this.dataOcorrido = dataOcorrido; }
+    public getDataOcorrido(): Date | undefined { return this.dataOcorrido; }
 
-    public setIdTipoOcorrencia(id_tipo_ocorrencia:number): void { this.id_tipo_ocorrencia = id_tipo_ocorrencia; }
-    public getIdTipoOcorrencia(): number { return this.id_tipo_ocorrencia; }
+    public setTipoOcorrencia(tipoOcorrencia:TipoOcorrencia): void { this.tipoOcorrencia = tipoOcorrencia; }
+    public getTipoOcorrencia(): TipoOcorrencia { return this.tipoOcorrencia; }
 
-    public setIdTipoAssunto(id_tipo_assunto:number): void { this.id_tipo_assunto = id_tipo_assunto; }
-    public getIdTipoAssunto(): number { return this.id_tipo_assunto; }
+    public setTipoAssunto(tipoAssunto:TipoAssunto): void { this.tipoAssunto = tipoAssunto; }
+    public getTipoAssunto(): TipoAssunto { return this.tipoAssunto; }
     
     public setMensagem(mensagem:string): void { this.mensagem = mensagem; }
     public getMensagem(): string { return this.mensagem; }
 
-    public setValorMetragem(valor_metragem:number): void { this.valor_metragem = valor_metragem; }
-    public getValorMetragem(): number | undefined { return this.valor_metragem; }
+    public setValorMetragem(valorMetragem:number): void { this.valorMetragem = valorMetragem; }
+    public getValorMetragem(): number | undefined { return this.valorMetragem; }
 
-    public setIdShark(id_shark:number): void { this.id_shark = id_shark; }
-    public getIdShark(): number | undefined { return this.id_shark; }
+    public setShark(shark:Shark): void { this.shark = shark; }
+    public getShark(): Shark | undefined { return this.shark; }
+
+    public getDataCriacao(): Date | undefined { return this.dataCriacao; }
 }
 
 export default Ocorrencia;

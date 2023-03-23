@@ -10,7 +10,7 @@ class OcorrenciaDAO
             oc.id, oc.data_ocorrido, toc.id as "id_tipo_de_ocorrencia", toc.nome as "tipo_de_ocorrencia", 
             tas.id as "id_tipo_de_assunto", tas.nome as "tipo_de_assunto", 
             oc.mensagem, oc.valor_metragem, 
-            s.nome as "nome_shark", s.email 
+            s.nome as "nome_shark", s.email, oc.data_criacao  
         FROM ocorrencia oc
         INNER JOIN tipo_ocorrencia toc ON (oc.id_tipo_ocorrencia = toc.id)
         INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
@@ -27,7 +27,7 @@ class OcorrenciaDAO
             oc.id, oc.data_ocorrido, toc.id as "id_tipo_de_ocorrencia", toc.nome as "tipo_de_ocorrencia", 
             tas.id as "id_tipo_de_assunto", tas.nome as "tipo_de_assunto", 
             oc.mensagem, oc.valor_metragem, 
-            s.nome as "nome_shark", s.email 
+            s.nome as "nome_shark", s.email, oc.data_criacao  
         FROM ocorrencia oc
         INNER JOIN tipo_ocorrencia toc ON (oc.id_tipo_ocorrencia = toc.id)
         INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
@@ -39,13 +39,26 @@ class OcorrenciaDAO
 
     async insert(ocorrencia: Ocorrencia): Promise<any | undefined>
     {
-        return await db("ocorrencia").insert(ocorrencia);
+        return await db("ocorrencia").insert({
+            data_ocorrido: ocorrencia.getDataOcorrido(),
+            id_tipo_ocorrencia: ocorrencia.getTipoOcorrencia().getId(),
+            id_tipo_assunto: ocorrencia.getTipoAssunto().getId(),
+            mensagem: ocorrencia.getMensagem(),
+            valor_metragem: ocorrencia.getValorMetragem(),
+            id_shark: ocorrencia.getShark()?.getId()
+        });
     }
 
     async update(ocorrencia: Ocorrencia): Promise<any | undefined>
     {
         return await db("ocorrencia")
-            .update(ocorrencia)
+            .update({
+                data_ocorrido: ocorrencia.getDataOcorrido(),
+                id_tipo_ocorrencia: ocorrencia.getTipoOcorrencia().getId(),
+                id_tipo_assunto: ocorrencia.getTipoAssunto().getId(),
+                mensagem: ocorrencia.getMensagem(),
+                valor_metragem: ocorrencia.getValorMetragem()
+            })
             .where({ id: ocorrencia.getId() });
     }
 

@@ -67,14 +67,36 @@ class SharkDAO
 
     async insert(shark: Shark): Promise<any | undefined>
     {
-        return await db("shark").insert(shark);
-            
+        return await db("shark").insert({
+            nome: shark.getNome(),
+            email: shark.getEmail(),
+            telefone: shark.getTelefone(),
+            matricula: shark.getMatricula(),
+            senha: shark.getSenha(),
+            area: shark.getArea(),
+            num_projeto: shark.getNumProjeto(),
+            metragem: shark.getMetragem(),
+            admin: shark.getAdmin(),
+            membro_ativo: shark.getMembroAtivo(),
+            data_criacao: shark.getDataCriacao()
+        });
     }
 
     async update(shark: Shark): Promise<any | undefined>
     {
         return await db("shark")
-            .update(shark)
+            .update({
+                nome: shark.getNome(),
+                email: shark.getEmail(),
+                telefone: shark.getTelefone(),
+                matricula: shark.getMatricula(),
+                senha: shark.getSenha(),
+                area: shark.getArea(),
+                num_projeto: shark.getNumProjeto(),
+                metragem: shark.getMetragem(),
+                admin: shark.getAdmin(),
+                membro_ativo: shark.getMembroAtivo()
+            })
             .where({ id: shark.getId() });
     }
 
@@ -91,10 +113,13 @@ class SharkDAO
     * 2 (Atualização)
     * 3 (Remoção)
     */
-    async insertSharkLog(id_tipo_acao_log: number, id: number, idSharkEditor: number): Promise<any | undefined>
+    async insertSharkLog(idTipoAcaoLog: number, id: number, idSharkEditor: number): Promise<any | undefined>
     {
         return await db("shark_log")
-            .insert({id_tipo_acao_log: id_tipo_acao_log, id_shark: id, id_shark_editor: idSharkEditor});
+            .insert({
+                id_tipo_acao_log: idTipoAcaoLog, 
+                id_shark: id, 
+                id_shark_editor: idSharkEditor});
     }
 }
 

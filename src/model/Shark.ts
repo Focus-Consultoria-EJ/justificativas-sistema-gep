@@ -1,16 +1,18 @@
 
 export interface ISharkDTO
 {
-    id: number;
+    id?: number;
     nome: string;
     email: string;
     telefone: string;
     matricula: string;
     senha: string;
     area: string;
-    metragem: number;
-    admin: number;
-    membro_ativo: number;
+    numProjeto?: number;
+    metragem?: number;
+    admin?: number;
+    membroAtivo?: number;
+    dataCriacao?: Date;
 }
 
 class Shark 
@@ -22,11 +24,13 @@ class Shark
     private matricula: string;
     private senha: string;
     private area: string;
+    private numProjeto?: number;
     private metragem?: number;
     private admin?: number;
-    private membro_ativo?: number;
+    private membroAtivo?: number;
+    private dataCriacao?: Date;
 
-    constructor({id, nome, email, telefone, matricula, senha, area, metragem, admin, membro_ativo}: ISharkDTO)
+    constructor({id, nome, email, telefone, matricula, senha, area, numProjeto, metragem, admin, membroAtivo, dataCriacao}: ISharkDTO)
     {
         this.id = id;
         this.nome = nome;
@@ -34,10 +38,12 @@ class Shark
         this.telefone = telefone;     
         this.matricula = matricula;     
         this.senha = senha;     
-        this.area = area;     
+        this.area = area;    
+        this.numProjeto = numProjeto; 
         this.metragem = metragem;     
         this.admin = admin;     
-        this.membro_ativo = membro_ativo;     
+        this.membroAtivo = membroAtivo;     
+        this.dataCriacao = dataCriacao ? new Date(dataCriacao) : new Date();     
     }
     
     public getId(): number | undefined { return this.id; }
@@ -60,13 +66,18 @@ class Shark
     public setArea(area:string): void { this.area = area; }
     public getArea(): string { return this.area; }
 
+    public setNumProjeto(numProjeto:number): void { this.numProjeto = numProjeto; }
+    public getNumProjeto(): number | undefined  { return this.numProjeto; }
+
     public getMetragem(): number | undefined { return this.metragem; }
 
     public setAdmin(admin:number): void { this.admin = admin; }
     public getAdmin(): number | undefined { return this.admin; }
 
-    public setMembroAtivo(membro_ativo:number): void { this.membro_ativo = membro_ativo; }
-    public getMembroAtivo(): number | undefined { return this.membro_ativo; }
+    public setMembroAtivo(membroAtivo:number): void { this.membroAtivo = membroAtivo; }
+    public getMembroAtivo(): number | undefined { return this.membroAtivo; }
+
+    public getDataCriacao(): Date | undefined { return this.dataCriacao; }
 }
 
 export default Shark;

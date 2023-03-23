@@ -5,6 +5,9 @@ import { Request, Response } from "express";
 import { valueExists } from "../helpers/validation";
 import Ocorrencia from '../model/Ocorrencia';
 import OcorrenciaDAO from '../database/queries/OcorrenciaDAO';
+import TipoOcorrencia from '../model/TipoOcorrencia';
+import TipoAssunto from '../model/TipoAssunto';
+import Shark from '../model/Shark';
 
 class OcorrenciaController
 {
@@ -42,17 +45,27 @@ class OcorrenciaController
         
         const ocorrencia = new Ocorrencia({
             id: data.id,
-            data_ocorrido: data.data_ocorrido,
-            id_tipo_ocorrencia: data.tipo_ocorrencia,
-            id_tipo_assunto: data.tipo_assunto,
+            dataOcorrido: data.data_ocorrido,
+            tipoOcorrencia: new TipoOcorrencia({ id: data.tipo_ocorrencia }),
+            tipoAssunto: new TipoAssunto({ id: data.tipo_assunto }),
             mensagem: data.mensagem,
-            valor_metragem: Number(data.valor_metragem),
-            id_shark: req.shark.id
+            valorMetragem: Number(data.valor_metragem),
+            shark: new Shark({
+                id: req.shark.id,
+                nome: req.shark.nome,
+                email: req.shark.email,
+                telefone: req.shark.telefone,
+                matricula: req.shark.matricula,
+                admin: req.shark.admin,
+                area: req.shark.area,
+                metragem: req.shark.metragem,
+                senha: ""
+            })
         });
 
         try
         {
-            // Se o id estiver setado verifica se o usuário existe
+            // Se o id estiver setado verifica se a ocorrência existe
             if(ocorrencia.getId())
             {
                 const result = await OcorrenciaDAO.getById(Number(ocorrencia.getId()))
@@ -60,11 +73,11 @@ class OcorrenciaController
                 valueExists(result, "A ocorrência não foi encontrada!");
             }
 
-            valueExists(ocorrencia.getIdTipoOcorrencia(), "Tipo de ocorrência não informada.");
-            valueExists(ocorrencia.getIdTipoAssunto(), "Tipo do assunto não informado.");
+            valueExists(ocorrencia.getTipoOcorrencia(), "Tipo de ocorrência não informada.");
+            valueExists(ocorrencia.getTipoAssunto(), "Tipo do assunto não informado.");
             valueExists(ocorrencia.getMensagem(), "Mensagem não informada.");
 
-            if((req.shark.admin != 1) && (ocorrencia.getIdTipoOcorrencia() != 1))
+            if((req.shark.admin != 1) && (ocorrencia.getTipoOcorrencia().getId() != 1))
                 throw "Usuário não administrador só pode enviar ocorrências do tipo justificativa.";
         } 
         catch (err) { return res.status(400).send({ message: err }); }
@@ -87,7 +100,7 @@ class OcorrenciaController
             
             await OcorrenciaDAO.insertOcorrenciaLog(1, idInserted, req.shark.id)
                 .catch(err => res.status(500).send({ message: err }));
-            
+
             return res.status(204).send();
         }   
     }
@@ -102,10 +115,10 @@ class OcorrenciaController
                 .catch(err => { return res.status(500).send({ message: err }) });
             valueExists(result, "A ocorrência não foi encontrada!");
             
-            const idDeleted = await OcorrenciaDAO.delete(ocorrenciaId)
+            await OcorrenciaDAO.delete(ocorrenciaId)
                 .catch(err => res.status(500).send({ message: err }));
             
-            await OcorrenciaDAO.insertOcorrenciaLog(3, idDeleted, req.shark.id)
+            await OcorrenciaDAO.insertOcorrenciaLog(3, ocorrenciaId, req.shark.id)
                 .catch(err => res.status(500).send({ message: err }));    
 
             return res.status(204).send();

@@ -41,7 +41,12 @@ class SharkController
     {
         const data = { ...req.body };
         if(req.params.id) data.id = req.params.id;
-        const shark = new Shark(data);
+        const shark = new Shark({
+            ...data,
+            numProjeto: data.num_projeto,
+            membroAtivo: data.membro_ativo,
+            dataCriacao: data.data_criacao
+        });
 
         try
         {
@@ -187,10 +192,10 @@ class SharkController
                 .catch(err => { return res.status(500).send({ message: err }) });
 
             // Remove o usuário e todos os índices vínculados a ele
-            const idDeleted = await SharkDAO.delete(sharkID)
+            await SharkDAO.delete(sharkID)
                 .catch(err => { return res.status(500).send({ message: err }) });
 
-            await SharkDAO.insertSharkLog(3, idDeleted, req.shark.id)
+            await SharkDAO.insertSharkLog(3, sharkID, req.shark.id)
                 .catch(err => { return res.status(500).send({ message: err }) });
 
             // Verifica se o usuário tinha um arquivo de upload

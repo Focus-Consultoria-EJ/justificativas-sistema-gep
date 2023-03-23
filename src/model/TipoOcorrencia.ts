@@ -1,8 +1,8 @@
 
 export interface ITipoOcorrenciaDTO
 {
-    id: number;
-    nome: string;
+    id?: number;
+    nome?: string;
 }
 
 class TipoOcorrencia
