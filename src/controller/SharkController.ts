@@ -14,8 +14,10 @@ class SharkController
     /* Pega todos os usuários ou apenas um usuário */
     async select(req: Request, res: Response)
     { 
-        // ?limit=[número_máximo] ou ?limit=[valor_a_pular],[número_máximo]
-        const { limit } = req.query;
+        /* O 'limit' limite de cláusulas e o 'offset' ignora as cláusulas indicadas
+         * ?limit=[valor_numérico] ou ?offset=[valor_numérico]&limit=[valor_numérico]
+        */
+        const { limit, offset } = req.query;
         
         try
         {
@@ -29,7 +31,7 @@ class SharkController
             }
             else
             {
-                await SharkDAO.selectWithImage(String(limit))
+                await SharkDAO.selectWithImage(Number(limit), Number(offset))
                     .then(shark => {
                         res.status(200).json(shark);
                     })

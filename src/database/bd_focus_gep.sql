@@ -1,5 +1,5 @@
 CREATE TABLE tipo_ocorrencia (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(300) NOT NULL
 ) ENGINE = InnoDB;
 
@@ -12,7 +12,7 @@ INSERT INTO tipo_ocorrencia (nome) VALUES ("Gratificação");
 INSERT INTO tipo_ocorrencia (nome) VALUES ("Advertência");
 
 CREATE TABLE tipo_assunto (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(300) NOT NULL
 ) ENGINE = InnoDB;
 
@@ -25,28 +25,28 @@ INSERT INTO tipo_assunto (nome) VALUES ("Treinamento");
 INSERT INTO tipo_assunto (nome) VALUES ("Outros");
 
 CREATE TABLE shark (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(300) NOT NULL,
     email VARCHAR(100) NOT NULL,
     telefone VARCHAR(14),
     matricula VARCHAR(15) NOT NULL,
     senha VARCHAR(60) NOT NULL,
     area VARCHAR(100) NOT NULL,
-    num_projeto INT(4) NOT NULL DEFAULT 0,
-    metragem INT(4) NOT NULL DEFAULT 24,
+    num_projeto TINYINT  NOT NULL DEFAULT 0,
+    metragem TINYINT  NOT NULL DEFAULT 24,
     admin BOOLEAN NOT NULL DEFAULT 0,
     membro_ativo BOOLEAN DEFAULT TRUE,
     data_criacao TIMESTAMP NOT NULL DEFAULT NOW()
 ) ENGINE = InnoDB;
 
 CREATE TABLE shark_image (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
 	filename VARCHAR(300) NOT NULL,
     size INT NOT NULL,
     hashname VARCHAR(300) NOT NULL,
     url VARCHAR(300) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    id_shark INT NOT NULL,
+    id_shark TINYINT NOT NULL,
     CONSTRAINT fk_shark_image__shark_id FOREIGN KEY (id_shark)
 		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -56,7 +56,7 @@ INSERT INTO shark (nome, email, matricula, senha, area, admin)
 	VALUES ("admin", "admin@hotmail.com", "0000000", "$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6", "Administrador", 1);
 
 CREATE TABLE tipo_acao_log (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(40) NOT NULL
 );
 
@@ -65,10 +65,10 @@ INSERT INTO tipo_acao_log (nome) VALUES ("Atualização");
 INSERT INTO tipo_acao_log (nome) VALUES ("Remoção");
 
 CREATE TABLE shark_log (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-    id_tipo_acao_log INT NOT NULL,
-    id_shark INT NOT NULL,
-    id_shark_editor INT NOT NULL,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
+    id_tipo_acao_log TINYINT NOT NULL,
+    id_shark TINYINT NOT NULL,
+    id_shark_editor TINYINT NOT NULL,
     data_acao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_shark_log__tipo_acao_log_id FOREIGN KEY (id_tipo_acao_log)
 		REFERENCES tipo_acao_log(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -78,14 +78,14 @@ CREATE TABLE shark_log (
 ) ENGINE = InnoDB;
 
 CREATE TABLE ocorrencia(
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
     data_ocorrido TIMESTAMP NOT NULL DEFAULT NOW(),
-    id_tipo_ocorrencia INT NOT NULL,
-    id_tipo_assunto INT NOT NULL,
+    id_tipo_ocorrencia TINYINT NOT NULL,
+    id_tipo_assunto TINYINT NOT NULL,
     mensagem VARCHAR(300) NOT NULL,
-    valor_metragem INT(4) DEFAULT 0,
+    valor_metragem TINYINT DEFAULT 0,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_shark INT NOT NULL,
+    id_shark TINYINT NOT NULL,
     CONSTRAINT fk_ocorrencia__tipo_ocorrencia_id FOREIGN KEY (id_tipo_ocorrencia)
 		REFERENCES tipo_ocorrencia(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_ocorrencia__tipo_assunto_id FOREIGN KEY (id_tipo_assunto)
@@ -95,10 +95,10 @@ CREATE TABLE ocorrencia(
 ) ENGINE = InnoDB;
 
 CREATE TABLE ocorrencia_log (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-    id_tipo_acao_log INT NOT NULL,
-    id_ocorrencia INT NOT NULL,
-    id_shark_editor INT NOT NULL,
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
+    id_tipo_acao_log TINYINT NOT NULL,
+    id_ocorrencia TINYINT NOT NULL,
+    id_shark_editor TINYINT NOT NULL,
     data_acao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_ocorrencia_log__tipo_acao_log_id FOREIGN KEY (id_tipo_acao_log)
 		REFERENCES tipo_acao_log(id) ON DELETE CASCADE ON UPDATE CASCADE,

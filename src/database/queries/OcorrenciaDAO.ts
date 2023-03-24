@@ -3,8 +3,11 @@ import Ocorrencia from "../../model/Ocorrencia";
 
 class OcorrenciaDAO
 {
-    async select(limit?:string): Promise<Ocorrencia[] | undefined>
+    async select(limit?:number, offset?:number): Promise<Ocorrencia[] | undefined>
     {
+        offset = (offset && offset > 0) ? offset: 0;
+        const strLimitOffset = (limit && limit > 0) ? `LIMIT ${offset},${limit}` : "";
+
         return await db.raw(`
         SELECT 
             oc.id, oc.data_ocorrido, toc.id as "id_tipo_de_ocorrencia", toc.nome as "tipo_de_ocorrencia", 
@@ -16,8 +19,8 @@ class OcorrenciaDAO
         INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
         INNER JOIN shark s ON (oc.id_shark = s.id)
         WHERE s.membro_ativo <> 0
-        LIMIT ${limit ? limit : 1000};
-        `)
+        ORDER BY oc.id
+        ${strLimitOffset};`)
         .then(result => { return result[0]; }); // ignora os buffers
     }      
 

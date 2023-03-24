@@ -8,14 +8,17 @@ import OcorrenciaDAO from '../database/queries/OcorrenciaDAO';
 import TipoOcorrencia from '../model/TipoOcorrencia';
 import TipoAssunto from '../model/TipoAssunto';
 import Shark from '../model/Shark';
+import TipoAssuntoDAO from '../database/queries/TipoAssuntoDAO';
+import TipoOcorrenciaDAO from '../database/queries/TipoOcorrenciaDAO';
 
 class OcorrenciaController
 {
     /* Pega todos os usuários ou apenas um usuário */
     async select(req: Request, res: Response)
     { 
-        // ?limit=[número_máximo] ou ?limit=[valor_a_pular],[número_máximo]
-        const { limit } = req.query;
+        /* O 'limit' limite de cláusulas e o 'offset' ignora as cláusulas indicadas
+         * ?limit=[valor_numérico] ou ?offset=[valor_numérico]&limit=[valor_numérico] */
+        const { limit, offset } = req.query;
         
         try
         {
@@ -29,7 +32,7 @@ class OcorrenciaController
             }
             else
             {
-                await OcorrenciaDAO.select(String(limit))
+                await OcorrenciaDAO.select(Number(limit), Number(offset))
                     .then(ocorrencia => {
                         return res.status(200).json(ocorrencia);
                     })
@@ -44,6 +47,7 @@ class OcorrenciaController
     {
         const data = { ...req.body };
         if(req.params.id) data.id = req.params.id;
+
         if(!data.data_ocorrido) data.data_ocorrido = new Date();
         
         const ocorrencia = new Ocorrencia({
@@ -52,7 +56,7 @@ class OcorrenciaController
             tipoOcorrencia: new TipoOcorrencia({ id: data.tipo_ocorrencia }),
             tipoAssunto: new TipoAssunto({ id: data.tipo_assunto }),
             mensagem: data.mensagem,
-            valorMetragem: Number(data.valor_metragem),
+            valorMetragem: data.valor_metragem && (req.shark.admin == 1) ? Number(data.valor_metragem) : 0,
             shark: new Shark({
                 id: req.shark.id,
                 nome: req.shark.nome,
@@ -76,9 +80,19 @@ class OcorrenciaController
                 valueExists(result, "A ocorrência não foi encontrada!");
             }
 
-            valueExists(ocorrencia.getTipoOcorrencia(), "Tipo de ocorrência não informada.");
-            valueExists(ocorrencia.getTipoAssunto(), "Tipo do assunto não informado.");
+            valueExists(ocorrencia.getTipoOcorrencia().getId(), "Tipo de ocorrência não informada.");
+            valueExists(ocorrencia.getTipoAssunto().getId(), "Tipo do assunto não informado.");
             valueExists(ocorrencia.getMensagem(), "Mensagem não informada.");
+            
+            // Verifica se o id do tipo de ocorrência é válido
+            const tipoOcorrenciaExists = await TipoOcorrenciaDAO.TipoOcorrenciaExists(ocorrencia.getTipoOcorrencia().getId()!)
+                .catch(err => { return res.status(500).send({ message: err }) });
+            valueExists(tipoOcorrenciaExists, "Tipo de ocorrência inválido");
+
+            // Verifica se o id do tipo de assunto é válido
+            const tipoAssuntoExists = await TipoAssuntoDAO.TipoAssuntoExists(ocorrencia.getTipoAssunto().getId()!)
+                .catch(err => { return res.status(500).send({ message: err }) });
+            valueExists(tipoAssuntoExists, "Tipo de assunto inválido");
 
             // Bloqueia o usuário comum de enviar uma ocorrência que não seja do tipo justificativa
             if((req.shark.admin != 1) && (ocorrencia.getTipoOcorrencia().getId() != 1))

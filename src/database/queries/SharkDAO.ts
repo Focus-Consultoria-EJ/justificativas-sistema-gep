@@ -15,16 +15,20 @@ class SharkDAO
             .first();
     }
 
-    async selectWithImage(limit?:string): Promise<Shark[] | undefined>
+    async selectWithImage(limit?:number, offset?:number): Promise<Shark[] | undefined>
     {
+        offset = (offset && offset > 0) ? offset: 0;
+        const strLimitOffset = (limit && limit > 0) ? `LIMIT ${offset},${limit}` : "";
+
         return await db.raw(`
         SELECT 
             s.id, s.nome, s.email, s.telefone, s.matricula, s.senha, s.area, s.num_projeto, s.metragem, s.admin, s.membro_ativo, s.data_criacao,
             si.id AS "image_id", si.filename AS "image_filename", si.size AS "image_hashname", si.url AS "image_url", si.data_criacao as "image_data_criacao"
         FROM shark s
         LEFT JOIN shark_image si ON (si.id_shark = s.id)
-        WHERE s.id <> 1
-        LIMIT ${limit ? limit : 1000};`)
+        WHERE s.id <> 1 
+        ORDER BY s.id
+        ${strLimitOffset};`)
         .then(result => { return result[0]; }); // ignora os buffers
     }
 
