@@ -1,5 +1,6 @@
 import Shark from "../../model/Shark";
 import db from "../../config/connection";
+import SharkImage from "../../model/SharkImage";
 
 class SharkDAO
 {
@@ -124,7 +125,7 @@ class SharkDAO
             .insert({
                 id_tipo_acao_log: idTipoAcaoLog, 
                 id_shark: id, 
-                id_shark_editor: idSharkEditor});
+                id_shark_editor: idSharkEditor})
     }
 }
 

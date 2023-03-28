@@ -8,6 +8,7 @@ import { passwordEncrypt } from '../middlewares/passwordMiddleware';
 import SharkDAO from '../database/queries/SharkDAO';
 import SharkImageDAO from '../database/queries/SharkImageDAO';
 import SharkImage from '../model/SharkImage';
+import S3Storage from '../utils/s3Storage';
 
 class SharkController
 {
@@ -21,6 +22,7 @@ class SharkController
         
         try
         {
+            /* SELECT ONE */
             if(req.params.id)
             { 
                 const result = await SharkDAO.getByIdWithImage(Number(req.params.id))
@@ -29,6 +31,8 @@ class SharkController
 
                 return res.status(200).json(result);
             }
+
+            /* SELECT */
             else
             {
                 await SharkDAO.selectWithImage(Number(limit), Number(offset))
@@ -46,6 +50,8 @@ class SharkController
     {
         const data = { ...req.body };
         if(req.params.id) data.id = req.params.id;
+        const file = req.file as Express.MulterS3.File;
+
         const shark = new Shark({
             ...data,
             numProjeto: data.num_projeto,
@@ -103,17 +109,21 @@ class SharkController
         } 
         catch (err) 
         { 
-            // Se for acusado erro, remove o arquivo da pasta upload
-            if(req.file)
-                SharkImageDAO.deleteImageFromPath(req.file.path);
-
+            // Se for acusado erro, remove o arquivo do S3 ou local
+            if(req.file && process.env.STORAGE_TYPE == "s3")
+                await new S3Storage().deleteFile(file.key);
+            else if(req.file && process.env.STORAGE_TYPE == "local")
+                SharkImageDAO.deleteImageFromPath(file.path);
+                
             return res.status(400).send({ message: err }); 
         }
+        
 
         try
         {
+            /* UPDATE */
             if(shark.getId())
-            {   // update
+            {   
                 const idShark = await SharkDAO.update(shark)
                     .catch(err => { return res.status(500).send({ message: err }) });
                 
@@ -132,23 +142,29 @@ class SharkController
                             .catch(err => { return res.status(500).send({ message: err }) });
 
                         if(result)
-                            SharkImageDAO.deleteImageFromPath(sharkImage.getUrl())
-                                .catch(err => { return res.status(500).send({ message: err }) });
+                        {
+                            if(req.file && process.env.STORAGE_TYPE == "s3")
+                                await new S3Storage().deleteFile(sharkImage.getHashname());
+                            else if(req.file && process.env.STORAGE_TYPE == "local")
+                                SharkImageDAO.deleteImageFromPath(sharkImage.getUrl());
+                        }
                     }
                     
                     // salva a imagem
                     await SharkImageDAO.insert({
-                        filename: req.file?.originalname,
-                        size: req.file?.size,
-                        hashname: req.file?.filename,
-                        url: req.file?.path,
+                        filename: file.originalname,
+                        size: file.size,
+                        hashname: (process.env.STORAGE_TYPE == "s3") ? file.key : file.filename,
+                        url: (process.env.STORAGE_TYPE == "s3") ? file.location : file.path,
                         id_shark: Number(shark.getId())
                     })
-                        .catch(err => { return res.status(500).send({ message: err }) });
+                    .catch(err => { return res.status(500).send({ message: err }) });
                 }
             }
+
+            /* INSERT */
             else
-            {   // Save
+            {   
                 const idShark = await SharkDAO.insert(shark)
                     .catch(err => { return res.status(500).send({ message: err }) });
                 
@@ -160,10 +176,10 @@ class SharkController
                 {
                     // salva a imagem
                     await SharkImageDAO.insert({
-                        filename: req.file?.originalname,
-                        size: req.file?.size,
-                        hashname: req.file?.filename,
-                        url: req.file?.path,
+                        filename: file.originalname,
+                        size: file.size,
+                        hashname: (process.env.STORAGE_TYPE == "s3") ? file.key : file.filename,
+                        url: (process.env.STORAGE_TYPE == "s3") ? file.location : file.path,
                         id_shark: idShark
                     })
                     .catch(err => { return res.status(500).send({ message: err }) });
@@ -172,16 +188,13 @@ class SharkController
 
             return res.status(204).send();
         } 
-        catch (err) 
-        { 
-            return res.status(500).send({ message: err }); 
-        }
+        catch (err) { return res.status(500).send({ message: err }); }
     }
 
     async delete(req: Request, res: Response)
     {
         const sharkID = Number(req.params.id);
-        
+
         try
         {   
             const result = await SharkDAO.getById(sharkID)
@@ -207,10 +220,11 @@ class SharkController
             if(dataImageShark)
             {
                 const sharkImage = new SharkImage(dataImageShark);
-
-                // Remove o arquivo da pasta upload
-                await SharkImageDAO.deleteImageFromPath(sharkImage.getUrl())
-                    .catch(err => { return res.status(500).send({ message: err }) });
+                
+                if(process.env.STORAGE_TYPE == "s3")
+                    await new S3Storage().deleteFile(sharkImage.getHashname());
+                else if(process.env.STORAGE_TYPE == "local")
+                    SharkImageDAO.deleteImageFromPath(sharkImage.getUrl());
             }
             
             return res.status(204).send();

@@ -21,7 +21,6 @@ app.use("/api/", publicRoutes);
 app.use("/api/", sharkRoutes);
 app.use("/api/", ocorrenciasRoutes);
 
-app.listen(PORT, () => 
-{
-    console.log(`Server listen in ${PORT}`);
-});
+app.listen(PORT, () => { console.log(`Server listen in ${PORT}`); });
+
+    

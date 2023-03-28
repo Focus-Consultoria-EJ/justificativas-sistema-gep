@@ -41,10 +41,10 @@ CREATE TABLE shark (
 
 CREATE TABLE shark_image (
 	id TINYINT AUTO_INCREMENT PRIMARY KEY,
-	filename VARCHAR(300) NOT NULL,
+	filename VARCHAR(1000) NOT NULL,
     size INT NOT NULL,
-    hashname VARCHAR(300) NOT NULL,
-    url VARCHAR(300) NOT NULL,
+    hashname VARCHAR(1200) NOT NULL,
+    url VARCHAR(1200) NOT NULL,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     id_shark TINYINT NOT NULL,
     CONSTRAINT fk_shark_image__shark_id FOREIGN KEY (id_shark)
