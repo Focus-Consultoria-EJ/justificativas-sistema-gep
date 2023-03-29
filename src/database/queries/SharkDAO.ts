@@ -111,6 +111,7 @@ class SharkDAO
         return await db("shark")
             .select()
             .where({ id: id })
+            .where("id", "<>", 1)
             .del();
     }
 
