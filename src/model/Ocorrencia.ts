@@ -10,7 +10,8 @@ export interface IOcorrenciaDTO
     tipoAssunto: TipoAssunto;
     mensagem: string;
     valorMetragem: number;
-    shark: Shark;
+    sharkCriador: Shark;
+    sharkReferente: Shark;
     dataCriacao?: Date;
 }
 
@@ -22,10 +23,11 @@ class Ocorrencia
     private tipoAssunto: TipoAssunto;
     private mensagem: string;
     private valorMetragem?: number;
-    private shark: Shark;
+    private sharkCriador: Shark;
+    private sharkReferente: Shark;
     private dataCriacao?: Date;
 
-    constructor({ id, dataOcorrido, tipoOcorrencia, tipoAssunto, mensagem, valorMetragem, shark, dataCriacao}: IOcorrenciaDTO)
+    constructor({ id, dataOcorrido, tipoOcorrencia, tipoAssunto, mensagem, valorMetragem, sharkCriador, sharkReferente, dataCriacao}: IOcorrenciaDTO)
     {
         this.id = id;
         this.dataOcorrido = dataOcorrido ? new Date(dataOcorrido) : new Date();
@@ -33,7 +35,8 @@ class Ocorrencia
         this.tipoAssunto = tipoAssunto;     
         this.mensagem = mensagem;     
         this.valorMetragem = valorMetragem;        
-        this.shark = shark;     
+        this.sharkCriador = sharkCriador;     
+        this.sharkReferente = sharkReferente;     
         this.dataCriacao = dataCriacao ? new Date(dataCriacao) : new Date();
     }
     
@@ -54,8 +57,11 @@ class Ocorrencia
     public setValorMetragem(valorMetragem:number): void { this.valorMetragem = valorMetragem; }
     public getValorMetragem(): number | undefined { return this.valorMetragem; }
 
-    public setShark(shark:Shark): void { this.shark = shark; }
-    public getShark(): Shark | undefined { return this.shark; }
+    public setSharkCriador(sharkCriador:Shark): void { this.sharkCriador = sharkCriador; }
+    public getSharkCriador(): Shark | undefined { return this.sharkCriador; }
+
+    public setSharkReferente(sharkReferente:Shark): void { this.sharkReferente = sharkReferente; }
+    public getSharkReferente(): Shark | undefined { return this.sharkReferente; }
 
     public getDataCriacao(): Date | undefined { return this.dataCriacao; }
 }

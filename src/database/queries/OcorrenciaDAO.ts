@@ -13,12 +13,14 @@ class OcorrenciaDAO
             oc.id, oc.data_ocorrido, toc.id as "id_tipo_de_ocorrencia", toc.nome as "tipo_de_ocorrencia", 
             tas.id as "id_tipo_de_assunto", tas.nome as "tipo_de_assunto", 
             oc.mensagem, oc.valor_metragem, 
-            s.nome as "nome_shark", s.email, oc.data_criacao  
+            sc.nome as "nome_shark_criador", sc.email as "email_shark_criador", 
+            sr.nome as "nome_shark_referente", sr.email as "email_shark_referente", oc.data_criacao  
         FROM ocorrencia oc
         INNER JOIN tipo_ocorrencia toc ON (oc.id_tipo_ocorrencia = toc.id)
         INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
-        INNER JOIN shark s ON (oc.id_shark = s.id)
-        WHERE s.membro_ativo <> 0
+        INNER JOIN shark sc ON (oc.id_shark_criador = sc.id)
+        INNER JOIN shark sr ON (oc.id_shark_referente = sr.id)
+        WHERE sc.membro_ativo <> 0
         ORDER BY oc.id
         ${strLimitOffset};`)
         .then(result => { return result[0]; }); // ignora os buffers
@@ -31,12 +33,14 @@ class OcorrenciaDAO
             oc.id, oc.data_ocorrido, toc.id as "id_tipo_de_ocorrencia", toc.nome as "tipo_de_ocorrencia", 
             tas.id as "id_tipo_de_assunto", tas.nome as "tipo_de_assunto", 
             oc.mensagem, oc.valor_metragem, 
-            s.nome as "nome_shark", s.email, oc.data_criacao  
+            sc.nome as "nome_shark_criador", sc.email as "email_shark_criador", 
+            sr.nome as "nome_shark_referente", sr.email as "email_shark_referente", oc.data_criacao  
         FROM ocorrencia oc
         INNER JOIN tipo_ocorrencia toc ON (oc.id_tipo_ocorrencia = toc.id)
         INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
-        INNER JOIN shark s ON (oc.id_shark = s.id)
-        WHERE oc.id = ${id} AND s.membro_ativo <> 0;
+        INNER JOIN shark sc ON (oc.id_shark_criador = sc.id)
+        INNER JOIN shark sr ON (oc.id_shark_referente = sr.id)
+        WHERE oc.id = ${id} AND sc.membro_ativo <> 0;
         `) 
         .then(result => { return result[0]; }); // ignora os buffers
     }
@@ -49,7 +53,8 @@ class OcorrenciaDAO
             id_tipo_assunto: ocorrencia.getTipoAssunto().getId(),
             mensagem: ocorrencia.getMensagem(),
             valor_metragem: ocorrencia.getValorMetragem(),
-            id_shark: ocorrencia.getShark()?.getId()
+            id_shark_criador: ocorrencia.getSharkCriador()?.getId(),
+            id_shark_referente: ocorrencia.getSharkReferente()?.getId()
         });
     }
 
@@ -61,7 +66,7 @@ class OcorrenciaDAO
                 id_tipo_ocorrencia: ocorrencia.getTipoOcorrencia().getId(),
                 id_tipo_assunto: ocorrencia.getTipoAssunto().getId(),
                 mensagem: ocorrencia.getMensagem(),
-                valor_metragem: ocorrencia.getValorMetragem()
+                valor_metragem: ocorrencia.getValorMetragem(),
             })
             .where({ id: ocorrencia.getId() });
     }

@@ -1,22 +1,21 @@
 import Shark from "../../model/Shark";
 import db from "../../config/connection";
-import SharkImage from "../../model/SharkImage";
 
 class SharkDAO
 {
-    async select(): Promise<Shark[] | undefined>
+    async select(): Promise<any[] | undefined>
     {
         return await db("shark");
     }
 
-    async getById(id: number): Promise<Shark | undefined>
+    async getById(id: number): Promise<any | undefined>
     {
         return await db("shark")
             .where({ id: id })
             .first();
     }
 
-    async selectWithImage(limit?:number, offset?:number): Promise<Shark[] | undefined>
+    async selectWithImage(limit?:number, offset?:number): Promise<any[] | undefined>
     {
         offset = (offset && offset > 0) ? offset: 0;
         const strLimitOffset = (limit && limit > 0) ? `LIMIT ${offset},${limit}` : "";
@@ -33,7 +32,7 @@ class SharkDAO
         .then(result => { return result[0]; }); // ignora os buffers
     }
 
-    async getByIdWithImage(id: number): Promise<Shark[] | undefined>
+    async getByIdWithImage(id: number): Promise<any[] | undefined>
     {
         return await db.raw(`
         SELECT 

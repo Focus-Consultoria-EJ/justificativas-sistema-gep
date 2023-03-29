@@ -10,6 +10,7 @@ import TipoAssunto from '../model/TipoAssunto';
 import Shark from '../model/Shark';
 import TipoAssuntoDAO from '../database/queries/TipoAssuntoDAO';
 import TipoOcorrenciaDAO from '../database/queries/TipoOcorrenciaDAO';
+import SharkDAO from '../database/queries/SharkDAO';
 
 class OcorrenciaController
 {
@@ -48,8 +49,20 @@ class OcorrenciaController
         const data = { ...req.body };
         if(req.params.id) data.id = req.params.id;
 
+        // Se a data_ocorrido não existir, seta a data de hoje
         if(!data.data_ocorrido) data.data_ocorrido = new Date();
         
+        // Se o shark_referente não existir, significa que o referente é ele mesmo
+        if(!data.shark_referente) data.shark_referente = req.shark.id;
+
+        // Verifica se o shark existe
+        const dataSharkReferente = await SharkDAO.getById(data.shark_referente)
+            .catch(err => { return res.status(500).send({ message: err }) });
+            
+        try { valueExists(dataSharkReferente, "O usuário referente não existe."); }
+        catch (err) { return res.status(400).send({ message: err }); }
+
+
         const ocorrencia = new Ocorrencia({
             id: data.id,
             dataOcorrido: data.data_ocorrido,
@@ -57,7 +70,7 @@ class OcorrenciaController
             tipoAssunto: new TipoAssunto({ id: data.tipo_assunto }),
             mensagem: data.mensagem,
             valorMetragem: data.valor_metragem && (req.shark.admin == 1) ? Number(data.valor_metragem) : 0,
-            shark: new Shark({
+            sharkCriador: new Shark({
                 id: req.shark.id,
                 nome: req.shark.nome,
                 email: req.shark.email,
@@ -67,8 +80,20 @@ class OcorrenciaController
                 area: req.shark.area,
                 metragem: req.shark.metragem,
                 senha: ""
+            }),
+            sharkReferente: new Shark({
+                id: dataSharkReferente.id,
+                nome: dataSharkReferente.nome,
+                email: dataSharkReferente.email,
+                telefone: dataSharkReferente.telefone,
+                matricula: dataSharkReferente.matricula,
+                admin: dataSharkReferente.admin,
+                area: dataSharkReferente.area,
+                metragem: dataSharkReferente.metragem,
+                senha: ""
             })
         });
+
 
         try
         {
@@ -97,6 +122,10 @@ class OcorrenciaController
             // Bloqueia o usuário comum de enviar uma ocorrência que não seja do tipo justificativa
             if((req.shark.admin != 1) && (ocorrencia.getTipoOcorrencia().getId() != 1))
                 throw "Usuário não administrador só pode enviar ocorrências do tipo justificativa.";
+            
+            // Bloqueia o usuário comum de enviar uma ocorrência relacionada a outro usuário
+            if((req.shark.admin != 1) && (ocorrencia.getSharkCriador()?.getId() != ocorrencia.getSharkReferente()?.getId()))
+                throw "Usuário não administrador só pode criar ocorrências referente a ele mesmo.";
         } 
         catch (err) { return res.status(400).send({ message: err }); }
  
