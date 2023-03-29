@@ -27,7 +27,11 @@ class AuthController
         if(!dataShark) 
             return res.status(400).send("Não foi possível realizar o login pois o usuário não foi encontrado, por favor informe outro usuário");
 
-        const shark = new Shark(dataShark);
+        const shark = new Shark({
+            ...dataShark, 
+            numProjeto: dataShark.num_projeto,
+            membroAtivo: dataShark.membro_ativo
+        });
 
         const dataSharkImage = await SharkImageDAO.getImageBySharkId(shark.getId()!)
             .catch(err => { return res.status(500).send({ message: err }) });
@@ -48,6 +52,7 @@ class AuthController
             telefone: sharkImage.getShark().getTelefone(),
             matricula: sharkImage.getShark().getMatricula(),
             area: sharkImage.getShark().getArea(),
+            num_projeto: sharkImage.getShark().getNumProjeto(),
             metragem: sharkImage.getShark().getMetragem(),
             admin: sharkImage.getShark().getAdmin(),
             membro_ativo: sharkImage.getShark().getMembroAtivo(),

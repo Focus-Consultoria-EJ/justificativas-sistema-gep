@@ -34,7 +34,11 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 					return shark;
 			});
 
-		const shark = new Shark(dataShark);
+		const shark = new Shark({
+			...dataShark, 
+			numProjeto: dataShark.num_projeto,
+			membroAtivo: dataShark.membro_ativo
+		});
 
 		const dataSharkImage = await SharkImageDAO.getImageBySharkId(shark.getId()!)
 			.catch(err => { return res.status(500).send({ message: err }) });
@@ -49,6 +53,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
             telefone: sharkImage.getShark().getTelefone(),
             matricula: sharkImage.getShark().getMatricula(),
             area: sharkImage.getShark().getArea(),
+			num_projeto: sharkImage.getShark().getNumProjeto(),
             metragem: sharkImage.getShark().getMetragem(),
             admin: sharkImage.getShark().getAdmin(),
             membro_ativo: sharkImage.getShark().getMembroAtivo(),
