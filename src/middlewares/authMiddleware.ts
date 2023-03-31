@@ -22,6 +22,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 
 	try
 	{
+		// Verifica se o token é válido e extrai os dados do usuário
 		const data = jwt.verify(token, process.env.SECRET_TOKEN ?? '') as JwtPayload;
 
 		const dataShark = await db("shark")
