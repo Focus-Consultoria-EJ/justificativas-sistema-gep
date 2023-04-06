@@ -85,12 +85,15 @@ CREATE TABLE ocorrencia(
     mensagem VARCHAR(300) NOT NULL,
     valor_metragem TINYINT DEFAULT 0,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_shark TINYINT NOT NULL,
+    id_shark_criador TINYINT NOT NULL,
+    id_shark_referente TINYINT NOT NULL,
     CONSTRAINT fk_ocorrencia__tipo_ocorrencia_id FOREIGN KEY (id_tipo_ocorrencia)
 		REFERENCES tipo_ocorrencia(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_ocorrencia__tipo_assunto_id FOREIGN KEY (id_tipo_assunto)
 		REFERENCES tipo_assunto(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ocorrencia__shark_id FOREIGN KEY (id_shark)
+	CONSTRAINT fk_ocorrencia__shark_id_criador FOREIGN KEY (id_shark_criador)
+		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ocorrencia__shark_id_referente FOREIGN KEY (id_shark_referente)
 		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
@@ -128,10 +131,10 @@ BEGIN
 		-- Se for advertência subtrai a metragem
 		If(new.id_tipo_ocorrencia = vIdAdvertencia) THEN -- Alterar o valor de acordo com id da advertência na tabela tipo_ocorrencia
 			UPDATE shark SET metragem = metragem - new.valor_metragem
-			WHERE id = new.id_shark;
+			WHERE id = new.id_shark_referente;
 		ELSEIF (new.id_tipo_ocorrencia = vIdGratificacao) THEN
 			UPDATE shark SET metragem = metragem + new.valor_metragem
-			WHERE id = new.id_shark;
+			WHERE id = new.id_shark_referente;
         END IF;
     END IF;
 END//
@@ -158,10 +161,10 @@ BEGIN
 		-- Se for advertência subtrai a metragem
 		If(new.id_tipo_ocorrencia = vIdAdvertencia) THEN -- Alterar o valor de acordo com id da advertência na tabela tipo_ocorrencia
 			UPDATE shark SET metragem = metragem - new.valor_metragem
-			WHERE id = new.id_shark;
+			WHERE id = new.id_shark_referente;
 		ELSEIF (new.id_tipo_ocorrencia = vIdGratificacao) THEN
 			UPDATE shark SET metragem = metragem + new.valor_metragem
-			WHERE id = new.id_shark;
+			WHERE id = new.id_shark_referente;
         END IF;
     END IF;
 END//
