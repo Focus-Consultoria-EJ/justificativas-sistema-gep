@@ -109,6 +109,34 @@ CREATE TABLE ocorrencia_log (
 		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
+CREATE TABLE presenca (
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
+    id_shark TINYINT NOT NULL,
+    confirmado BOOLEAN NOT NULL DEFAULT 0,
+    data_acao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_presenca__shark_id FOREIGN KEY (id_shark)
+		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB;
+
+CREATE TABLE evento (
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(300) NOT NULL,
+    descricao VARCHAR(2000),
+    data_acao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,		
+    data_termino TIMESTAMP DEFAULT (CURRENT_DATE + INTERVAL 1 DAY) -- Por padrão cria um dia de término
+) ENGINE = InnoDB;
+
+CREATE TABLE lista_presenca (
+	id TINYINT AUTO_INCREMENT PRIMARY KEY,
+    id_presenca TINYINT NOT NULL,
+    id_evento TINYINT NOT NULL,
+    CONSTRAINT fk_lista_presenca__presenca FOREIGN KEY (id_presenca)
+		REFERENCES presenca(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_lista_evento__evento FOREIGN KEY (id_evento)
+		REFERENCES evento(id) ON DELETE CASCADE ON UPDATE CASCADE   
+) ENGINE = InnoDB;
+
+
 /*-- Triggers para alterar o valor da metragem de acordo com a ocorrência --*/
 DELIMITER //
 CREATE TRIGGER tg_atualiza_metragem_insert
