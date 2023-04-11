@@ -79,6 +79,9 @@ class SharkController
 
             if(typeof shark.getAdmin() != "undefined" && !(Number(shark.getAdmin()) >= 0 && Number(shark.getAdmin()) <= 1))
                 throw "Valor de administrador inválido.";
+
+            if(typeof shark.getMembroAtivo() != "undefined" && !(Number(shark.getMembroAtivo()) >= 0 && Number(shark.getMembroAtivo()) <= 1))
+                throw "Valor de membro ativo inválido.";
             
             // Criptografa a Senha
             shark.setSenha(await passwordEncrypt(shark.getSenha()));
