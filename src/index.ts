@@ -6,6 +6,8 @@ import cors from "cors";
 import sharkRoutes from "./routes/sharks.routes";
 import ocorrenciasRoutes from "./routes/ocorrencias.routes";
 import publicRoutes from "./routes/public.routes";
+import tipoAssuntoRoutes from "./routes/tipoAssunto.routes";
+import tipoOcorrencia from "./routes/tipoOcorrencia.routes";
 
 const PORT = process.env.PORT;
 const app = express();
@@ -20,6 +22,8 @@ app.use(cors());
 app.use("/api/", publicRoutes);
 app.use("/api/", sharkRoutes);
 app.use("/api/", ocorrenciasRoutes);
+app.use("/api/", tipoAssuntoRoutes);
+app.use("/api/", tipoOcorrencia);
 
 app.listen(PORT, () => { console.log(`Server listen in ${PORT}`); });
 
