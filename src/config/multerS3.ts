@@ -48,9 +48,9 @@ export default
     fileFilter: (req: any, file: any, cb: any) => {
         const allowedMimes = [
             "image/jpeg",
+            "image/jpg",
             "image/pjpeg",
-            "image/png",
-            "image/gif"
+            "image/png"
         ];
 
         if (allowedMimes.includes(file.mimetype))

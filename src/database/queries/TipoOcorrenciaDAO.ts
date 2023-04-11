@@ -76,8 +76,9 @@ class TipoOcorrenciaDAO
             return await db("tipo_ocorrencia")
             .select()
             .where({ id: id })
-            .where("id", "<>", 6)
-            .where("id", "<>", 7)
+            .where("id", "<>", 1) // Justificativa
+            .where("id", "<>", 6) // Gratificação
+            .where("id", "<>", 7) // Advertência
             .del();
         }
         catch(err: any) { throw err.message; }

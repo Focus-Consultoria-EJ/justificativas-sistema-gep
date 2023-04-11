@@ -60,9 +60,15 @@ class TipoOcorrenciaController
     async delete(req: Request, res: Response)
     {
         const idTipoOcorrencia = Number(req.params.id);
+        
+        // Tipo de ocorrência que não pode ser deletado
+        const significantTpOcorrencia = [1, 6, 7];
 
         try
         {   
+            if(significantTpOcorrencia.includes(idTipoOcorrencia))
+                throw "Não é possível deletar este tipo de ocorrência.";
+
             const dataTipoOcorrencia = await TipoOcorrenciaDAO.getById(idTipoOcorrencia);
             valueExists(dataTipoOcorrencia, "Tipo de Ocorrência não encontrada.");
         }
