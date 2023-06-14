@@ -16,9 +16,9 @@
     "knex:latest:production": "knex --knexfile dist/config/knexfile.js migrate:latest --env production", 
     "knex:rollback:production": "knex --knexfile dist/config/knexfile.js migrate:rollback --env production",
     "knex:migrate:make": "knex --knexfile src/config/knexfile.ts migrate:make",
-    "knex:migrate:latest": "knex --knexfile dist/config/knexfile.ts migrate:latest",
-    "knex:migrate:rollback": "knex --knexfile dist/config/knexfile.ts migrate:rollback",
-    "knex:migrate:rollback-all": "knex --knexfile dist/config/knexfile.ts migrate:rollback --all"
+    "knex:migrate:latest": "knex --knexfile src/config/knexfile.ts migrate:latest",
+    "knex:migrate:rollback": "knex --knexfile src/config/knexfile.ts migrate:rollback",
+    "knex:migrate:rollback-all": "knex --knexfile src/config/knexfile.ts migrate:rollback --all"
   },
   "author": "",
   "license": "ISC",

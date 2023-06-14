@@ -17,7 +17,7 @@ interface IDBConnection
 const dbConnection:IDBConnection = { database: "", host: "", name: "", password: "", port: 0, user: ""};
 
 if(URL === "" || !URL.includes("//") || !URL.includes(":") || !URL.includes("@") || !URL.includes("/"))
-    console.log("DATABASE_URL inválido");
+    console.log("A variável de ambiente DATABASE_URL não foi setada ou é inválida. (se em desenvolvimento ignorar)");
 else
 {
     // Extrai as informações do URL
