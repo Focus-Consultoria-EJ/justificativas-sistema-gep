@@ -7,6 +7,7 @@ import getByUsernameService from "../services/shark/getByUsername.service";
 import { passwordCompare } from "../middlewares/passwordMiddleware";
 import JWTService from "../services/jwt/JWT.service";
 import getByIdSharkService from "../services/shark/getById.shark.service";
+import getByIdCelulaService from "../services/celula/getById.celula.service";
 
 class SharkController
 {
@@ -30,7 +31,15 @@ class SharkController
             if(!await passwordCompare(data.senha, shark.senha))
                 throw new CustomError("E-mail ou senha inválidos!", 401);
 
-            const token = JWTService.sign({ id: shark.id, admin: shark.admin });
+            const celula = await getByIdCelulaService.execute(shark.id_celula);
+
+            const token = JWTService.sign({ 
+                id: shark.id, 
+                nome: shark.nome, 
+                celula: celula.nome, 
+                numProjetos: shark.num_projeto,
+                metragem: shark.metragem, 
+                admin: shark.admin });
 
             res.status(200).json({ token });
         }

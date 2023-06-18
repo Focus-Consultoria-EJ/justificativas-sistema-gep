@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { errMsg } from "../../helpers/ErrorMessages";
 dotenv.config();
 
-interface IJWTData { id: number, admin: boolean }
+interface IJWTData { id: number, nome: string, celula: string, numProjetos: number, metragem: number, admin: boolean }
 
 class JWTService
 {
