@@ -11,7 +11,7 @@ class getOcorrenciaService
         if(reqParam?.limit && !isNumber(reqParam.limit))
             throw new BadRequestError(errMsg.INVALID_DATA + " (limit)");
 
-        if(reqParam?.offset && !isNumber(reqParam.limit))
+        if(reqParam?.offset && !isNumber(reqParam.offset))
             throw new BadRequestError(errMsg.INVALID_DATA + " (offset)");
 
         return await OcorrenciaRepository.select(reqParam?.limit, reqParam?.offset);
