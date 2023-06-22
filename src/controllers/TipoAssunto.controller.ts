@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import getTipoAssuntoService from "../services/tipoAssunto/get.tipoAssunto.service";
 import saveTipoAssuntoService from "../services/tipoAssunto/save.tipoAssunto.service";
 import deleteTipoAssuntoService from "../services/tipoAssunto/delete.tipoAssunto.service";
+import getByIdTipoAssuntoService from "../services/tipoAssunto/getById.tipoAssunto.service";
 
 class TipoAssuntoController
 {
@@ -9,7 +10,12 @@ class TipoAssuntoController
     { 
         try
         {
-            const result = await getTipoAssuntoService.execute();
+            let result;
+            
+            if(req.params.id)
+                result = await getByIdTipoAssuntoService.execute(req.params.id);
+            else
+                result = await getTipoAssuntoService.execute();
 
             res.status(200).json({data: result });
         }

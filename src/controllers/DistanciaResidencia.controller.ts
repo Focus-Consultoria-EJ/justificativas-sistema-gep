@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import getDistanciaPercorridaService from "../services/distanciaPercorrida/get.distanciaPercorrida.service";
 import saveDistanciaPercorridaService from "../services/distanciaPercorrida/save.distanciaPercorrida.service";
 import deleteDistanciaPercorridaService from "../services/distanciaPercorrida/delete.distanciaPercorrida.service";
+import getByIdDistanciaPercorridaService from "../services/distanciaPercorrida/getById.distanciaPercorrida.service";
 
 class DistanciaResidenciaController
 {
@@ -9,7 +10,12 @@ class DistanciaResidenciaController
     { 
         try
         {
-            const result = await getDistanciaPercorridaService.execute();
+            let result;
+            
+            if(req.params.id)
+                result = await getByIdDistanciaPercorridaService.execute(req.params.id);
+            else
+                result = await getDistanciaPercorridaService.execute();
 
             res.status(200).json({data: result });
         }

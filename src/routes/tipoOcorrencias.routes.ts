@@ -10,6 +10,7 @@ tipoOcorrenciasRoutes.route("/tipo-ocorrencias")
     .post(authMiddleware, adminMiddleware, TipoOcorenciaController.save);
 
 tipoOcorrenciasRoutes.route("/tipo-ocorrencias/:id")
+    .get(authMiddleware, adminMiddleware, TipoOcorenciaController.select)
     .put(authMiddleware, adminMiddleware, TipoOcorenciaController.save)
     .delete(authMiddleware, adminMiddleware, TipoOcorenciaController.delete);
 

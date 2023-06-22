@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import getCelulaService from "../services/celula/get.celula.service";
 import saveCelulaService from "../services/celula/save.celula.service";
 import deleteCelulaService from "../services/celula/delete.celula.service";
+import getByIdCelulaService from "../services/celula/getById.celula.service";
 
 class CelulaController
 {
@@ -9,7 +10,12 @@ class CelulaController
     { 
         try
         {
-            const result = await getCelulaService.execute();
+            let result;
+            
+            if(req.params.id)
+                result = await getByIdCelulaService.execute(req.params.id);
+            else
+                result = await getCelulaService.execute();
 
             res.status(200).json({data: result });
         }

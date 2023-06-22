@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import getTipoOcorrenciaService from "../services/tipoOcorrencia/get.tipoOcorrencia.service";
 import saveTipoOcorrenciaService from "../services/tipoOcorrencia/save.tipoOcorrencia.service";
 import deleteTipoOcorrenciaService from "../services/tipoOcorrencia/delete.tipoOcorrencia.service";
+import getByIdTipoOcorrenciaService from "../services/tipoOcorrencia/getById.tipoOcorrencia.service";
 
 class TipoOcorrenciaController
 {
@@ -9,7 +10,12 @@ class TipoOcorrenciaController
     { 
         try
         {
-            const result = await getTipoOcorrenciaService.execute();
+            let result;
+
+            if(req.params.id)
+                result = await getByIdTipoOcorrenciaService.execute(req.params.id);
+            else
+                result = await getTipoOcorrenciaService.execute();
 
             res.status(200).json({data: result });
         }

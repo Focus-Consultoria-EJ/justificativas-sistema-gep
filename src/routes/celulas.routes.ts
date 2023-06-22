@@ -10,6 +10,7 @@ celulaRoutes.route("/celulas")
     .post(authMiddleware, adminMiddleware, CelulaController.save);
 
 celulaRoutes.route("/celulas/:id")
+    .get(authMiddleware, adminMiddleware, CelulaController.select)
     .put(authMiddleware, adminMiddleware, CelulaController.save)
     .delete(authMiddleware, adminMiddleware, CelulaController.delete);
 

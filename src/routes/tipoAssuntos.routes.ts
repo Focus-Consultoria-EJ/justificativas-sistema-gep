@@ -10,6 +10,7 @@ tipoAssuntosRoutes.route("/tipo-assuntos")
     .post(authMiddleware, adminMiddleware, TipoAssuntoController.save);
 
 tipoAssuntosRoutes.route("/tipo-assuntos/:id")
+    .get(authMiddleware, adminMiddleware, TipoAssuntoController.select)
     .put(authMiddleware, adminMiddleware, TipoAssuntoController.save)
     .delete(authMiddleware, adminMiddleware, TipoAssuntoController.delete);
 
