@@ -51,14 +51,16 @@ class SharkController
         try
         {
             /* O 'limit' limite de cláusulas e o 'offset' ignora as cláusulas indicadas
-            * ?limit=[valor_numérico] ou ?offset=[valor_numérico]&limit=[valor_numérico] */
-            const { limit, offset } = req.query;
+            * ?limit=[valor_numérico] ou ?offset=[valor_numérico]&limit=[valor_numérico]
+            * membro_ativo[true ou false] 
+            */
+            const { limit, offset, membro_ativo } = req.query;
             let result;
 
             if(req.params.id)
                 result = await getByIdSharkService.execute(req.params.id);
             else
-                result = await getSharkService.execute({ limit, offset });
+                result = await getSharkService.execute({ limit, offset, membroAtivo: membro_ativo});
 
             res.status(200).json({data: result });
         }

@@ -26,7 +26,6 @@ class TipoOcorrenciaRepository
             return false;
         else
             return true;
-
     }
 
     async insert(tipoOcorrencia: TipoOcorrencia): Promise<any | undefined>

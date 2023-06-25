@@ -25,7 +25,7 @@ class SaveOcorrenciaService
         
         
         if(data.id)
-            if(!await OcorrenciaRepository.getById(data.id!))
+            if(!await OcorrenciaRepository.getById(data.id!).then(res => res.length))
                 throw new BadRequestError(errMsg.OCORRENCIA.NOT_FOUND);   
 
         const tipoOcorrencia = await TipoOcorrenciaRepository.getById(data.tipo_ocorrencia!);

@@ -8,7 +8,7 @@ const sharkRoutes = Router();
 sharkRoutes.route("/sharks")
     .get(authMiddleware, adminMiddleware, SharkController.select)
     .post(authMiddleware, adminMiddleware, SharkController.save);
-
+    
 sharkRoutes.route("/sharks/:id")
     .get(authMiddleware, adminMiddleware, SharkController.select)
     .put(authMiddleware, adminMiddleware, SharkController.save)
