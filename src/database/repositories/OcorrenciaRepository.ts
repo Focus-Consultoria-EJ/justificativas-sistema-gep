@@ -4,30 +4,6 @@ import db from "../db";
 
 class OcorrenciaRepository
 {
-    /*
-    async select(limit?:number, offset?:number): Promise<any[] | undefined>
-    {
-        offset = (offset && offset > 0) ? offset: 0;
-        const strLimitOffset = (limit && limit > 0) ? `OFFSET ${offset} LIMIT ${limit}` : "";
-
-        return await db.raw(`
-            SELECT 
-                oc.id, oc.data_ocorrido, toc.id as "id_tipo_de_ocorrencia", toc.nome as "tipo_de_ocorrencia", 
-                tas.id as "id_tipo_de_assunto", tas.nome as "tipo_de_assunto", 
-                oc.mensagem, oc.valor_metragem, 
-                sc.nome as "nome_shark_criador", sc.email as "email_shark_criador", 
-                sr.nome as "nome_shark_referente", sr.email as "email_shark_referente", oc.data_criacao  
-            FROM ocorrencia oc
-            INNER JOIN tipo_ocorrencia toc ON (oc.id_tipo_ocorrencia = toc.id)
-            INNER JOIN tipo_assunto tas ON (oc.id_tipo_assunto = tas.id)
-            INNER JOIN shark sc ON (oc.id_shark_criador = sc.id)
-            INNER JOIN shark sr ON (oc.id_shark_referente = sr.id)
-            WHERE sc.membro_ativo <> false
-            ORDER BY oc.id
-            ${strLimitOffset};`)
-            .then(result => { return result.rows; }); // ignora os buffers
-    }
-    */
 
     async select(limit?:number, offset?:number): Promise<any[] | undefined>
     {
@@ -44,8 +20,10 @@ class OcorrenciaRepository
                 "tas.nome as tipo_de_assunto",
                 "oc.mensagem",
                 "oc.valor_metragem",
+                "sc.id as id_shark_criador",
                 "sc.nome as nome_shark_criador",
                 "sc.email as email_shark_criador",
+                "sr.id as id_shark_referente",
                 "sr.nome as nome_shark_referente",
                 "sr.email as email_shark_referente",
                 "oc.data_criacao"
@@ -56,8 +34,7 @@ class OcorrenciaRepository
             .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
             .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
             .where("sc.membro_ativo", "<>", false)
-            .orderBy("oc.id")
-            .first();
+            .orderBy("oc.id");
 
         if(limit) query = query.limit(limit);
         if(offset) query = query.offset(offset);
@@ -77,8 +54,10 @@ class OcorrenciaRepository
                 "tas.nome as tipo_de_assunto",
                 "oc.mensagem",
                 "oc.valor_metragem",
+                "sc.id as id_shark_criador",
                 "sc.nome as nome_shark_criador",
                 "sc.email as email_shark_criador",
+                "sr.id as id_shark_referente",
                 "sr.nome as nome_shark_referente",
                 "sr.email as email_shark_referente",
                 "oc.data_criacao"
@@ -90,7 +69,6 @@ class OcorrenciaRepository
             .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
             .where("sc.membro_ativo", "<>", false)
             .andWhere("oc.id", "=", id)
-            .orderBy("oc.id")
             .first();
     }
 

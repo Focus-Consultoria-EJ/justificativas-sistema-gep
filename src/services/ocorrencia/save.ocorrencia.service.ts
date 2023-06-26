@@ -4,7 +4,7 @@ import TipoAssuntoRepository from "../../database/repositories/TipoAssuntoReposi
 import TipoOcorrenciaRepository from "../../database/repositories/TipoOcorrenciaRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { ocorrenciaFormValidation } from "../../helpers/ocorrenciaValidation";
-import { checkId, isNumber, valueExists } from "../../helpers/validation";
+import { checkId, valueExists } from "../../helpers/validation";
 import { BadRequestError } from "../../middlewares/Error.middleware";
 import { Ocorrencia } from "../../models/Ocorrencia";
 import { Shark } from "../../models/Shark";
@@ -20,12 +20,16 @@ class SaveOcorrenciaService
         if(typeof data === "string")
             throw new BadRequestError(data);
 
-        const dataSharkReferente = await SharkRepository.getById(data.shark_referente);
-        valueExists(dataSharkReferente, errMsg.SHARK.REFERENCE_NOT_FOUND);
-        
+        let dataSharkReferente;
+
+        if(data.shark_referente && data.shark_referente != reqShark.id)
+        {
+            dataSharkReferente = await SharkRepository.getById(data.shark_referente);
+            valueExists(dataSharkReferente, errMsg.SHARK.REFERENCE_NOT_FOUND);
+        }
         
         if(data.id)
-            if(!await OcorrenciaRepository.getById(data.id!).then(res => res.length))
+            if(!await OcorrenciaRepository.getById(data.id!))
                 throw new BadRequestError(errMsg.OCORRENCIA.NOT_FOUND);   
 
         const tipoOcorrencia = await TipoOcorrenciaRepository.getById(data.tipo_ocorrencia!);
@@ -39,8 +43,8 @@ class SaveOcorrenciaService
         const ocorrencia: Ocorrencia = {
             id: data.id,
             dataOcorrido: data.data_ocorrido ?? new Date(),
-            tipoOcorrencia: { id: data.tipo_ocorrencia },
-            tipoAssunto: { id: data.tipo_assunto },
+            tipoOcorrencia: { id: tipoOcorrencia.id, nome: tipoOcorrencia.nome },
+            tipoAssunto: { id: tipoAssunto.id, nome: tipoAssunto.nome },
             mensagem: data.mensagem,
             valorMetragem: data.valor_metragem && (reqShark.admin == 1) ? Number(data.valor_metragem) : 0,
             sharkCriador: reqShark,
@@ -57,13 +61,15 @@ class SaveOcorrenciaService
         
         if(ocorrencia.id)
         {
-            const idInserted = await OcorrenciaRepository.update(ocorrencia);
-            await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
+            await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
+                await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
+            });
         }
         else
         {
-            const idInserted = await OcorrenciaRepository.insert(ocorrencia);
-            await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
+            await OcorrenciaRepository.insert(ocorrencia).then(async idInserted => {
+                await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
+            });
         }
     }
 }
