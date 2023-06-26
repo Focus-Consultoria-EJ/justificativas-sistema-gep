@@ -5,10 +5,11 @@ import db from "../db";
 class OcorrenciaRepository
 {
 
-    async select(limit?:number, offset?:number): Promise<any[] | undefined>
+    async select(limit?:number, offset?:number, membroAtivo?:string): Promise<any[] | undefined>
     {
         offset = (offset && offset > 0) ? offset : 0;
         limit = (limit && limit > 0) ? limit : 0;
+        membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
 
         let query = db(TableNames.shark)
             .select(
@@ -33,7 +34,7 @@ class OcorrenciaRepository
             .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
             .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
             .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
-            .where("sc.membro_ativo", "<>", false)
+            .where("sc.membro_ativo", "=", membroAtivo)
             .orderBy("oc.id");
 
         if(limit) query = query.limit(limit);
@@ -67,8 +68,7 @@ class OcorrenciaRepository
             .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
             .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
             .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
-            .where("sc.membro_ativo", "<>", false)
-            .andWhere("oc.id", "=", id)
+            .where("oc.id", "=", id)
             .first();
     }
 
