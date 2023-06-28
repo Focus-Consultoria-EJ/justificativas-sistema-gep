@@ -9,6 +9,7 @@ export async function up(knex: Knex): Promise<void>
         table.timestamp("data_ocorrido").notNullable().defaultTo(knex.fn.now());
         table.smallint("id_tipo_ocorrencia").notNullable();
         table.smallint("id_tipo_assunto").notNullable();
+        table.string("motivo", 500);
         table.string("mensagem", 500).notNullable();
         table.smallint("valor_metragem").defaultTo(0);
         table.timestamp("data_criacao").defaultTo(knex.fn.now());

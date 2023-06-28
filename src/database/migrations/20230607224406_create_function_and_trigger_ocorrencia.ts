@@ -7,29 +7,37 @@ export async function up(knex: Knex): Promise<void>
         CREATE OR REPLACE FUNCTION atualiza_metragem()
         RETURNS TRIGGER AS $$
         DECLARE
-        vIdAdvertencia INT;
-        vIdGratificacao INT;
+            vIdAdvertencia INT;
+            vIdGratificacao INT;
+            vIdSegundoAviso INT;
         BEGIN
-        -- Salva o id referente ao tipo de ocorrência advertência
-        SELECT id INTO vIdAdvertencia FROM tipo_ocorrencia
-        WHERE nome ILIKE '%adver%';
-
-        -- Salva o id referente ao tipo de ocorrência gratificação
-        SELECT id INTO vIdGratificacao FROM tipo_ocorrencia
-        WHERE nome ILIKE '%grat%';
-
-        IF (new.valor_metragem != 0) THEN
-            -- Se for advertência subtrai a metragem
-            IF (new.id_tipo_ocorrencia = vIdAdvertencia) THEN -- Alterar o valor de acordo com id da advertência na tabela tipo_ocorrencia
-            UPDATE shark SET metragem = metragem - new.valor_metragem
-            WHERE id = new.id_shark_referente;
-            ELSIF (new.id_tipo_ocorrencia = vIdGratificacao) THEN
-            UPDATE shark SET metragem = metragem + new.valor_metragem
-            WHERE id = new.id_shark_referente;
+            -- Salva o id referente ao tipo de ocorrência advertência
+            SELECT id INTO vIdAdvertencia FROM tipo_ocorrencia
+            WHERE nome ILIKE '%adver%';
+        
+            -- Salva o id referente ao tipo de ocorrência gratificação
+            SELECT id INTO vIdGratificacao FROM tipo_ocorrencia
+            WHERE nome ILIKE '%grat%';
+            
+            -- Salva o id referente ao tipo de ocorrência Segundo aviso
+            SELECT id INTO vIdSegundoAviso FROM tipo_ocorrencia
+            WHERE nome ILIKE '%Segundo%';
+        
+            IF (new.valor_metragem != 0) THEN
+                -- Se for advertência subtrai a metragem
+                IF (new.id_tipo_ocorrencia = vIdAdvertencia) THEN -- Alterar o valor de acordo com id da advertência na tabela tipo_ocorrencia
+                    UPDATE shark SET metragem = metragem - new.valor_metragem
+                    WHERE id = new.id_shark_referente;
+                ELSIF (new.id_tipo_ocorrencia = vIdGratificacao) THEN
+                    UPDATE shark SET metragem = metragem + new.valor_metragem
+                    WHERE id = new.id_shark_referente;
+                ELSIF (new.id_tipo_ocorrencia = vIdSegundoAviso) THEN
+                    UPDATE shark SET metragem = metragem - new.valor_metragem
+                    WHERE id = new.id_shark_referente;
+                END IF;
             END IF;
-        END IF;
-
-        RETURN NEW;
+        
+            RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;`
     ).then(() => { console.log("Função de metragem criada"); });

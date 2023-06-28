@@ -19,6 +19,7 @@ class OcorrenciaRepository
                 "toc.nome as tipo_de_ocorrencia",
                 "tas.id as id_tipo_de_assunto",
                 "tas.nome as tipo_de_assunto",
+                "oc.motivo",
                 "oc.mensagem",
                 "oc.valor_metragem",
                 "sc.id as id_shark_criador",
@@ -53,6 +54,7 @@ class OcorrenciaRepository
                 "toc.nome as tipo_de_ocorrencia",
                 "tas.id as id_tipo_de_assunto",
                 "tas.nome as tipo_de_assunto",
+                "oc.motivo",
                 "oc.mensagem",
                 "oc.valor_metragem",
                 "sc.id as id_shark_criador",
@@ -68,7 +70,7 @@ class OcorrenciaRepository
             .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
             .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
             .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
-            .where("oc.id", "=", id)
+            .andWhere("oc.id", "=", id)
             .first();
     }
 
@@ -78,6 +80,7 @@ class OcorrenciaRepository
             data_ocorrido: ocorrencia.dataOcorrido,
             id_tipo_ocorrencia: ocorrencia.tipoOcorrencia.id,
             id_tipo_assunto: ocorrencia.tipoAssunto.id,
+            motivo: ocorrencia.motivo,
             mensagem: ocorrencia.mensagem,
             valor_metragem: ocorrencia.valorMetragem,
             id_shark_criador: ocorrencia.sharkCriador.id,
@@ -94,6 +97,7 @@ class OcorrenciaRepository
                 data_ocorrido: ocorrencia.dataOcorrido,
                 id_tipo_ocorrencia: ocorrencia.tipoOcorrencia.id,
                 id_tipo_assunto: ocorrencia.tipoAssunto.id,
+                motivo: ocorrencia.motivo,
                 mensagem: ocorrencia.mensagem,
                 valor_metragem: ocorrencia.valorMetragem
             })

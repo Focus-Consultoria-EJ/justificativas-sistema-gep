@@ -1,11 +1,10 @@
 import OcorrenciaRepository from "../../database/repositories/OcorrenciaRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { checkId, valueExists } from "../../helpers/validation";
-import { Shark } from "../../models/Shark";
 
 class DeleteOcorrenciaService 
 {
-    async execute(id: any, reqShark: Shark): Promise<void>
+    async execute(id: any, reqShark: any): Promise<void>
     {
         id = checkId(id);
 

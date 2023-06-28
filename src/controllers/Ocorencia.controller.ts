@@ -10,8 +10,6 @@ class OcorrenciaController
     { 
         try
         {
-            /* O 'limit' limite de cláusulas e o 'offset' ignora as cláusulas indicadas
-            * ?limit=[valor_numérico] ou ?offset=[valor_numérico]&limit=[valor_numérico] */
             const { limit, offset, membro_ativo } = req.query;
             let result;
             

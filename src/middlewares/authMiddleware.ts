@@ -23,9 +23,15 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
         const jwtData = JWTService.verify(token);
 
         if(jwtData === errMsg.JWT.INVALID_TOKEN)
+        {
+            delete req.shark;
             throw new CustomError(errMsg.JWT.INVALID_TOKEN, 400);
+        }
         else if (jwtData === errMsg.JWT.SECRET_NOT_FOUND)
+        {
+            delete req.shark;
             throw new CustomError(errMsg.JWT.SECRET_NOT_FOUND, 400);
+        }
         
         if( !(typeof jwtData === "string") )
             req.shark = { ...jwtData };

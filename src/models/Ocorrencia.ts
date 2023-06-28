@@ -8,6 +8,7 @@ export interface Ocorrencia
     dataOcorrido: string;
     tipoOcorrencia: TipoOcorrencia;
     tipoAssunto: TipoAssunto;
+    motivo?: string;
     mensagem: string;
     valorMetragem: number;
     sharkCriador: Shark;

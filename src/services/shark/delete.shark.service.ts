@@ -2,11 +2,10 @@ import SharkRepository from "../../database/repositories/SharkRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { checkId, valueExists } from "../../helpers/validation";
 import { InternalServerError } from "../../middlewares/Error.middleware";
-import { Shark } from "../../models/Shark";
 
 class DeleteSharkService 
 {
-    async execute(id: any, reqShark:Shark): Promise<void>
+    async execute(id: any, reqShark:any): Promise<void>
     {
         id = checkId(id);
 

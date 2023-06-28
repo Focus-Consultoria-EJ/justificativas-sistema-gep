@@ -4,6 +4,7 @@ import { isNumber } from "../../helpers/validation";
 import { BadRequestError } from "../../middlewares/Error.middleware";
 
 interface IRequestParams { limit: any, offset: any, membroAtivo: any }
+
 class getOcorrenciaService 
 {
     async execute(reqParam?: IRequestParams)
