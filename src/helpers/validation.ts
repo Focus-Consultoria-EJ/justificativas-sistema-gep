@@ -56,6 +56,15 @@ export const checkId = (id: any) =>
     return id;
 };
 
+export const dataFormatToBR = (data: Date) => 
+{
+    const dia = String(data.getDate()).padStart(2, "0");
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const ano = String(data.getFullYear());
+    
+    return `${dia}/${mes}/${ano}`;
+}; 
+
 export  { valueExists, isNumber };
 
     

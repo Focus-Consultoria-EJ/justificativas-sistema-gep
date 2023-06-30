@@ -3,6 +3,7 @@ import transport from "../../config/nodemailer";
 import { Shark } from "../../models/Shark";
 import { Ocorrencia } from "../../models/Ocorrencia";
 import { BadRequestError } from "../../middlewares/Error.middleware";
+import { dataFormatToBR } from "../../helpers/validation";
 
 class EmailService
 {
@@ -84,7 +85,7 @@ class EmailService
         // Define o primeiro caractere para maiúsculo
         tipoOcorrencia = tipoOcorrencia.charAt(0).toUpperCase() + tipoOcorrencia.slice(1);
         this.subject = tipoOcorrencia;
-
+        
         const html = `
             <style>mark { background-color: #fde293;} </style>
             <div class="wrapper" style="color: black; max-width: 700px; margin: 0 auto; height: 100vh;">
@@ -94,7 +95,7 @@ class EmailService
                     O GEP vem por meio desse e-mail, informar que você está recebendo um  <mark>${tipoOcorrencia}<mark>.
                     <ul>
                         <li><b>Motivo</b>: ${ocorrencia.motivo}</li>
-                        <li><b>Na data</b>: ${dataOcorrido ?? ocorrencia.dataOcorrido}</li>
+                        <li><b>Na data</b>: ${dataOcorrido ? dataFormatToBR(dataOcorrido!) :  dataFormatToBR(new Date(ocorrencia.dataOcorrido))}</li>
                         <li><b>Situação anterior do Shark</b>:  ${shark.metragem}</li>
                         <li><b>${linhaAtualizacao}<mark>${tipoOcorrencia}</mark></b>:  ${ocorrencia.valorMetragem}</li>
                         <li><b>Situação atual do Shark</b>:  ${metragemAtual}</li>
