@@ -8,6 +8,10 @@
 - **Passo 5**: acessar a aba de 'Settings' e definir as seguintes variáveis de ambiente:
     - `JWT_SECRET_TOKEN` seguido do código secreto que queremos
     - `JWT_EXPIRES_IN` seguindo do tempo de duração do código JWT (por padrão está definido 1d)
+    - `MAILER_HOST` seguido do servidor de e-mail utilizado, no caso do gmail 'smtp.gmail.com'
+    - `MAILER_PORT` seguido da porta utilizada pelo servidor, no caso do gmail '465'
+    - `MAILER_AUTH_USER ` seguido do e-mail que irá lançar os e-mails, ex: 'example@gmail.com'
+    - `MAILER_AUH_PASS` seguido da senha associada ao e-mail 
 
 ## Deploy do DB
 
