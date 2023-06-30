@@ -77,7 +77,7 @@ class SaveOcorrenciaService
                 {
                     emailService.to = ocorrencia.sharkReferente.email;
                     const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia, nomeOcorrencia, "Falta"); 
-                    emailService.sendMail(html);
+                    await emailService.sendMail(html);
                 }
             });
         }
@@ -91,7 +91,7 @@ class SaveOcorrenciaService
                 {
                     emailService.to = ocorrencia.sharkReferente.email;
                     const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia, nomeOcorrencia, "Falta"); 
-                    emailService.sendMail(html);
+                    await emailService.sendMail(html);
                 }
             });
         }

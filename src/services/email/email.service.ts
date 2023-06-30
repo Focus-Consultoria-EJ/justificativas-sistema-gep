@@ -2,6 +2,7 @@ import { SendMailOptions} from "nodemailer";
 import transport from "../../config/nodemailer";
 import { Shark } from "../../models/Shark";
 import { Ocorrencia } from "../../models/Ocorrencia";
+import { BadRequestError } from "../../middlewares/Error.middleware";
 
 class EmailService
 {
