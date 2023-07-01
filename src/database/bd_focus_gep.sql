@@ -101,7 +101,6 @@ CREATE TABLE ocorrencia(
   data_ocorrido TIMESTAMP NOT NULL DEFAULT NOW(),
   id_tipo_ocorrencia SMALLINT NOT NULL,
   id_tipo_assunto SMALLINT NOT NULL,
-  motivo VARCHAR(500),
   mensagem VARCHAR(500) NOT NULL,
   valor_metragem SMALLINT DEFAULT 0,
   data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

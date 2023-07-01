@@ -2,7 +2,6 @@ import { SendMailOptions} from "nodemailer";
 import transport from "../../config/nodemailer";
 import { Shark } from "../../models/Shark";
 import { Ocorrencia } from "../../models/Ocorrencia";
-import { BadRequestError } from "../../middlewares/Error.middleware";
 import { dataFormatToBR } from "../../helpers/validation";
 
 class EmailService
@@ -53,22 +52,28 @@ class EmailService
         });
     }
 
-    notificationEmail(shark: Shark, ocorrencia: Ocorrencia, tipoOcorrencia: string, motivoNotificacao:string, dataOcorrido?: Date)
+    notificationEmail(shark: Shark, ocorrencia: Ocorrencia, dataOcorrido?: Date)
     {
         let metragemAtual = shark.metragem!;
         let linhaAtualizacao = "";
-        tipoOcorrencia = tipoOcorrencia.toLowerCase();
+        let artigo = "uma";
+        let tipoOcorrencia = ocorrencia.tipoOcorrencia.nome!.toLowerCase();
 
         if(tipoOcorrencia.includes("aviso"))
+        {
             if(tipoOcorrencia.includes("primeiro"))
                 tipoOcorrencia = "Aviso Comum";
             else if(tipoOcorrencia.includes("segundo"))
                 tipoOcorrencia = "Segundo aviso";
 
+            artigo = "um";
+        }
+
         if(tipoOcorrencia.includes("gratifica"))
         {
             metragemAtual += ocorrencia.valorMetragem;
             linhaAtualizacao = "Metragem a ganhar com a ";
+            
         }
         else if(tipoOcorrencia.includes("advert"))
         {
@@ -92,9 +97,9 @@ class EmailService
                 <h2>${tipoOcorrencia}</h2>
                 <p>
                     Olá, shark ${shark.nome}. Como você está? <br>
-                    O GEP vem por meio desse e-mail, informar que você está recebendo um  <mark>${tipoOcorrencia}<mark>.
+                    O GEP vem por meio desse e-mail, informar que você está recebendo ${artigo} <mark>${tipoOcorrencia}<mark>.
                     <ul>
-                        <li><b>Motivo</b>: ${ocorrencia.motivo}</li>
+                        <li><b>Motivo</b>: ${ocorrencia.mensagem}</li>
                         <li><b>Na data</b>: ${dataOcorrido ? dataFormatToBR(dataOcorrido!) :  dataFormatToBR(new Date(ocorrencia.dataOcorrido))}</li>
                         <li><b>Situação anterior do Shark</b>:  ${shark.metragem}</li>
                         <li><b>${linhaAtualizacao}<mark>${tipoOcorrencia}</mark></b>:  ${ocorrencia.valorMetragem}</li>

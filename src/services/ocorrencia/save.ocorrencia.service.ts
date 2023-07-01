@@ -41,13 +41,11 @@ class SaveOcorrenciaService
             dataOcorrido: data.data_ocorrido ?? new Date(),
             tipoOcorrencia: { id: tipoOcorrencia.id, nome: tipoOcorrencia.nome },
             tipoAssunto: { id: tipoAssunto.id, nome: tipoAssunto.nome },
-            motivo: data.motivo ?? "",
             mensagem: data.mensagem,
             valorMetragem: data.valor_metragem && (reqShark.admin == 1) ? Number(data.valor_metragem) : 0,
             sharkCriador: reqShark,
             sharkReferente: dataSharkReferente ?? reqShark
         }; 
-
 
         // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência que não seja do tipo justificativa
         if(!String(reqShark.celula).toLocaleLowerCase().includes("gestão") && (ocorrencia.tipoOcorrencia.id != 1))
@@ -57,26 +55,24 @@ class SaveOcorrenciaService
         if(!String(reqShark.celula).toLocaleLowerCase().includes("gestão") && (ocorrencia.sharkCriador.id != ocorrencia.sharkReferente.id))
             throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo.");
         
-        const nomeOcorrencia = ocorrencia.tipoOcorrencia.nome?.toLocaleLowerCase();
-
-        // Define que o segundo aviso retire 2 de metragem
-        if (nomeOcorrencia?.includes("segundo"))
+        // Define que o segundo aviso (id = 5) retire 2 de metragem
+        if (ocorrencia.tipoOcorrencia.id == 5)
             ocorrencia.valorMetragem = 2;
 
-        
-        if(ocorrencia.motivo != "" && !(nomeOcorrencia?.includes("aviso") || nomeOcorrencia?.includes("advert") || nomeOcorrencia?.includes("gratifica")))
-            throw new BadRequestError("Só é possível definir um motivo sendo o tipo de ocorrência Primeiro/Segundo Aviso, Advertência ou Gratificação.");
+        // Define que o primeiro aviso (id = 4) retire 0 de metragem
+        if (ocorrencia.tipoOcorrencia.id == 4)
+            ocorrencia.valorMetragem = 0;
 
         if(ocorrencia.id)
         {
             await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
                 await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
 
-                // Lança o E-mail
-                if(nomeOcorrencia && (nomeOcorrencia.includes("aviso") || nomeOcorrencia.includes("gratifica") || nomeOcorrencia.includes("advert")))
+                // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
+                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 7))
                 {
                     emailService.to = ocorrencia.sharkReferente.email;
-                    const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia, nomeOcorrencia, "Falta"); 
+                    const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia); 
                     await emailService.sendMail(html);
                 }
             });
@@ -86,11 +82,11 @@ class SaveOcorrenciaService
             await OcorrenciaRepository.insert(ocorrencia).then(async idInserted => {
                 await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
 
-                // Lança o E-mail
-                if(nomeOcorrencia && (nomeOcorrencia.includes("aviso") || nomeOcorrencia.includes("gratifica") || nomeOcorrencia.includes("advert")))
+                // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
+                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 7))
                 {
                     emailService.to = ocorrencia.sharkReferente.email;
-                    const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia, nomeOcorrencia, "Falta"); 
+                    const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia); 
                     await emailService.sendMail(html);
                 }
             });

@@ -49,6 +49,9 @@ class TipoOcorrenciaRepository
         return await db(TableNames.tipo_ocorrencia)
             .select()
             .where({ id: id })
+
+            // Impede de deletar os índices de 1 a 7 na tabela
+            .andWhereNotBetween("id", [1, 7])
             .del();
     }
 }
