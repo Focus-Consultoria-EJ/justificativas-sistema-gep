@@ -50,13 +50,13 @@ class SharkController
     { 
         try
         {
-            const { limit, offset, membro_ativo } = req.query;
+            const { limit, offset, membro_ativo, nome } = req.query;
             let result;
 
             if(req.params.id)
                 result = await getByIdSharkService.execute(req.params.id);
             else
-                result = await getSharkService.execute({ limit, offset, membroAtivo: membro_ativo});
+                result = await getSharkService.execute({ limit, offset, membroAtivo: membro_ativo, nome});
 
             res.status(200).json({data: result });
         }

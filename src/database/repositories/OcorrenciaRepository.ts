@@ -4,12 +4,18 @@ import db from "../db";
 
 class OcorrenciaRepository
 {
-
-    async select(limit?:number, offset?:number, membroAtivo?:string): Promise<any[] | undefined>
+    async select(
+        limit?:number, offset?:number, 
+        membroAtivo?:string, nomeSharkCriador?: string,
+        nomeSharkReferente?: string, emailSharkCriador?: string,
+        emailSharkReferente?: string, tipoOcorrencia?:string, tipoAssunto?:string
+    ): Promise<any[] | undefined>
     {
         offset = (offset && offset > 0) ? offset : 0;
         limit = (limit && limit > 0) ? limit : 0;
         membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
+
+        console.log(nomeSharkReferente);
 
         let query = db(TableNames.shark)
             .select(
@@ -37,6 +43,14 @@ class OcorrenciaRepository
             .where("sc.membro_ativo", "=", membroAtivo)
             .orderBy("oc.id");
 
+        
+
+        if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
+        if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
+        if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
+        if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
+        if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
+        if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
         if(limit) query = query.limit(limit);
         if(offset) query = query.offset(offset);
 

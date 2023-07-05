@@ -5,7 +5,7 @@ import db from "../db";
 
 class SharkRepository
 {
-    async select(limit?:number, offset?:number, membroAtivo?:string): Promise<any[] | undefined>
+    async select(limit?:number, offset?:number, membroAtivo?:string, nome?:string): Promise<any[] | undefined>
     {
         offset = (offset && offset > 0) ? offset : 0;
         limit = (limit && limit > 0) ? limit : 0;
@@ -16,6 +16,7 @@ class SharkRepository
         if(limit) query = query.limit(limit);
         if(offset) query = query.offset(offset);
         if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
+        if(nome) query = query.andWhere("nome", "like", `%${nome}%`);
 
         return await query.orderBy("id");
     }
