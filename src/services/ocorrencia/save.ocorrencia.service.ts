@@ -4,14 +4,14 @@ import TipoAssuntoRepository from "../../database/repositories/TipoAssuntoReposi
 import TipoOcorrenciaRepository from "../../database/repositories/TipoOcorrenciaRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { ocorrenciaFormValidation } from "../../helpers/ocorrenciaValidation";
-import { checkId, isNumber, valueExists } from "../../helpers/validation";
+import { checkId, valueExists } from "../../helpers/validation";
 import { BadRequestError } from "../../middlewares/Error.middleware";
 import { Ocorrencia } from "../../models/Ocorrencia";
-import { Shark } from "../../models/Shark";
+import emailService from "../email/email.service";
 
 class SaveOcorrenciaService 
 {
-    async execute(data: any, reqShark: Shark): Promise<void>
+    async execute(data: any, reqShark: any): Promise<void>
     {
         data.id = checkId(data.id);
 
@@ -20,9 +20,11 @@ class SaveOcorrenciaService
         if(typeof data === "string")
             throw new BadRequestError(data);
 
+        // Se não tiver passado o shark_referente, pega o próprio shark
+        data.shark_referente = data.shark_referente ? data.shark_referente : reqShark.id;
+
         const dataSharkReferente = await SharkRepository.getById(data.shark_referente);
         valueExists(dataSharkReferente, errMsg.SHARK.REFERENCE_NOT_FOUND);
-        
         
         if(data.id)
             if(!await OcorrenciaRepository.getById(data.id!))
@@ -34,36 +36,60 @@ class SaveOcorrenciaService
         const tipoAssunto = await TipoAssuntoRepository.getById(data.tipo_assunto!);
         valueExists(tipoAssunto, errMsg.TIPO_ASSUNTO.NOT_FOUND);
 
-        /*-- Fim Valida os campos --*/
-
         const ocorrencia: Ocorrencia = {
             id: data.id,
             dataOcorrido: data.data_ocorrido ?? new Date(),
-            tipoOcorrencia: { id: data.tipo_ocorrencia },
-            tipoAssunto: { id: data.tipo_assunto },
+            tipoOcorrencia: { id: tipoOcorrencia.id, nome: tipoOcorrencia.nome },
+            tipoAssunto: { id: tipoAssunto.id, nome: tipoAssunto.nome },
             mensagem: data.mensagem,
             valorMetragem: data.valor_metragem && (reqShark.admin == 1) ? Number(data.valor_metragem) : 0,
             sharkCriador: reqShark,
             sharkReferente: dataSharkReferente ?? reqShark
         }; 
 
-        // Bloqueia o usuário comum de enviar uma ocorrência que não seja do tipo justificativa
-        if((reqShark.admin != 1) && (ocorrencia.tipoOcorrencia.id != 1))
-            throw new BadRequestError("Usuário não administrador só pode enviar ocorrências do tipo justificativa.");
+        // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência que não seja do tipo justificativa
+        if(!String(reqShark.celula).toLocaleLowerCase().includes("gestão") && (ocorrencia.tipoOcorrencia.id != 1))
+            throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode enviar ocorrências do tipo justificativa.");
 
-        // Bloqueia o usuário comum de enviar uma ocorrência relacionada a outro usuário
-        if((reqShark.admin != 1) && (ocorrencia.sharkCriador.id != ocorrencia.sharkReferente.id))
-            throw new BadRequestError("Usuário não administrador só pode criar ocorrências referente a ele mesmo.");
+        // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência relacionada a outro usuário
+        if(!String(reqShark.celula).toLocaleLowerCase().includes("gestão") && (ocorrencia.sharkCriador.id != ocorrencia.sharkReferente.id))
+            throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo.");
         
+        // Define que o segundo aviso (id = 5) retire 2 de metragem
+        if (ocorrencia.tipoOcorrencia.id == 5)
+            ocorrencia.valorMetragem = 2;
+
+        // Define que o primeiro aviso (id = 4) retire 0 de metragem
+        if (ocorrencia.tipoOcorrencia.id == 4)
+            ocorrencia.valorMetragem = 0;
+
         if(ocorrencia.id)
         {
-            const idInserted = await OcorrenciaRepository.update(ocorrencia);
-            await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
+            await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
+                await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
+
+                // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
+                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 7))
+                {
+                    emailService.to = ocorrencia.sharkReferente.email;
+                    const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia); 
+                    await emailService.sendMail(html);
+                }
+            });
         }
         else
         {
-            const idInserted = await OcorrenciaRepository.insert(ocorrencia);
-            await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
+            await OcorrenciaRepository.insert(ocorrencia).then(async idInserted => {
+                await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
+
+                // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
+                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 7))
+                {
+                    emailService.to = ocorrencia.sharkReferente.email;
+                    const html = emailService.notificationEmail(ocorrencia.sharkReferente, ocorrencia); 
+                    await emailService.sendMail(html);
+                }
+            });
         }
     }
 }

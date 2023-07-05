@@ -1,7 +1,7 @@
 import SharkRepository from "../../database/repositories/SharkRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { sharkFormValidation } from "../../helpers/sharkValidation";
-import { checkId, isNumber } from "../../helpers/validation";
+import { checkId } from "../../helpers/validation";
 import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import { passwordEncrypt } from "../../middlewares/passwordMiddleware";
 import { Shark } from "../../models/Shark";
@@ -10,7 +10,7 @@ import getByIdDistanciaPercorridaService from "../distanciaPercorrida/getById.di
 
 class SaveSharkService 
 {
-    async execute(data: any, reqShark: Shark): Promise<void>
+    async execute(data: any, reqShark: any): Promise<void>
     {
         data.id = checkId(data.id);
         

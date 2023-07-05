@@ -2,6 +2,7 @@
 import TipoOcorrenciaRepository from "../../database/repositories/TipoOcorrenciaRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { checkId, valueExists } from "../../helpers/validation";
+import { BadRequestError } from "../../middlewares/Error.middleware";
 import { TipoOcorrencia } from "../../models/TipoOcorrencia";
 
 class DeleteTipoOcorrenciaService 
@@ -9,7 +10,10 @@ class DeleteTipoOcorrenciaService
     async execute(id: any): Promise<void>
     {
         id = checkId(id);
-
+        
+        if(id >= 1 && id <= 7)
+            throw new BadRequestError("Não é possível deletar o índice, pois ele faz parte da lógica do sistema.");
+            
         const tipoOcorrencia: TipoOcorrencia = { id: id, nome: ""};
         
         const result = await TipoOcorrenciaRepository.getById(tipoOcorrencia.id!);

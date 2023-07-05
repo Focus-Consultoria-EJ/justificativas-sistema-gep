@@ -46,5 +46,4 @@ export const errMsg =
         ALREADY_EXISTS: "A ocorrência já existe.",
         UNINFORMED_MSG: "A mensagem da ocorrência não foi informada."
     }
-    
 };

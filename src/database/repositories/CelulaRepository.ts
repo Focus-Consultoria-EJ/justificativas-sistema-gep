@@ -42,14 +42,20 @@ class CelulaRepository
             .update({
                 nome: celula.nome
             })
-            .where({ id: celula.id });
-    }
+            .where({ id: celula.id })
 
+            // Impede de atualizar os índices de 1 a 6 na tabela
+            .andWhereNotBetween("id", [1, 6]);
+    }
+    
     async delete(id: number): Promise<any | undefined>
     {
         return await db(TableNames.celula)
             .select()
             .where({ id: id })
+
+            // Impede de deletar os índices de 1 a 6 na tabela
+            .andWhereNotBetween("id", [1, 6])
             .del();
     }
 }

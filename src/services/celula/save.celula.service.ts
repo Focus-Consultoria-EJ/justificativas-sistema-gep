@@ -10,6 +10,9 @@ class SaveCelulaService
     {
         data.id = checkId(data.id);
 
+        if(data.id >= 1 && data.id <= 6)
+            throw new BadRequestError("Não é possível atualizar o índice, pois ele faz parte da lógica do sistema.");
+
         if(!data.nome || data.nome.length <= 3 || data.nome.length >= 120) 
             throw new BadRequestError("Digite uma célula com mais de 3 caracteres. (max: 120)");
 

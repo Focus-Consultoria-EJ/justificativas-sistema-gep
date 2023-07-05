@@ -2,17 +2,18 @@ import { Router } from "express";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { adminMiddleware } from "../middlewares/adminMiddleware";
 import OcorenciaController from "../controllers/Ocorencia.controller";
+import { gepAuthMiddleware } from "../middlewares/gepAuth.middleware";
 
 const ocorrenciaRoutes = Router();
 
 ocorrenciaRoutes.route("/ocorrencias")
-    .get(authMiddleware, adminMiddleware, OcorenciaController.select)
+    .get(authMiddleware,  gepAuthMiddleware, adminMiddleware, OcorenciaController.select)
     .post(authMiddleware, OcorenciaController.save);
 
 ocorrenciaRoutes.route("/ocorrencias/:id")
-    .get(authMiddleware, adminMiddleware, OcorenciaController.select)
-    .put(authMiddleware, adminMiddleware, OcorenciaController.save)
-    .delete(authMiddleware, adminMiddleware, OcorenciaController.delete);
+    .get(authMiddleware, gepAuthMiddleware, adminMiddleware, OcorenciaController.select)
+    .put(authMiddleware, gepAuthMiddleware, adminMiddleware, OcorenciaController.save)
+    .delete(authMiddleware, gepAuthMiddleware, adminMiddleware, OcorenciaController.delete);
 
 export default ocorrenciaRoutes;
 

@@ -6,8 +6,8 @@ export const ocorrenciaFormValidation = async (ocorrencia: any) =>
     
     if(!ocorrencia.tipo_ocorrencia || !isNumber(ocorrencia.tipo_ocorrencia) || parseInt(ocorrencia.tipo_ocorrencia) < 0)
         return "Digite um tipo de ocorrência válido."; 
-    
-    if(!ocorrencia.shark_referente || !isNumber(ocorrencia.shark_referente) || parseInt(ocorrencia.shark_referente) < 0)
+
+    if(ocorrencia.shark_referente && (!isNumber(ocorrencia.shark_referente) || parseInt(ocorrencia.shark_referente) < 0))
         return "Digite um shark referente válido.";
            
     if(!ocorrencia.tipo_assunto || !isNumber(ocorrencia.tipo_assunto) || parseInt(ocorrencia.tipo_assunto) < 0)

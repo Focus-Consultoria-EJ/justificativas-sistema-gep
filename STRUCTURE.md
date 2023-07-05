@@ -1,9 +1,11 @@
 #Requisitos para o sistema
 ### Setup de ambiente:
-- [Node LTS](https://nodejs.org/en)
+- [Node LTS ou 18.x](https://nodejs.org/en)
+- [PostgesSQL 15.x](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 - [Pgadmin 6.x](https://www.pgadmin.org/download/)
 
 ### Como executar o sistema localmente?
+- Se não houver database criado, crie através do comando `CREATE DATABASE db_focus_gep_backend;` no pgadmin.
 - Clone o projeto `git clone https://github.com/ConsultoriaFocus/sistema-de-notifica-es-back-end.git`
 - Execute npm i (para instalar as dependências)
 - Abra o arquivo `./src/config/knexfile.ts` e em `development` adicione o **database**, o **user**, a **password**, a **port** (o default é 5432) e o **host** (para local será 'localhost')

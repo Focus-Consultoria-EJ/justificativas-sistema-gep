@@ -10,7 +10,7 @@ class getByIdOcorrenciaService
         id = checkId(id);
         
         const result = await OcorrenciaRepository.getById(id);
-        
+
         if(!result || arrayIsEmpty(result))
             throw new BadRequestError(errMsg.OCORRENCIA.NOT_FOUND); 
 

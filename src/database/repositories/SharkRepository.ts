@@ -5,17 +5,19 @@ import db from "../db";
 
 class SharkRepository
 {
-    async select(limit?:number, offset?:number): Promise<any[] | undefined>
+    async select(limit?:number, offset?:number, membroAtivo?:string): Promise<any[] | undefined>
     {
-        offset = (offset && offset > 0) ? offset: 0;
-        const strLimitOffset = (limit && limit > 0) ? `OFFSET ${offset} LIMIT ${limit}` : "";
+        offset = (offset && offset > 0) ? offset : 0;
+        limit = (limit && limit > 0) ? limit : 0;
+        membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : undefined;
 
-        return await db.raw(`
-            SELECT * FROM shark
-            WHERE id <> 1
-            ORDER BY id
-            ${strLimitOffset};`)
-            .then(result => { return result.rows; }); // ignora os buffers
+        let query = db(TableNames.shark).where("id", "<>", 1);
+        
+        if(limit) query = query.limit(limit);
+        if(offset) query = query.offset(offset);
+        if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
+
+        return await query.orderBy("id");
     }
 
     async getById(id: number): Promise<Shark | undefined>

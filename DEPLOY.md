@@ -8,6 +8,10 @@
 - **Passo 5**: acessar a aba de 'Settings' e definir as seguintes variáveis de ambiente:
     - `JWT_SECRET_TOKEN` seguido do código secreto que queremos
     - `JWT_EXPIRES_IN` seguindo do tempo de duração do código JWT (por padrão está definido 1d)
+    - `MAILER_HOST` seguido do servidor de e-mail utilizado, no caso do gmail 'smtp.gmail.com'
+    - `MAILER_PORT` seguido da porta utilizada pelo servidor, no caso do gmail '465'
+    - `MAILER_AUTH_USER ` seguido do e-mail que irá lançar os e-mails, ex: 'example@gmail.com'
+    - `MAILER_AUH_PASS` seguido da senha associada ao e-mail 
 
 ## Deploy do DB
 
@@ -15,8 +19,9 @@
 - **Passo 2**: selecionar o banco de dados postgresql, o plano desejado e aguardar o tempo de criação do bd
 - **Passo 3**: certfique-se de que o HerokuCLI esteja instalado (https://devcenter.heroku.com/articles/heroku-cli)
 - **Passo 4**: realize o login no heroku, digite o comando 'heroku login'
-- **Passo 5**: acesse o app através do comando: 'heroku run bash --app <nome-do-app-no-heroku>'
-- **Passo 6**: Atenção! o comando abaixo para o deploy do banco de dados. Se já houver dados importantes, é necessário fazer um backup.
+- **Passo 5**: acesse o app através do comando: 'heroku run bash --app nome-do-app-no-heroku'
+- **Passo 6**: digitar o comando `npm i dotenv` e depois, `npm i`
+- **Passo 7**: Atenção! o comando abaixo para o deploy do banco de dados. Se já houver dados importantes, é necessário fazer um backup.
     - O comando `npm run knex:latest:production`, serve para criar as tabelas no banco
     
 **Caso seja necessário remover os dados usar o use o comando a seguir: O comando `knex:rollback:production`, serve para apagar todas as tabelas do banco**
