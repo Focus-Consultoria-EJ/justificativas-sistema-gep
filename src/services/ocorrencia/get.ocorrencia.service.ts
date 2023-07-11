@@ -18,6 +18,11 @@ interface IRequestParams
 
 class getOcorrenciaService 
 {
+    /**
+     * Serviço responsável por trazer todos os dados de ocorrência.
+     * @param reqParam - (opcional) os dados vindos dos parâmetros de url.
+     * @returns uma promise contendo uma coleção de objetos.
+     */
     async execute(reqParam?: IRequestParams)
     {
         if(reqParam?.limit && !isNumber(reqParam.limit))

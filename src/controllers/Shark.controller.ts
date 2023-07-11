@@ -36,7 +36,7 @@ class SharkController
             const token = JWTService.sign({ 
                 id: shark.id, 
                 nome: shark.nome, 
-                celula: celula.nome, 
+                celula: celula.nome!, 
                 numProjetos: shark.num_projeto,
                 metragem: shark.metragem, 
                 admin: shark.admin });

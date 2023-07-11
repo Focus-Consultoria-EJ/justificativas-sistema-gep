@@ -2,6 +2,10 @@ import TipoOcorrenciaRepository from "../../database/repositories/TipoOcorrencia
 
 class getTipoOcorrenciaService 
 {
+    /**
+     * Serviço responsável por trazer todos os tipos de ocorrências.
+     * @returns uma promise contendo uma coleção de objetos.
+     */
     async execute()
     {
         return await TipoOcorrenciaRepository.select();

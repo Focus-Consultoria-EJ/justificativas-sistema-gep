@@ -10,12 +10,20 @@ import getByIdDistanciaPercorridaService from "../distanciaPercorrida/getById.di
 
 class SaveSharkService 
 {
+    /**
+     * Serviço responsável pela inserção ou atualização de um shark se o id for passado no parâmetro data.
+     * @param data - os dados vindos do header.
+     * @param reqShark - os dados do shark salvo na requisição do Express.
+     */
     async execute(data: any, reqShark: any): Promise<void>
     {
         data.id = checkId(data.id);
         
-        data = await sharkFormValidation(data);
-        
+        if(data.id)
+            data = await sharkFormValidation(data, true);
+        else
+            data = await sharkFormValidation(data);
+
         if(typeof data === "string")
             throw new BadRequestError(data);
         
@@ -39,7 +47,7 @@ class SaveSharkService
                 throw new BadRequestError(errMsg.SHARK.NOT_FOUND);   
         
         // Criptografa a Senha
-        shark.senha = await passwordEncrypt(shark.senha);
+        shark.senha = shark.senha !== undefined ? await passwordEncrypt(shark.senha) : "";
 
         // Verifica se o E-mail já está cadastrado e verifica se o email é do próprio usuário
         if(await SharkRepository.userExists("email", shark.email))

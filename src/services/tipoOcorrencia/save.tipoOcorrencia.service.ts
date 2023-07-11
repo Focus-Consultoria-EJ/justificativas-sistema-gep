@@ -6,6 +6,10 @@ import { TipoOcorrencia } from "../../models/TipoOcorrencia";
 
 class SaveTipoOcorrenciaService 
 {
+    /**
+     * Serviço responsável pela inserção ou atualização de um tipo de ocorrência se o id for passado no parâmetro data.
+     * @param data - os dados vindos do header.
+     */
     async execute(data: any): Promise<void>
     {
         data.id = checkId(data.id);
@@ -19,7 +23,7 @@ class SaveTipoOcorrenciaService
             if(!await TipoOcorrenciaRepository.getById(tipoOcorrencia.id!))
                 throw new BadRequestError(errMsg.TIPO_OCORRENCIA.NOT_FOUND);   
 
-        const dataDistancia = await TipoOcorrenciaRepository.getByName(tipoOcorrencia.nome!);
+        const dataDistancia = await TipoOcorrenciaRepository.existsByName(tipoOcorrencia.nome!);
         
         // Verifica se a distancia já existe
         if(dataDistancia)

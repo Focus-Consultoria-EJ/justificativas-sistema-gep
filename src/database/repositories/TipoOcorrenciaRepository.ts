@@ -4,19 +4,34 @@ import db from "../db";
 
 class TipoOcorrenciaRepository
 {
+    
+    /**
+     * Traz todos os dados da tabela tipo_ocorrencia no banco de dados.
+     * @returns uma promise contendo uma coleção de objetos. 
+     */
     async select(): Promise<TipoOcorrencia[] | undefined>
     {
         return await db(TableNames.tipo_ocorrencia);
     }   
     
-    async getById(id: number): Promise<any | undefined>
+    /**
+     * Traz uma linha da tabela tipo_ocorrencia no banco de dados de acordo com o id.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise contendo um objeto. 
+     */
+    async getById(id: number): Promise<TipoOcorrencia | undefined>
     {
         return await db(TableNames.tipo_ocorrencia)
             .where({ id: id })
             .first();
     }
 
-    async getByName(nome: string): Promise<any | undefined>
+    /**
+     * Verifica se o nome já existe na tabela tipo_ocorrencia.
+     * @param nome - o texto do tipo de ocorrência em uma ocorrência.
+     * @returns uma promise do tipo boolean. 
+     */
+    async existsByName(nome: string): Promise<any | undefined>
     {
         const result = await db(TableNames.tipo_ocorrencia)
             .where({ nome: nome })
@@ -28,6 +43,11 @@ class TipoOcorrenciaRepository
             return true;
     }
 
+    /**
+     * Insere o item na tabela tipo_ocorrencia no banco de dados.
+     * @param tipoOcorrencia - um objeto do tipo TipoOcorrencia.
+     * @returns - uma promise com as informações da inserção.
+     */
     async insert(tipoOcorrencia: TipoOcorrencia): Promise<any | undefined>
     {
         return await db(TableNames.tipo_ocorrencia).insert({
@@ -35,6 +55,11 @@ class TipoOcorrenciaRepository
         });
     }
 
+    /**
+     * Atualiza o item na tabela tipo_ocorrencia no banco de dados.
+     * @param tipoOcorrencia - um objeto do tipo TipoOcorrencia.
+     * @returns - uma promise com as informações da atualização.
+     */
     async update(tipoOcorrencia: TipoOcorrencia): Promise<any | undefined>
     {
         return await db(TableNames.tipo_ocorrencia)
@@ -44,6 +69,11 @@ class TipoOcorrenciaRepository
             .where({ id: tipoOcorrencia.id });
     }
 
+    /**
+     * Remove o item na tabela tipo_ocorrencia no banco de dados.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
     async delete(id: number): Promise<any | undefined>
     {
         return await db(TableNames.tipo_ocorrencia)

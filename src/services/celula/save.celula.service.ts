@@ -6,6 +6,10 @@ import { Celula } from "../../models/Celula";
 
 class SaveCelulaService 
 {
+    /**
+     * Serviço responsável pela inserção ou atualização de uma célula se o id for passado no parâmetro data.
+     * @param data - os dados vindos do header.
+     */
     async execute(data: any): Promise<void>
     {
         data.id = checkId(data.id);
@@ -22,7 +26,7 @@ class SaveCelulaService
             if(!await CelulaRepository.getById(celula.id!))
                 throw new BadRequestError(errMsg.CELULA.NOT_FOUND);   
 
-        const dataDistancia = await CelulaRepository.getByName(celula.nome!);
+        const dataDistancia = await CelulaRepository.existsByName(celula.nome!);
         
         // Verifica se a distancia já existe
         if(dataDistancia)

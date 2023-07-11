@@ -7,6 +7,10 @@ import { Celula } from "../../models/Celula";
 
 class DeleteCelulaService 
 {
+    /**
+     * Serviço responsável pela remoção de uma célula através do identificador.
+     * @param id - o identificador do índice a ser removido.
+     */
     async execute(id: any): Promise<void>
     {
         id = checkId(id);

@@ -4,18 +4,33 @@ import db from "../db";
 
 class OcorrenciaRepository
 {
+    /**
+     * Traz todos os dados da tabela ocorrencia no banco de dados.
+     * @param limit - (opcional) limita o número de registros durante a seleção.
+     * @param offset - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param membroAtivo - (opcional) especifica se o membro é ativo ou não ao retornar uma consulta.
+     * @param nomeSharkCriador (opcional) especifica o nome do shark que criou as ocorrências no retorno da 
+     *      consulta.
+     * @param nomeSharkReferente (opcional) especifica o nome do shark ao qual as ocorrências foram destinadas
+     *      no retorno da consulta.
+     * @param emailSharkCriador (opcional) especifica o email do shark que criou as ocorrências no retorno da 
+     *      consulta.
+     * @param emailSharkReferente (opcional) especifica o email do shark ao qual as ocorrências foram destinadas
+     *      no retorno da consulta.
+     * @param tipoOcorrencia (opcional) especifica o tipo de ocorrência no retorno da consulta.
+     * @param tipoAssunto (opcional) especifica o tipo de assunto no retorno da consulta.
+     * @returns uma promise contendo uma coleção de objetos. 
+     */
     async select(
         limit?:number, offset?:number, 
         membroAtivo?:string, nomeSharkCriador?: string,
         nomeSharkReferente?: string, emailSharkCriador?: string,
         emailSharkReferente?: string, tipoOcorrencia?:string, tipoAssunto?:string
-    ): Promise<any[] | undefined>
+    ): Promise<Ocorrencia[] | undefined>
     {
         offset = (offset && offset > 0) ? offset : 0;
         limit = (limit && limit > 0) ? limit : 0;
         membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
-
-        console.log(nomeSharkReferente);
 
         let query = db(TableNames.shark)
             .select(
@@ -43,8 +58,6 @@ class OcorrenciaRepository
             .where("sc.membro_ativo", "=", membroAtivo)
             .orderBy("oc.id");
 
-        
-
         if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
         if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
         if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
@@ -57,7 +70,12 @@ class OcorrenciaRepository
         return await query;
     }
 
-    async getById(id: number): Promise<any | undefined>
+    /**
+     * Traz uma linha da tabela ocorrencia no banco de dados de acordo com o id.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise contendo um objeto. 
+     */
+    async getById(id: number): Promise<Ocorrencia | undefined>
     {
         return await db(TableNames.shark)
             .select(
@@ -86,6 +104,11 @@ class OcorrenciaRepository
             .first();
     }
 
+    /**
+     * Insere o item na tabela ocorrencia no banco de dados.
+     * @param ocorrencia - um objeto do tipo Ocorrencia.
+     * @returns o id inserido.
+     */
     async insert(ocorrencia: Ocorrencia): Promise<any | undefined>
     {
         return await db(TableNames.ocorrencia).insert({
@@ -101,6 +124,11 @@ class OcorrenciaRepository
             .then(row => { return row[0].id; });
     }
 
+    /**
+     * Atualiza o item na tabela ocorrencia no banco de dados.
+     * @param ocorrencia - um objeto do tipo Ocorrencia.
+     * @returns - o id atualizado.
+     */
     async update(ocorrencia: Ocorrencia): Promise<any | undefined>
     {
         return await db(TableNames.ocorrencia)
@@ -116,6 +144,11 @@ class OcorrenciaRepository
             .then(row => { return row[0].id; });
     }
 
+    /**
+     * Remove o item na tabela ocorrencia no banco de dados.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
     async delete(id: number): Promise<any | undefined>
     {
         return await db(TableNames.ocorrencia)
@@ -124,10 +157,12 @@ class OcorrenciaRepository
             .del();
     }
 
-    /* id_tipo_acao_log:
-    * 1 (Inserção)
-    * 2 (Atualização)
-    * 3 (Remoção)
+    /**
+    * Insere na tabela ocorrencia_log no banco de dados.
+    * @param idTipoAcaoLog - o identificador relacionado ao tipo de ação. 1 - Inserção, 2 - Atualização, 3 - Remoção.
+    * @param id - o identificador da ocorrência que foi inserida. 
+    * @param idSharkEditor - o identificador do shark que realizou a edição.
+    * @returns uma promise com informações do item inserido.
     */
     async insertOcorrenciaLog(idTipoAcaoLog: number, id: number, idSharkEditor: number): Promise<any | undefined>
     {

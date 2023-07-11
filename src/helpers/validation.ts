@@ -2,20 +2,35 @@
 import { BadRequestError, CustomError } from "../middlewares/Error.middleware";
 import { errMsg } from "./ErrorMessages";
 
-const valueExists = (value: any, msg: string): void => 
+/**
+ * Verifica se o valor existe, se o array possui dados e se o string está vazio.
+ * @param value - uma variável, um texto ou array.
+ * @param msg - a mensagem caso ocorra um erro.
+ */
+export const valueExists = (value: any, msg: string): void => 
 {
     if(!value) throw new CustomError(msg, 400);
     if(Array.isArray(value) && value.length === 0) throw new CustomError(msg, 400);
     if(typeof value === "string" && !value.trim()) throw new CustomError(msg, 400);
 };
 
+/**
+ * Verifica se o e-mail é válido.
+ * @param email - o e-mail a ser testado.
+ * @returns um boolean indicando se o e-mail é válido.
+ */
 export const emailValidation = (email:string) =>
 {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 };
 
-const isNumber = (num: any):boolean =>
+/**
+ * Verifica se um texto é um número.
+ * @param num - o valor a ser testado.
+ * @returns um boolean indicando se o e-mail é válido.
+ */
+export const isNumber = (num: any):boolean =>
 {
     if(num && isNaN(parseInt(num)))
         return false;
@@ -24,6 +39,11 @@ const isNumber = (num: any):boolean =>
     return true;
 };
 
+/**
+ * Verifica se é um array e se ele está vazio.
+ * @param array - o array a ser testado
+ * @returns um boolean. Retorna true se ele estiver vazio e false se não for array ou se tiver dados.
+ */
 export const arrayIsEmpty = (array:any) =>
 {
     if (!Array.isArray(array))
@@ -35,6 +55,11 @@ export const arrayIsEmpty = (array:any) =>
     return false;
 };
 
+/**
+ * Verifica se a data é válida.
+ * @param dateString - a data a ser testada.
+ * @returns boolean indicando se a data é válida.
+ */
 export const isValidDate = (dateString: string): boolean =>
 {
     const dateParts = dateString.split("-");
@@ -48,6 +73,11 @@ export const isValidDate = (dateString: string): boolean =>
     return ( date.getFullYear() === year && date.getMonth() === month && date.getDate() === day );
 };
 
+/**
+ * Verifica se o id é um número válido.
+ * @param id - o id a ser testado.
+ * @returns retorna o id se ele for válido.
+ */
 export const checkId = (id: any) =>
 {
     if(id && !isNumber(id))
@@ -56,6 +86,11 @@ export const checkId = (id: any) =>
     return id;
 };
 
+/**
+ * Formata a data para o padrão brasileiro.
+ * @param data - a data do tipo Date a ser formatada. 
+ * @returns a data no formato dia/mês/ano.
+ */
 export const dataFormatToBR = (data: Date) => 
 {
     const dia = String(data.getDate()).padStart(2, "0");
@@ -64,7 +99,3 @@ export const dataFormatToBR = (data: Date) =>
     
     return `${dia}/${mes}/${ano}`;
 }; 
-
-export  { valueExists, isNumber };
-
-    
