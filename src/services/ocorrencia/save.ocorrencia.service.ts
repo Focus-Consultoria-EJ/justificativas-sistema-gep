@@ -11,6 +11,11 @@ import emailService from "../email/email.service";
 
 class SaveOcorrenciaService 
 {
+    /**
+     * Serviço responsável pela inserção ou atualização de uma ocorrência se o id for passado no parâmetro data.
+     * @param data - os dados vindos do header.
+     * @param reqShark - os dados do shark salvo na requisição do Express.
+     */
     async execute(data: any, reqShark: any): Promise<void>
     {
         data.id = checkId(data.id);
@@ -39,7 +44,7 @@ class SaveOcorrenciaService
         const ocorrencia: Ocorrencia = {
             id: data.id,
             dataOcorrido: data.data_ocorrido ?? new Date(),
-            tipoOcorrencia: { id: tipoOcorrencia.id, nome: tipoOcorrencia.nome },
+            tipoOcorrencia: { id: tipoOcorrencia?.id, nome: tipoOcorrencia?.nome },
             tipoAssunto: { id: tipoAssunto.id, nome: tipoAssunto.nome },
             mensagem: data.mensagem,
             valorMetragem: data.valor_metragem && (reqShark.admin == 1) ? Number(data.valor_metragem) : 0,

@@ -1,6 +1,10 @@
 import { isNumber, isValidDate } from "./validation";
 
-// Verifica os dados vindo do header
+/**
+ * Verifica os dados vindo do header de ocorrência.
+ * @param ocorrencia - um objeto contendo as informações de ocorrência.
+ * @returns o objeto ocorrência.
+ */
 export const ocorrenciaFormValidation = async (ocorrencia: any) => 
 {
     

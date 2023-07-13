@@ -6,6 +6,10 @@ import { DistanciaResidencia } from "../../models/DistanciaResidencia";
 
 class SaveDistanciaPercorridaService 
 {
+    /**
+     * Serviço responsável pela inserção ou atualização de uma distância se o id for passado no parâmetro data.
+     * @param data - os dados vindos do header.
+     */
     async execute(data: any): Promise<void>
     {
         data.id = checkId(data.id);
@@ -19,7 +23,7 @@ class SaveDistanciaPercorridaService
             if(!await distanciaRepo.getById(data.id))
                 throw new BadRequestError(errMsg.DISTANCIA.NOT_FOUND);   
 
-        const dataDistancia = await distanciaRepo.getByName(distanciaRes.distancia!);
+        const dataDistancia = await distanciaRepo.existsByName(distanciaRes.distancia!);
         
         // Verifica se a distancia já existe
         if(dataDistancia)

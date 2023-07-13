@@ -3,10 +3,26 @@ import { errMsg } from "../../helpers/ErrorMessages";
 import { isNumber } from "../../helpers/validation";
 import { BadRequestError } from "../../middlewares/Error.middleware";
 
-interface IRequestParams { limit: any, offset: any, membroAtivo: any }
+interface IRequestParams 
+{ 
+    limit: any;
+    offset: any;
+    membroAtivo: any;
+    nomeSharkCriador: any;
+    nomeSharkReferente: any;
+    emailSharkCriador: any;
+    emailSharkReferente: any;
+    tipoAssunto: any;
+    TipoOcorrencia:any;
+}
 
 class getOcorrenciaService 
 {
+    /**
+     * Serviço responsável por trazer todos os dados de ocorrência.
+     * @param reqParam - (opcional) os dados vindos dos parâmetros de url.
+     * @returns uma promise contendo uma coleção de objetos.
+     */
     async execute(reqParam?: IRequestParams)
     {
         if(reqParam?.limit && !isNumber(reqParam.limit))
@@ -15,7 +31,17 @@ class getOcorrenciaService
         if(reqParam?.offset && !isNumber(reqParam.offset))
             throw new BadRequestError(errMsg.INVALID_DATA + " (offset)");
 
-        return await OcorrenciaRepository.select(reqParam?.limit, reqParam?.offset, reqParam?.membroAtivo);
+        return await OcorrenciaRepository.select(
+            reqParam?.limit, 
+            reqParam?.offset, 
+            reqParam?.membroAtivo,
+            reqParam?.nomeSharkCriador,
+            reqParam?.nomeSharkReferente,
+            reqParam?.emailSharkCriador,
+            reqParam?.emailSharkReferente,
+            reqParam?.TipoOcorrencia,
+            reqParam?.tipoAssunto
+        );
     }
 }
 

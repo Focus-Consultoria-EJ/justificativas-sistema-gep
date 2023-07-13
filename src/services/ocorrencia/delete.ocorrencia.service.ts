@@ -4,6 +4,11 @@ import { checkId, valueExists } from "../../helpers/validation";
 
 class DeleteOcorrenciaService 
 {
+    /**
+     * Serviço responsável pela remoção de uma ocorrência através do identificador.
+     * @param id - o identificador do índice a ser removido.
+     * @param reqShark - os dados do shark salvo na requisição do Express. 
+     */
     async execute(id: any, reqShark: any): Promise<void>
     {
         id = checkId(id);

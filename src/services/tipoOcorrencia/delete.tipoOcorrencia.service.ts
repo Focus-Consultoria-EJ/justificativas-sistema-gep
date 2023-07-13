@@ -7,6 +7,10 @@ import { TipoOcorrencia } from "../../models/TipoOcorrencia";
 
 class DeleteTipoOcorrenciaService 
 {
+    /**
+     * Serviço responsável pela remoção de um tipo de ocorrência através do identificador.
+     * @param id - o identificador do índice a ser removido.
+     */
     async execute(id: any): Promise<void>
     {
         id = checkId(id);

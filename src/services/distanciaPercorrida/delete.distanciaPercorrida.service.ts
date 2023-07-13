@@ -5,6 +5,10 @@ import { DistanciaResidencia } from "../../models/DistanciaResidencia";
 
 class DeleteDistanciaPercorridaService 
 {
+    /**
+     * Serviço responsável pela remoção de uma distância através do identificador.
+     * @param id - o identificador do índice a ser removido.
+     */
     async execute(id: any): Promise<void>
     {
         id = checkId(id);

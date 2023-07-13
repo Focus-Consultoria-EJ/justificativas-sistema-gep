@@ -1,6 +1,10 @@
 import { knex } from "knex";
 import { development, production } from "../config/knexfile";
 
+/**
+ * Define a configuração do knex.
+ * @returns um objeto contendo as configurações do knex.
+ */
 const getEnv = () => 
 {
     switch(process.env.STATUS) 

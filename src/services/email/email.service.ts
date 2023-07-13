@@ -10,6 +10,11 @@ class EmailService
     public subject: any;
     public message: any;
     
+    /**
+     * @param to - o e-mail de destino.
+     * @param subject - o assunto do e-mail.
+     * @param message - a mensagem do e-mail.
+     */
     constructor(to?: string, subject?: string, message?: string) 
     { 
         this.to = to;
@@ -17,6 +22,11 @@ class EmailService
         this.message = message;
     }
 
+    /**
+     * Envia o e-mail.
+     * @param html - um template html, se não passado o corpo do e-mail
+     * será o message passado na instância da classe. 
+     */
     async sendMail(html?: string)
     {
         let mailOptions: SendMailOptions;
@@ -52,6 +62,13 @@ class EmailService
         });
     }
 
+    /**
+     * Cria o template html enviado por e-mail.
+     * @param shark - objeto do tipo shark.
+     * @param ocorrencia - objeto do tipo ocorrencia.
+     * @param dataOcorrido - objeto do tipo Date ou um string no formato de data. Se não for passado pega automaticamente o dia atual. 
+     * @returns retorna um string no formato html.
+     */
     notificationEmail(shark: Shark, ocorrencia: Ocorrencia, dataOcorrido?: Date)
     {
         let metragemAtual = shark.metragem!;

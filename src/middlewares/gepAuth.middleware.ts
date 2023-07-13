@@ -4,7 +4,6 @@ import { CustomError } from "./Error.middleware";
 /**
  * Middleware responsável por verificar se o usuário é membro de Gestão Estratégica de Pessoas
  */
-
 const gepAuthMiddleware = async (req: Request, res: Response, next: NextFunction) =>
 {   
     try

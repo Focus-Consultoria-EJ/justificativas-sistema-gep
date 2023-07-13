@@ -5,6 +5,10 @@ import { TipoAssunto } from "../../models/TipoAssunto";
 
 class DeleteTipoAssuntoService 
 {
+    /**
+     * Serviço responsável pela remoção de um tipo de assunto através do identificador.
+     * @param id - o identificador do índice a ser removido.
+     */
     async execute(id: any): Promise<void>
     {
         id = checkId(id);

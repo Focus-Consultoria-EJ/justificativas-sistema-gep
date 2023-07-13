@@ -1,6 +1,11 @@
 // Link do código: https://gist.github.com/jonathangoncalves/7bdec924e9bd2bdf353d6b7520820b62
 
-export const phoneValidation = (telefone: any) =>
+/**
+ * Verifica se o telefône é válido.
+ * @param telefone - número de telefône.
+ * @returns um tipo boolean.
+ */
+export const phoneValidation = (telefone: any): boolean =>
 {
     //retira todos os caracteres menos os numeros
     telefone = telefone.replace(/\D/g, "");
