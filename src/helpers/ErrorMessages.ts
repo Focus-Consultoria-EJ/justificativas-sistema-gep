@@ -9,24 +9,24 @@ export const errMsg =
     },
     DISTANCIA:
     {
-        NOT_FOUND: "A Distância não foi encontrada.",
+        NOT_FOUND: "A distância não foi encontrada.",
         ALREADY_EXISTS: "A distância já existe.",
         UNINFORMED: "A distância não foi informada"
     },
     CELULA:
     {
-        NOT_FOUND: "A Célula não foi encontrada.",
+        NOT_FOUND: "A célula não foi encontrada.",
         ALREADY_EXISTS: "A célula já existe.",
         UNINFORMED: "A célula não foi informada"
     },
     SHARK:
     {
-        NOT_FOUND: "O Shark não foi encontrado.",
-        REFERENCE_NOT_FOUND: "O Shark referente não foi encontrado.",
-        REFERENCE_UNINFORMED: "O Shark referente não foi informado.",
-        ALREADY_EXISTS: "O Shark já existe.",
+        NOT_FOUND: "O shark não foi encontrado.",
+        REFERENCE_NOT_FOUND: "O shark referente não foi encontrado.",
+        REFERENCE_UNINFORMED: "O shark referente não foi informado.",
+        ALREADY_EXISTS: "O shark já existe.",
         EMAIL_EXISTS: "O e-mail já existe.",
-        MATRICULA_EXISTS: "A Matrícula já existe."
+        MATRICULA_EXISTS: "A matrícula já existe."
     },
     TIPO_OCORRENCIA:
     {

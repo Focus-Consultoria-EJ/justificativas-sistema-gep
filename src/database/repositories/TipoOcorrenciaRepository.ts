@@ -11,7 +11,7 @@ class TipoOcorrenciaRepository
      */
     async select(): Promise<TipoOcorrencia[] | undefined>
     {
-        return await db(TableNames.tipo_ocorrencia);
+        return await db(TableNames.tipo_ocorrencia).orderBy("id");
     }   
     
     /**
@@ -66,7 +66,9 @@ class TipoOcorrenciaRepository
             .update({
                 nome: tipoOcorrencia.nome
             })
-            .where({ id: tipoOcorrencia.id });
+            .where({ id: tipoOcorrencia.id })
+            // Impede de atualizar os índices de 1 a 7 na tabela.
+            .andWhereNotBetween("id", [1, 7]);
     }
 
     /**

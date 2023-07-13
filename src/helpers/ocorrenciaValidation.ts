@@ -21,7 +21,7 @@ export const ocorrenciaFormValidation = async (ocorrencia: any) =>
         return "Digite um tipo de ocorrência válido.";
 
     if(!ocorrencia.mensagem || String(ocorrencia.mensagem).length <= 4 || String(ocorrencia.mensagem).length >= 300)
-        return "A mensagem precisa ser maior que 4 caracteres e menor que 300"; 
+        return "A mensagem precisa ser maior que 4 caracteres. (max: 300)"; 
 
     if(ocorrencia.valor_metragem && (!isNumber(ocorrencia.valor_metragem) || parseInt(ocorrencia.valor_metragem) < 0))
         return "Digite um valor de metragem que seja maior que 0."; 

@@ -1,7 +1,7 @@
 import SharkRepository from "../../database/repositories/SharkRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { sharkFormValidation } from "../../helpers/sharkValidation";
-import { checkId } from "../../helpers/validation";
+import { checkId, phoneFormat } from "../../helpers/validation";
 import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import { passwordEncrypt } from "../../middlewares/passwordMiddleware";
 import { Shark } from "../../models/Shark";
@@ -31,7 +31,7 @@ class SaveSharkService
             id: data.id, 
             nome: data.nome,
             email: data.email,
-            telefone: data.telefone,
+            telefone: phoneFormat(data.telefone)!,
             distancia: { id: data.distancia },
             matricula: data.matricula,
             senha: data.senha,

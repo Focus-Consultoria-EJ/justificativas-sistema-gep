@@ -10,7 +10,7 @@ class DistanciaResidenciaRepository
      */
     async select(): Promise<DistanciaResidencia[] | undefined>
     {
-        return await db(TableNames.distancia_residencia);
+        return await db(TableNames.distancia_residencia).orderBy("id");
     }   
     
     /**

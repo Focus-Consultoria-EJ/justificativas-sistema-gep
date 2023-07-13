@@ -14,6 +14,9 @@ class SaveTipoOcorrenciaService
     {
         data.id = checkId(data.id);
 
+        if(data.id >= 1 && data.id <= 7)
+            throw new BadRequestError("Não é possível atualizar o índice, pois ele faz parte da lógica do sistema.");
+
         if(!data.nome || data.nome.length <= 3 || data.nome.length >= 120) 
             throw new BadRequestError("Digite um tipo de ocorrência com mais de 3 caracteres. (max: 120)");
 
@@ -24,7 +27,7 @@ class SaveTipoOcorrenciaService
                 throw new BadRequestError(errMsg.TIPO_OCORRENCIA.NOT_FOUND);   
 
         const dataDistancia = await TipoOcorrenciaRepository.existsByName(tipoOcorrencia.nome!);
-        
+
         // Verifica se a distancia já existe
         if(dataDistancia)
             throw new BadRequestError(errMsg.TIPO_OCORRENCIA.ALREADY_EXISTS);

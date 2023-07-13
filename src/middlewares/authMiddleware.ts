@@ -11,15 +11,17 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 {   
     const { authorization } = req.headers;
 	
-    // Verifica se o usuário está autenticado
-    if (!authorization)
-        throw new UnauthorizedError("Acesso não autorizado.");
-	
-    // pega a posição do token referente a SECRET_TOKEN
-    const token = authorization.replace("Bearer", "").trim();
+    
 
     try
     {
+        // Verifica se o usuário está autenticado
+        if (!authorization)
+            throw new UnauthorizedError("Acesso não autorizado.");
+
+        // pega a posição do token referente a SECRET_TOKEN
+        const token = authorization.replace("Bearer", "").trim();
+        
         const jwtData = JWTService.verify(token);
 
         if(jwtData === errMsg.JWT.INVALID_TOKEN)

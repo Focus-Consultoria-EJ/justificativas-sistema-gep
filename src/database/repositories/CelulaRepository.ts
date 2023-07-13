@@ -10,7 +10,7 @@ class CelulaRepository
      */
     async select(): Promise<Celula[] | undefined>
     {
-        return await db(TableNames.celula);
+        return await db(TableNames.celula).orderBy("id");
     }   
     
     /**

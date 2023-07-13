@@ -99,3 +99,18 @@ export const dataFormatToBR = (data: Date) =>
     
     return `${dia}/${mes}/${ano}`;
 }; 
+
+/**
+ * Remove todos os caracteres não numéricos do número telefônico.
+ * @param phone - um número telefônico
+ * @returns o telefône contendo apenas os números
+ */
+export const phoneFormat = (phone: string) => 
+{ 
+    if (phone)
+        return phone.replace(/\D/g, ""); 
+    return null;
+};
+
+    
+

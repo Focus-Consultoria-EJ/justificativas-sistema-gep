@@ -10,7 +10,7 @@ class TipoAssuntoRepository
      */
     async select(): Promise<TipoAssunto[] | undefined>
     {
-        return await db(TableNames.tipo_assunto);
+        return await db(TableNames.tipo_assunto).orderBy("id");
     }   
     
     /**

@@ -45,7 +45,7 @@ class SaveOcorrenciaService
             id: data.id,
             dataOcorrido: data.data_ocorrido ?? new Date(),
             tipoOcorrencia: { id: tipoOcorrencia?.id, nome: tipoOcorrencia?.nome },
-            tipoAssunto: { id: tipoAssunto.id, nome: tipoAssunto.nome },
+            tipoAssunto: { id: tipoAssunto?.id, nome: tipoAssunto?.nome },
             mensagem: data.mensagem,
             valorMetragem: data.valor_metragem && (reqShark.admin == 1) ? Number(data.valor_metragem) : 0,
             sharkCriador: reqShark,
@@ -59,14 +59,18 @@ class SaveOcorrenciaService
         // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência relacionada a outro usuário
         if(!String(reqShark.celula).toLocaleLowerCase().includes("gestão") && (ocorrencia.sharkCriador.id != ocorrencia.sharkReferente.id))
             throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo.");
-        
-        // Define que o segundo aviso (id = 5) retire 2 de metragem
-        if (ocorrencia.tipoOcorrencia.id == 5)
-            ocorrencia.valorMetragem = 2;
 
+        // Define que uma ocorrência do tipo justificativa retire 0 de metragem
+        if (ocorrencia.tipoOcorrencia.id == 1)
+            ocorrencia.valorMetragem = 0;
+        
         // Define que o primeiro aviso (id = 4) retire 0 de metragem
         if (ocorrencia.tipoOcorrencia.id == 4)
             ocorrencia.valorMetragem = 0;
+
+        // Define que o segundo aviso (id = 5) retire 2 de metragem
+        if (ocorrencia.tipoOcorrencia.id == 5)
+            ocorrencia.valorMetragem = 2;
 
         if(ocorrencia.id)
         {
