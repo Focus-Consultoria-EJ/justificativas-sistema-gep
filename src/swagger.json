@@ -7,10 +7,6 @@
   },
   "servers": [
     {
-      "url": "https://virtserver.swaggerhub.com/rossienzo/sistema-de-nofiticacoes/1.0.0",
-      "description": "SwaggerHub API Auto Mocking"
-    },
-    {
       "url": "http://localhost:3000/api",
       "description": "API de teste"
     },
