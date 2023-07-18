@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void>
         table.increments("id").primary().index();
         table.string("nome", 300).notNullable();
         table.string("email", 100).notNullable();
+        table.string("cpf", 14).notNullable();
         table.string("telefone", 14);
         table.smallint("id_distancia_residencia");
         table.string("matricula", 15).notNullable();
@@ -39,6 +40,7 @@ export async function up(knex: Knex): Promise<void>
             nome: "admin",
             email: "admin@hotmail.com",
             matricula: "000000000",
+            cpf: "123.456.789-10",
             id_distancia_residencia: 1,
             senha: "$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6",
             id_celula: 3,

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import DistanciaResidenciaController from "../controllers/DistanciaResidencia.controller";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { adminMiddleware } from "../middlewares/adminMiddleware";
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { adminMiddleware } from "../middlewares/admin.middleware";
 
 const distanciaResRoutes = Router();
 

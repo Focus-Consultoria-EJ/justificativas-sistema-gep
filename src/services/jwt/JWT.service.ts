@@ -4,7 +4,12 @@ import { errMsg } from "../../helpers/ErrorMessages";
 dotenv.config();
 
 // Os dados a serem inseridos no token.
-interface IJWTData { id: number, nome: string, celula: string, numProjetos: number, metragem: number, admin: boolean }
+interface IJWTData 
+{ 
+    id: number; 
+    iat?: number; 
+    exp?: number; 
+}
 
 class JWTService
 {

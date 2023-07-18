@@ -1,3 +1,4 @@
+import { InternalServerError } from "../../middlewares/Error.middleware";
 import { TipoAssunto } from "../../models/TipoAssunto";
 import { TableNames } from "../TableNames";
 import db from "../db";
@@ -10,7 +11,18 @@ class TipoAssuntoRepository
      */
     async select(): Promise<TipoAssunto[] | undefined>
     {
-        return await db(TableNames.tipo_assunto).orderBy("id");
+        try
+        {
+            const data = await db(TableNames.tipo_assunto).orderBy("id");
+
+            const tipoAssuntos: TipoAssunto[] = data.map(tipoAssunto => ({
+                id: tipoAssunto.id,
+                nome: tipoAssunto.nome
+            }));
+
+            return tipoAssuntos;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }   
     
     /**
@@ -20,9 +32,18 @@ class TipoAssuntoRepository
      */
     async getById(id: number): Promise<TipoAssunto | undefined>
     {
-        return await db(TableNames.tipo_assunto)
-            .where({ id: id })
-            .first();
+        try
+        {
+            const data = await db(TableNames.tipo_assunto)
+                .where({ id: id })
+                .first();
+
+            if(!data)
+                return undefined;
+            
+            return { id: data.id, nome: data.nome };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**

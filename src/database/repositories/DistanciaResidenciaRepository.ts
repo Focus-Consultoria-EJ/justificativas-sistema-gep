@@ -1,6 +1,7 @@
 import db from "../db";
 import { DistanciaResidencia } from "../../models/DistanciaResidencia";
 import { TableNames } from "../TableNames";
+import { InternalServerError } from "../../middlewares/Error.middleware";
 
 class DistanciaResidenciaRepository
 {
@@ -10,7 +11,18 @@ class DistanciaResidenciaRepository
      */
     async select(): Promise<DistanciaResidencia[] | undefined>
     {
-        return await db(TableNames.distancia_residencia).orderBy("id");
+        try
+        {
+            const data = await db(TableNames.distancia_residencia).orderBy("id");
+
+            const distancias: DistanciaResidencia[] = data.map(distancia => ({
+                id: distancia.id,
+                distancia: distancia.distancia
+            }));
+
+            return distancias;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }   
     
     /**
@@ -20,9 +32,18 @@ class DistanciaResidenciaRepository
      */
     async getById(id: number): Promise<DistanciaResidencia | undefined>
     {
-        return await db(TableNames.distancia_residencia)
-            .where({ id: id })
-            .first();
+        try
+        {
+            const data = await db(TableNames.distancia_residencia)
+                .where({ id: id })
+                .first();
+
+            if(!data)
+                return undefined;
+
+            return { id: data.id, distancia: data.distancia };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**

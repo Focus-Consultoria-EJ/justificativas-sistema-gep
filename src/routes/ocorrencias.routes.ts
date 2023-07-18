@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { adminMiddleware } from "../middlewares/adminMiddleware";
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { adminMiddleware } from "../middlewares/admin.middleware";
 import OcorenciaController from "../controllers/Ocorencia.controller";
 import { gepAuthMiddleware } from "../middlewares/gepAuth.middleware";
 

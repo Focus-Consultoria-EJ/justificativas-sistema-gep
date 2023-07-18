@@ -7,12 +7,9 @@
   "description": "Backend do site de GEP da Focus Consultoria",
   "main": "index.js",
   "scripts": {
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "node dist/index.js",
     "develop": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
-    "server:start": "pm2 start dist/index.js",
-    "server:monit": "pm2 monit dist/index.js",
-    "server:stop": "pm2 stop dist/index.js",
     "knex:latest:production": "knex --knexfile dist/config/knexfile.js migrate:latest --env production",
     "knex:rollback:production": "knex --knexfile dist/config/knexfile.js migrate:rollback --env production",
     "knex:seed-test:production": "knex --knexfile dist/config/knexfile.js seed:run --env production",
@@ -33,7 +30,6 @@
     "knex": "^2.4.2",
     "nodemailer": "^6.9.3",
     "pg": "^8.10.0",
-    "pm2": "^5.2.2",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {

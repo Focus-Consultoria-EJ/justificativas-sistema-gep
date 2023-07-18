@@ -1,3 +1,4 @@
+import { InternalServerError } from "../../middlewares/Error.middleware";
 import { TipoOcorrencia } from "../../models/TipoOcorrencia";
 import { TableNames } from "../TableNames";
 import db from "../db";
@@ -11,7 +12,18 @@ class TipoOcorrenciaRepository
      */
     async select(): Promise<TipoOcorrencia[] | undefined>
     {
-        return await db(TableNames.tipo_ocorrencia).orderBy("id");
+        try
+        {
+            const data = await db(TableNames.tipo_ocorrencia).orderBy("id");
+
+            const tipoOcorrencias: TipoOcorrencia[] = data.map(tipoOcorrencia => ({
+                id: tipoOcorrencia.id,
+                nome: tipoOcorrencia.nome
+            }));
+
+            return tipoOcorrencias;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }   
     
     /**
@@ -21,9 +33,18 @@ class TipoOcorrenciaRepository
      */
     async getById(id: number): Promise<TipoOcorrencia | undefined>
     {
-        return await db(TableNames.tipo_ocorrencia)
-            .where({ id: id })
-            .first();
+        try
+        {
+            const data = await db(TableNames.tipo_ocorrencia)
+                .where({ id: id })
+                .first();
+            
+            if(!data)
+                return undefined;
+            
+            return { id: data.id, nome: data.nome };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**

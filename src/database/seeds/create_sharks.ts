@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { passwordEncrypt } from "../../middlewares/passwordMiddleware";
+import { passwordEncrypt } from "../../middlewares/password.middleware";
 import { isNumber } from "../../helpers/validation";
 import { TableNames } from "../TableNames";
 

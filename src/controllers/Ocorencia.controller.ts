@@ -11,10 +11,10 @@ class OcorrenciaController
         try
         {
             const { 
-                limit, offset, membro_ativo, 
-                nome_shark_criador, nome_shark_referente, 
-                email_shark_criador, email_shark_referente, 
-                tipo_ocorrencia, tipo_assunto } = req.query;
+                limit, offset, membroAtivo, 
+                nomeSharkCriador, nomeSharkReferente, 
+                emailSharkCriador, emailSharkReferente, 
+                tipoOcorrencia, tipoAssunto } = req.query;
                 
             let result;
             
@@ -24,16 +24,16 @@ class OcorrenciaController
                 result = await getOcorrenciaService.execute({ 
                     limit, 
                     offset, 
-                    membroAtivo: membro_ativo,
-                    nomeSharkCriador: nome_shark_criador,
-                    nomeSharkReferente: nome_shark_referente,
-                    emailSharkCriador: email_shark_criador,
-                    emailSharkReferente: email_shark_referente,
-                    TipoOcorrencia: tipo_ocorrencia,
-                    tipoAssunto: tipo_assunto
+                    membroAtivo,
+                    nomeSharkCriador,
+                    nomeSharkReferente,
+                    emailSharkCriador,
+                    emailSharkReferente,
+                    tipoOcorrencia,
+                    tipoAssunto
                 });
 
-            res.status(200).json({data: result });
+            res.status(200).json(result);
         }
         catch(err) { next(err); }
     }

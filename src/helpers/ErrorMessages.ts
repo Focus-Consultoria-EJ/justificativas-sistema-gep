@@ -26,7 +26,8 @@ export const errMsg =
         REFERENCE_UNINFORMED: "O shark referente não foi informado.",
         ALREADY_EXISTS: "O shark já existe.",
         EMAIL_EXISTS: "O e-mail já existe.",
-        MATRICULA_EXISTS: "A matrícula já existe."
+        MATRICULA_EXISTS: "A matrícula já existe.",
+        CPF_EXISTS: "O cpf já existe."
     },
     TIPO_OCORRENCIA:
     {

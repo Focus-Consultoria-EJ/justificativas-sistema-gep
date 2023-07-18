@@ -10,7 +10,7 @@ export interface Ocorrencia
     tipoAssunto: TipoAssunto;
     mensagem: string;
     valorMetragem: number;
-    sharkCriador: Shark;
+    sharkCriador?: Shark;
     sharkReferente: Shark;
     dataCriacao?: Date;
 }

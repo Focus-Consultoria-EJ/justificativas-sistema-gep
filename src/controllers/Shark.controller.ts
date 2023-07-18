@@ -4,10 +4,9 @@ import saveSharkService from "../services/shark/save.shark.service";
 import deleteSharkService from "../services/shark/delete.shark.service";
 import { CustomError } from "../middlewares/Error.middleware";
 import getByUsernameService from "../services/shark/getByUsername.service";
-import { passwordCompare } from "../middlewares/passwordMiddleware";
+import { passwordCompare } from "../middlewares/password.middleware";
 import JWTService from "../services/jwt/JWT.service";
 import getByIdSharkService from "../services/shark/getById.shark.service";
-import getByIdCelulaService from "../services/celula/getById.celula.service";
 
 class SharkController
 {
@@ -31,15 +30,7 @@ class SharkController
             if(!await passwordCompare(data.senha, shark.senha))
                 throw new CustomError("E-mail ou senha inválidos!", 401);
 
-            const celula = await getByIdCelulaService.execute(shark.id_celula);
-
-            const token = JWTService.sign({ 
-                id: shark.id, 
-                nome: shark.nome, 
-                celula: celula.nome!, 
-                numProjetos: shark.num_projeto,
-                metragem: shark.metragem, 
-                admin: shark.admin });
+            const token = JWTService.sign({ id: shark.id });
 
             res.status(200).json({ token });
         }
@@ -50,15 +41,15 @@ class SharkController
     { 
         try
         {
-            const { limit, offset, membro_ativo, nome } = req.query;
+            const { limit, offset, membroAtivo, nome } = req.query;
             let result;
 
             if(req.params.id)
                 result = await getByIdSharkService.execute(req.params.id);
             else
-                result = await getSharkService.execute({ limit, offset, membroAtivo: membro_ativo, nome});
+                result = await getSharkService.execute({ limit, offset, membroAtivo, nome});
 
-            res.status(200).json({data: result });
+            res.status(200).json(result);
         }
         catch(err) { next(err); }
     }
@@ -67,7 +58,7 @@ class SharkController
     { 
         try
         {
-            res.status(200).json({data: req.shark });
+            res.status(200).json(req.shark);
         }
         catch(err) { next(err); }
     }

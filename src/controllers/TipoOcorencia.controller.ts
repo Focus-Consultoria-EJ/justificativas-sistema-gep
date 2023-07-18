@@ -17,7 +17,7 @@ class TipoOcorrenciaController
             else
                 result = await getTipoOcorrenciaService.execute();
 
-            res.status(200).json({data: result });
+            res.status(200).json(result);
         }
         catch(err) { next(err); }
     }

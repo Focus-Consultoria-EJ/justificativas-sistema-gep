@@ -1,3 +1,4 @@
+import { InternalServerError } from "../../middlewares/Error.middleware";
 import { Ocorrencia } from "../../models/Ocorrencia";
 import { TableNames } from "../TableNames";
 import db from "../db";
@@ -28,46 +29,73 @@ class OcorrenciaRepository
         emailSharkReferente?: string, tipoOcorrencia?:string, tipoAssunto?:string
     ): Promise<Ocorrencia[] | undefined>
     {
-        offset = (offset && offset > 0) ? offset : 0;
-        limit = (limit && limit > 0) ? limit : 0;
-        membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
+        try
+        {
+            offset = (offset && offset > 0) ? offset : 0;
+            limit = (limit && limit > 0) ? limit : 0;
+            membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
 
-        let query = db(TableNames.shark)
-            .select(
-                "oc.id",
-                "oc.data_ocorrido",
-                "toc.id as id_tipo_de_ocorrencia",
-                "toc.nome as tipo_de_ocorrencia",
-                "tas.id as id_tipo_de_assunto",
-                "tas.nome as tipo_de_assunto",
-                "oc.mensagem",
-                "oc.valor_metragem",
-                "sc.id as id_shark_criador",
-                "sc.nome as nome_shark_criador",
-                "sc.email as email_shark_criador",
-                "sr.id as id_shark_referente",
-                "sr.nome as nome_shark_referente",
-                "sr.email as email_shark_referente",
-                "oc.data_criacao"
-            )
-            .from(`${TableNames.ocorrencia} as oc`)
-            .innerJoin(`${TableNames.tipo_ocorrencia} as toc`, "oc.id_tipo_ocorrencia", "toc.id")
-            .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
-            .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
-            .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
-            .where("sc.membro_ativo", "=", membroAtivo)
-            .orderBy("oc.id");
+            let query = db(TableNames.shark)
+                .select(
+                    "oc.id",
+                    "oc.data_ocorrido",
+                    "toc.id as id_tipo_ocorrencia",
+                    "toc.nome as tipo_ocorrencia",
+                    "tas.id as id_tipo_assunto",
+                    "tas.nome as tipo_assunto",
+                    "oc.mensagem",
+                    "oc.valor_metragem",
+                    "sc.id as id_shark_criador",
+                    "sc.nome as nome_shark_criador",
+                    "sc.email as email_shark_criador",
+                    "sc.id_celula as id_celula_shark_criador",
+                    "scc.nome as nome_celula_shark_criador",
+                    "sr.id as id_shark_referente",
+                    "sr.nome as nome_shark_referente",
+                    "sr.email as email_shark_referente",
+                    "sr.id_celula as id_celula_shark_referente",
+                    "src.nome as nome_celula_shark_referente",
+                    "oc.data_criacao"
+                )
+                .from(`${TableNames.ocorrencia} as oc`)
+                .innerJoin(`${TableNames.tipo_ocorrencia} as toc`, "oc.id_tipo_ocorrencia", "toc.id")
+                .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
+                .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
+                .innerJoin(`${TableNames.celula} as scc`, "sc.id_celula", "scc.id")
+                .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
+                .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
+                .where("sc.membro_ativo", "=", membroAtivo);
+                
 
-        if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
-        if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
-        if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
-        if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
-        if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
-        if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
-        if(limit) query = query.limit(limit);
-        if(offset) query = query.offset(offset);
-
-        return await query;
+            if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
+            if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
+            if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
+            if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
+            if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
+            if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
+            if(limit) query = query.limit(limit);
+            if(offset) query = query.offset(offset);
+            
+            const data = await query.orderBy("oc.id");
+            
+            const ocorrencias: Ocorrencia[] = data.map(ocorrencia => ({
+                id: ocorrencia.id,
+                dataOcorrido: ocorrencia.data_ocorrido,
+                tipoOcorrencia: { id: ocorrencia.id_tipo_ocorrencia, nome: ocorrencia.tipo_ocorrencia },
+                tipoAssunto: { id: ocorrencia.id_tipo_assunto, nome: ocorrencia.tipo_assunto },
+                mensagem: ocorrencia.mensagem,
+                valorMetragem: ocorrencia.valor_metragem,
+                sharkCriador: { id: ocorrencia.id_shark_criador, nome: ocorrencia.nome_shark_criador, 
+                    email: ocorrencia.email_shark_criador, celula: { id: ocorrencia.id_celula_shark_criador, nome: ocorrencia.nome_celula_shark_criador }
+                },
+                sharkReferente: { id: ocorrencia.id_shark_referente, nome: ocorrencia.nome_shark_referente, 
+                    email: ocorrencia.email_shark_referente, celula: { id: ocorrencia.id_celula_shark_referente, nome: ocorrencia.nome_celula_shark_referente } },
+                dataCriacao: ocorrencia.data_criacao
+            }));
+            
+            return await ocorrencias;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**
@@ -77,31 +105,59 @@ class OcorrenciaRepository
      */
     async getById(id: number): Promise<Ocorrencia | undefined>
     {
-        return await db(TableNames.shark)
-            .select(
-                "oc.id",
-                "oc.data_ocorrido",
-                "toc.id as id_tipo_de_ocorrencia",
-                "toc.nome as tipo_de_ocorrencia",
-                "tas.id as id_tipo_de_assunto",
-                "tas.nome as tipo_de_assunto",
-                "oc.mensagem",
-                "oc.valor_metragem",
-                "sc.id as id_shark_criador",
-                "sc.nome as nome_shark_criador",
-                "sc.email as email_shark_criador",
-                "sr.id as id_shark_referente",
-                "sr.nome as nome_shark_referente",
-                "sr.email as email_shark_referente",
-                "oc.data_criacao"
-            )
-            .from(`${TableNames.ocorrencia} as oc`)
-            .innerJoin(`${TableNames.tipo_ocorrencia} as toc`, "oc.id_tipo_ocorrencia", "toc.id")
-            .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
-            .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
-            .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
-            .andWhere("oc.id", "=", id)
-            .first();
+        try
+        {
+            const data = await db(TableNames.shark)
+                .select(
+                    "oc.id",
+                    "oc.data_ocorrido",
+                    "toc.id as id_tipo_ocorrencia",
+                    "toc.nome as tipo_ocorrencia",
+                    "tas.id as id_tipo_assunto",
+                    "tas.nome as tipo_assunto",
+                    "oc.mensagem",
+                    "oc.valor_metragem",
+                    "sc.id as id_shark_criador",
+                    "sc.nome as nome_shark_criador",
+                    "sc.email as email_shark_criador",
+                    "sc.id_celula as id_celula_shark_criador",
+                    "scc.nome as nome_celula_shark_criador",
+                    "sr.id as id_shark_referente",
+                    "sr.nome as nome_shark_referente",
+                    "sr.email as email_shark_referente",
+                    "sr.id_celula as id_celula_shark_referente",
+                    "src.nome as nome_celula_shark_referente",
+                    "oc.data_criacao"
+                )
+                .from(`${TableNames.ocorrencia} as oc`)
+                .innerJoin(`${TableNames.tipo_ocorrencia} as toc`, "oc.id_tipo_ocorrencia", "toc.id")
+                .innerJoin(`${TableNames.tipo_assunto} as tas`, "oc.id_tipo_assunto", "tas.id")
+                .innerJoin(`${TableNames.shark} as sc`, "oc.id_shark_criador", "sc.id")
+                .innerJoin(`${TableNames.celula} as scc`, "sc.id_celula", "scc.id")
+                .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
+                .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
+                .andWhere("oc.id", "=", id)
+                .first();
+
+            if(!data)
+                return undefined;
+
+            return {
+                id: data.id,
+                dataOcorrido: data.data_ocorrido,
+                tipoOcorrencia: { id: data.id_tipo_ocorrencia, nome: data.tipo_ocorrencia },
+                tipoAssunto: { id: data.id_tipo_assunto, nome: data.tipo_assunto },
+                mensagem: data.mensagem,
+                valorMetragem: data.valor_metragem,
+                sharkCriador: { id: data.id_shark_criador, nome: data.nome_shark_criador, 
+                    email: data.email_shark_criador, celula: { id: data.id_celula_shark_criador, nome: data.nome_celula_shark_criador }
+                },
+                sharkReferente: { id: data.id_shark_referente, nome: data.nome_shark_referente, 
+                    email: data.email_shark_referente, celula: { id: data.id_celula_shark_referente, nome: data.nome_celula_shark_referente } },
+                dataCriacao: data.data_criacao
+            };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**
@@ -117,7 +173,7 @@ class OcorrenciaRepository
             id_tipo_assunto: ocorrencia.tipoAssunto.id,
             mensagem: ocorrencia.mensagem,
             valor_metragem: ocorrencia.valorMetragem,
-            id_shark_criador: ocorrencia.sharkCriador.id,
+            id_shark_criador: ocorrencia.sharkCriador?.id,
             id_shark_referente: ocorrencia.sharkReferente.id
         })
             .returning("id")

@@ -8,8 +8,9 @@ export interface Shark
     email: string;
     telefone?: string;
     distancia?: DistanciaResidencia; // id DistanciaResidencia
-    matricula: string;
-    senha: string;
+    cpf?: string;
+    matricula?: string;
+    senha?: string;
     celula: Celula; // id Celula
     numProjeto?: number;
     metragem?: number;
