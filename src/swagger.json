@@ -104,8 +104,8 @@
         "tags": [
           "Login"
         ],
-        "summary": "Valida o Token",
-        "description": "Rota responsável por retornar todos os dados contidos no token",
+        "summary": "Valida o Token e traz os dados do usuário",
+        "description": "Rota responsável por retornar todos os dados contidos no usuário salvo na requisição",
         "responses": {
           "200": {
             "description": "data",
@@ -173,7 +173,7 @@
             }
           },
           {
-            "name": "membro_ativo",
+            "name": "membroAtivo",
             "in": "query",
             "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false)",
             "required": false,
@@ -201,7 +201,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Shark"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shark"
+                  }
                 }
               }
             }
@@ -267,10 +270,11 @@
                     "nome": "Clara da Silva",
                     "email": "clarasilva100@hotmail.com",
                     "matricula": 123456789,
+                    "cpf": "123.456.789-10",
                     "distancia": 2,
                     "senha": "123456789",
                     "celula": 3,
-                    "num_projeto": 2,
+                    "numProjeto": 2,
                     "admin": 1
                   }
                 },
@@ -279,6 +283,7 @@
                     "nome": "Paulo Miguel de Carvalho",
                     "email": "pmicar22@hotmail.com",
                     "matricula": 1234567892,
+                    "cpf": "123.456.789-10",
                     "distancia": 1,
                     "senha": "12345678910",
                     "telefone": "22999923100",
@@ -519,10 +524,11 @@
                     "nome": "Clara da Silva",
                     "email": "clarasilva100@hotmail.com",
                     "matricula": 123456789,
+                    "cpf": "123.456.789-10",
                     "distancia": 2,
                     "senha": "123456789",
                     "celula": 3,
-                    "num_projeto": 2,
+                    "numProjeto": 2,
                     "admin": 1
                   }
                 },
@@ -531,6 +537,7 @@
                     "nome": "Paulo Miguel de Carvalho",
                     "email": "pmicar22@hotmail.com",
                     "matricula": 1234567892,
+                    "cpf": "123.456.789-10",
                     "distancia": 1,
                     "senha": "12345678910",
                     "telefone": "22999923100",
@@ -765,7 +772,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Celula"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Celula"
+                  }
                 }
               }
             }
@@ -921,7 +931,7 @@
             }
           },
           {
-            "name": "membro_ativo",
+            "name": "membroAtivo",
             "in": "query",
             "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false)",
             "required": false,
@@ -932,7 +942,7 @@
             }
           },
           {
-            "name": "nome_shark_criador",
+            "name": "nomeSharkCriador",
             "in": "query",
             "description": "retorna as ocorrências relacionadas ao nome do shark as criou",
             "required": false,
@@ -943,7 +953,7 @@
             }
           },
           {
-            "name": "nome_shark_referente",
+            "name": "nomeSharkReferente",
             "in": "query",
             "description": "retorna as ocorrências relacionadas ao nome do shark que a ocorrência foi destinada",
             "required": false,
@@ -954,7 +964,7 @@
             }
           },
           {
-            "name": "email_shark_criador",
+            "name": "emailSharkCriador",
             "in": "query",
             "description": "retorna as ocorrências relacionadas ao email do shark as criou",
             "required": false,
@@ -965,7 +975,7 @@
             }
           },
           {
-            "name": "email_shark_referente",
+            "name": "emailSharkReferente",
             "in": "query",
             "description": "retorna as ocorrências relacionadas ao email do shark que a ocorrência foi destinada",
             "required": false,
@@ -976,7 +986,7 @@
             }
           },
           {
-            "name": "tipo_ocorrencia",
+            "name": "tipoOcorrencia",
             "in": "query",
             "description": "retorna as ocorrências relacionadas ao tipo de ocorrência",
             "required": false,
@@ -987,7 +997,7 @@
             }
           },
           {
-            "name": "tipo_assunto",
+            "name": "tipoAssunto",
             "in": "query",
             "description": "retorna as ocorrências relacionadas ao tipo de assunto",
             "required": false,
@@ -1004,7 +1014,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ocorrencia"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OcorrenciaJSONForm"
+                  }
                 }
               }
             }
@@ -1112,31 +1125,31 @@
               "examples": {
                 "Ocorrência 1": {
                   "value": {
-                    "tipo_ocorrencia": 1,
-                    "tipo_assunto": 3,
+                    "tipoOcorrencia": 1,
+                    "tipoAssunto": 3,
                     "mensagem": "Mussum Ipsum, cacilds vidis litro abertis. Praesent malesuada urna nisi, quis.",
-                    "valor_metragem": 0,
-                    "shark_referente": 10,
-                    "data_ocorrido": "2023-03-20"
+                    "valorMetragem": 0,
+                    "sharkReferente": 10,
+                    "dataOcorrido": "2023-03-20"
                   }
                 },
                 "Ocorrência 2": {
                   "value": {
-                    "tipo_ocorrencia": 7,
-                    "tipo_assunto": 2,
+                    "tipoOcorrencia": 7,
+                    "tipoAssunto": 2,
                     "mensagem": "Não participou da RG",
-                    "valor_metragem": 8,
-                    "data_ocorrido": "2023-03-12"
+                    "valorMetragem": 8,
+                    "dataOcorrido": "2023-03-12"
                   }
                 },
                 "Ocorrência 3": {
                   "description": "Usuário não de GEP",
                   "value": {
-                    "tipo_ocorrencia": 1,
+                    "tipoOcorrencia": 1,
                     "description": "Um usuário que não é de GEP só pode criar ocorrência do tipo justificativa, no caso 1",
-                    "tipo_assunto": 2,
+                    "tipoAssunto": 2,
                     "mensagem": "Não participou da RG",
-                    "data_ocorrido": "2023-03-12"
+                    "dataOcorrido": "2023-03-12"
                   }
                 }
               }
@@ -1252,7 +1265,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ocorrencia"
+                  "$ref": "#/components/schemas/OcorrenciaJSONForm"
                 }
               }
             }
@@ -1373,31 +1386,31 @@
               "examples": {
                 "Ocorrência 1": {
                   "value": {
-                    "tipo_ocorrencia": 1,
-                    "tipo_assunto": 3,
+                    "tipoOcorrencia": 1,
+                    "tipoAssunto": 3,
                     "mensagem": "Mussum Ipsum, cacilds vidis litro abertis. Praesent malesuada urna nisi, quis.",
-                    "valor_metragem": 0,
-                    "shark_referente": 10,
-                    "data_ocorrido": "2023-03-20"
+                    "valorMetragem": 0,
+                    "sharkReferente": 10,
+                    "dataOcorrido": "2023-03-20"
                   }
                 },
                 "Ocorrência 2": {
                   "value": {
-                    "tipo_ocorrencia": 7,
-                    "tipo_assunto": 2,
+                    "tipoOcorrencia": 7,
+                    "tipoAssunto": 2,
                     "mensagem": "Não participou da RG",
-                    "valor_metragem": 8,
-                    "data_ocorrido": "2023-03-12"
+                    "valorMetragem": 8,
+                    "dataOcorrido": "2023-03-12"
                   }
                 },
                 "Ocorrência 3": {
                   "description": "Usuário não de GEP",
                   "value": {
-                    "tipo_ocorrencia": 1,
+                    "tipoOcorrencia": 1,
                     "description": "Um usuário que não é de GEP só pode criar ocorrência do tipo justificativa, no caso 1",
-                    "tipo_assunto": 2,
+                    "tipoAssunto": 2,
                     "mensagem": "Não participou da RG",
-                    "data_ocorrido": "2023-03-12"
+                    "dataOcorrido": "2023-03-12"
                   }
                 }
               }
@@ -1592,7 +1605,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TipoAssunto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoAssunto"
+                  }
                 }
               }
             }
@@ -1756,8 +1772,15 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": ""
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoAssunto"
+                }
+              }
+            }
           },
           "400": {
             "description": "Erro de requisição",
@@ -2032,7 +2055,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TipoOcorrencia"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoOcorrencia"
+                  }
                 }
               }
             }
@@ -2181,8 +2207,15 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": ""
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoOcorrencia"
+                }
+              }
+            }
           },
           "400": {
             "description": "Erro de requisição",
@@ -2464,7 +2497,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Distancia"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Distancia"
+                  }
                 }
               }
             }
@@ -2529,8 +2565,15 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": ""
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Distancia"
+                }
+              }
+            }
           },
           "400": {
             "description": "Erro de requisição",
@@ -2596,17 +2639,61 @@
         ],
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Shark_data"
-            }
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Se não passado o padrão é null"
+          },
+          "cpf": {
+            "type": "string",
+            "description": "ex formato 123.456.789-10"
+          },
+          "distancia": {
+            "$ref": "#/components/schemas/Shark_distancia"
+          },
+          "matricula": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          },
+          "celula": {
+            "$ref": "#/components/schemas/Shark_celula"
+          },
+          "numProjeto": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 0"
+          },
+          "metragem": {
+            "type": "string",
+            "description": "Se não passado o padrão é 24"
+          },
+          "admin": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 0"
+          },
+          "membroAtivo": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 1"
+          },
+          "dataCriacao": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual"
           }
         }
       },
       "SharkForm": {
         "required": [
           "celula",
+          "cpf",
           "distancia",
           "email",
           "matricula",
@@ -2623,6 +2710,10 @@
           },
           "matricula": {
             "type": "string"
+          },
+          "cpf": {
+            "type": "string",
+            "description": "ex formato 123.456.789-10"
           },
           "distancia": {
             "type": "integer"
@@ -2641,11 +2732,11 @@
             "type": "string",
             "description": "Se não passado o padrão é 24"
           },
-          "membro_ativo": {
+          "membroAtivo": {
             "type": "integer",
             "description": "Se não passado o padrão é 1"
           },
-          "num_projeto": {
+          "numProjeto": {
             "type": "integer",
             "description": "Se não passado o padrão é 0"
           },
@@ -2658,45 +2749,103 @@
       "Ocorrencia": {
         "required": [
           "mensagem",
-          "tipo_assunto",
-          "tipo_ocorrencia"
+          "tipoAssunto",
+          "tipoOcorrencia"
         ],
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Ocorrencia_data"
-            }
+          "tipoOcorrencia": {
+            "type": "integer"
+          },
+          "tipoAssunto": {
+            "type": "integer"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "valorMetragem": {
+            "type": "integer",
+            "description": "Se não passado seta o valor 0"
+          },
+          "sharkReferente": {
+            "type": "integer",
+            "description": "Se não passado pega o id do shark logado"
+          },
+          "dataOcorrido": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual",
+            "format": "date-time"
+          }
+        }
+      },
+      "OcorrenciaJSONForm": {
+        "required": [
+          "mensagem",
+          "tipoAssunto",
+          "tipoOcorrencia"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "tipoOcorrencia": {
+            "$ref": "#/components/schemas/Shark_celula"
+          },
+          "tipoAssunto": {
+            "$ref": "#/components/schemas/Shark_celula"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "valorMetragem": {
+            "type": "integer",
+            "description": "Se não passado seta o valor 0"
+          },
+          "sharkCriador": {
+            "$ref": "#/components/schemas/OcorrenciaJSONForm_sharkCriador"
+          },
+          "sharkReferente": {
+            "$ref": "#/components/schemas/OcorrenciaJSONForm_sharkReferente"
+          },
+          "dataOcorrido": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual",
+            "format": "date-time"
+          },
+          "dataCriacao": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual",
+            "format": "date-time"
           }
         }
       },
       "OcorrenciaForm": {
         "required": [
           "mensagem",
-          "tipo_assunto",
-          "tipo_ocorrencia"
+          "tipoAssunto",
+          "tipoOcorrencia"
         ],
         "type": "object",
         "properties": {
-          "tipo_ocorrencia": {
+          "tipoOcorrencia": {
             "type": "integer"
           },
-          "tipo_assunto": {
+          "tipoAssunto": {
             "type": "integer"
           },
           "mensagem": {
             "type": "string"
           },
-          "valor_metragem": {
+          "valorMetragem": {
             "type": "integer",
             "description": "Se não passado seta o valor 0"
           },
-          "shark_referente": {
+          "sharkReferente": {
             "type": "integer",
             "description": "Se não passado pega o id do shark logado"
           },
-          "data_ocorrido": {
+          "dataOcorrido": {
             "type": "string",
             "description": "Se não passado pega o dia atual",
             "format": "date-time"
@@ -2709,11 +2858,8 @@
         ],
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Celula_data"
-            }
+          "nome": {
+            "type": "string"
           }
         }
       },
@@ -2723,11 +2869,8 @@
         ],
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Celula_data"
-            }
+          "nome": {
+            "type": "string"
           }
         }
       },
@@ -2748,11 +2891,8 @@
         ],
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Celula_data"
-            }
+          "nome": {
+            "type": "string"
           }
         }
       },
@@ -2773,11 +2913,8 @@
         ],
         "type": "object",
         "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Distancia_data"
-            }
+          "distancia": {
+            "type": "string"
           }
         }
       },
@@ -2807,8 +2944,26 @@
       "ValidateTokenData": {
         "type": "object",
         "properties": {
-          "data": {
-            "$ref": "#/components/schemas/ValidateTokenData_data"
+          "id": {
+            "type": "number"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "celula": {
+            "$ref": "#/components/schemas/ValidateTokenData_celula"
+          },
+          "numProjeto": {
+            "type": "integer"
+          },
+          "metragem": {
+            "type": "integer"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "jwt": {
+            "$ref": "#/components/schemas/ValidateTokenData_jwt"
           }
         }
       },
@@ -2820,113 +2975,78 @@
           }
         }
       },
-      "Shark_data": {
+      "Shark_distancia": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "distancia": {
+            "type": "string"
+          }
+        }
+      },
+      "Shark_celula": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "OcorrenciaJSONForm_sharkCriador": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
           "nome": {
             "type": "string"
           },
           "email": {
             "type": "string"
           },
-          "matricula": {
-            "type": "string"
-          },
-          "distancia": {
-            "type": "integer"
-          },
-          "senha": {
-            "type": "string"
-          },
           "celula": {
-            "type": "integer"
-          },
-          "telefone": {
-            "type": "string",
-            "description": "Se não passado o padrão é null"
-          },
-          "metragem": {
-            "type": "string",
-            "description": "Se não passado o padrão é 24"
-          },
-          "membro_ativo": {
-            "type": "integer",
-            "description": "Se não passado o padrão é 1"
-          },
-          "num_projeto": {
-            "type": "integer",
-            "description": "Se não passado o padrão é 0"
-          },
-          "admin": {
-            "type": "integer",
-            "description": "Se não passado o padrão é 0"
+            "$ref": "#/components/schemas/Shark_celula"
           }
-        }
+        },
+        "description": "id do shark que criou a ocorrência"
       },
-      "Ocorrencia_data": {
-        "type": "object",
-        "properties": {
-          "tipo_ocorrencia": {
-            "type": "integer"
-          },
-          "tipo_assunto": {
-            "type": "integer"
-          },
-          "mensagem": {
-            "type": "string"
-          },
-          "valor_metragem": {
-            "type": "integer",
-            "description": "Se não passado seta o valor 0"
-          },
-          "shark_referente": {
-            "type": "integer",
-            "description": "Se não passado pega o id do shark logado"
-          },
-          "data_ocorrido": {
-            "type": "string",
-            "description": "Se não passado pega o dia atual",
-            "format": "date-time"
-          }
-        }
-      },
-      "Celula_data": {
-        "type": "object",
-        "properties": {
-          "nome": {
-            "type": "string"
-          }
-        }
-      },
-      "Distancia_data": {
-        "type": "object",
-        "properties": {
-          "distancia": {
-            "type": "string"
-          }
-        }
-      },
-      "ValidateTokenData_data": {
+      "OcorrenciaJSONForm_sharkReferente": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "integer"
           },
           "nome": {
             "type": "string"
           },
-          "celula": {
+          "email": {
             "type": "string"
           },
-          "numProjeto": {
-            "type": "integer"
+          "celula": {
+            "$ref": "#/components/schemas/Shark_celula"
+          }
+        },
+        "description": "Se não passado pega o id do shark logado"
+      },
+      "ValidateTokenData_celula": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
           },
-          "metragem": {
-            "type": "integer"
-          },
-          "admin": {
-            "type": "boolean"
-          },
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidateTokenData_jwt": {
+        "type": "object",
+        "properties": {
           "iat": {
             "type": "number",
             "description": "timestamp de quando o token foi criado"

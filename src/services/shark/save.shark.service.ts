@@ -78,8 +78,9 @@ class SaveSharkService
             // Salva o log de usuário
             if(reqShark)
             {
-                const idShark = await SharkRepository.update(shark);
-                SharkRepository.insertSharkLog(2, idShark, reqShark.id!);
+                await SharkRepository.update(shark).then( async(idShark) => {
+                    await SharkRepository.insertSharkLog(2, idShark, reqShark.id!);
+                });
             }
             else
                 throw new InternalServerError("O shark da requisição não está setado");
@@ -91,8 +92,10 @@ class SaveSharkService
             // Salva o log de usuário
             if(reqShark)
             {
-                const idShark = await SharkRepository.insert(shark);
-                await SharkRepository.insertSharkLog(1, idShark, reqShark.id!);
+                await SharkRepository.insert(shark).then(async (idShark) => {
+                    await SharkRepository.insertSharkLog(1, idShark, reqShark.id!);
+                });
+                
             }
             else
                 throw new InternalServerError("O shark da requisição não está setado");

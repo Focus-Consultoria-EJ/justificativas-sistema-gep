@@ -1,4 +1,4 @@
-import { InternalServerError } from "../../middlewares/Error.middleware";
+import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import { Shark } from "../../models/Shark";
 import { TableNames } from "../TableNames";
 import db from "../db";
@@ -280,45 +280,53 @@ class SharkRepository
     {
         let cols;
 
-        if(shark.senha)
+        try
         {
-            cols = {
-                nome: shark.nome,
-                email: shark.email,
-                telefone: shark.telefone,
-                id_distancia_residencia: shark.distancia?.id ?? null,
-                cpf: shark.cpf,
-                matricula: shark.matricula,
-                senha: shark.senha,
-                id_celula: shark.celula.id,
-                num_projeto: shark.numProjeto,
-                metragem: shark.metragem,
-                admin: shark.admin,
-                membro_ativo: shark.membroAtivo
-            };
-        }
-        else
-        {
-            cols = {
-                nome: shark.nome,
-                email: shark.email,
-                telefone: shark.telefone,
-                id_distancia_residencia: shark.distancia?.id ?? null,
-                cpf: shark.cpf,
-                matricula: shark.matricula,
-                id_celula: shark.celula.id,
-                num_projeto: shark.numProjeto,
-                metragem: shark.metragem,
-                admin: shark.admin,
-                membro_ativo: shark.membroAtivo
-            };
-        }
+            if(shark.senha)
+            {
+                cols = {
+                    nome: shark.nome,
+                    email: shark.email,
+                    telefone: shark.telefone,
+                    id_distancia_residencia: shark.distancia?.id ?? null,
+                    cpf: shark.cpf,
+                    matricula: shark.matricula,
+                    senha: shark.senha,
+                    id_celula: shark.celula.id,
+                    num_projeto: shark.numProjeto,
+                    metragem: shark.metragem,
+                    admin: shark.admin,
+                    membro_ativo: shark.membroAtivo
+                };
+            }
+            else
+            {
+                cols = {
+                    nome: shark.nome,
+                    email: shark.email,
+                    telefone: shark.telefone,
+                    id_distancia_residencia: shark.distancia?.id ?? null,
+                    cpf: shark.cpf,
+                    matricula: shark.matricula,
+                    id_celula: shark.celula.id,
+                    num_projeto: shark.numProjeto,
+                    metragem: shark.metragem,
+                    admin: shark.admin,
+                    membro_ativo: shark.membroAtivo
+                };
+            }
 
-        return await db(TableNames.shark)
-            .update(cols)
-            .where({ id: shark.id })
-            .returning("id")
-            .then(row => { return row[0].id; });
+            if(shark.id == 1)
+                throw new BadRequestError("Não foi possível atualizar este usuário.");
+
+            return await db(TableNames.shark)
+                .update(cols)
+                .where({ id: shark.id })
+                .returning("id")
+                .then(row => { return row[0].id; });
+        }
+        catch (err) { 
+            throw new InternalServerError(String(err)); }
     }
 
     /**
