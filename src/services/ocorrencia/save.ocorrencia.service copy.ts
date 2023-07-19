@@ -26,30 +26,20 @@ class SaveOcorrenciaService
 
         if(typeof ocorrencia === "string")
             throw new BadRequestError(ocorrencia);
+        
+        // Se não tiver passado o shark_referente, pega o próprio shark
+        ocorrencia.sharkReferente.id = ocorrencia.sharkReferente.id ? ocorrencia.sharkReferente.id : reqShark.id;
 
+        const dataSharkReferente = await SharkRepository.getById(ocorrencia.sharkReferente.id!);
+        valueExists(dataSharkReferente, errMsg.SHARK.REFERENCE_NOT_FOUND);
+        
         if(ocorrencia.id)
         {
             ocorrenciaASerAtualizada = await OcorrenciaRepository.getById(ocorrencia.id!);
 
             if(!ocorrenciaASerAtualizada)
                 throw new BadRequestError(errMsg.OCORRENCIA.NOT_FOUND);   
-
-            // Impede que a ocorrência a ser atualizada se o shark referênte for diferente do shark referênte original da ocorrência.
-            if(ocorrenciaASerAtualizada != undefined)
-            {
-                if(ocorrenciaASerAtualizada.sharkReferente.id !== ocorrencia.sharkReferente.id)
-                    ocorrencia.sharkReferente.id = ocorrenciaASerAtualizada.sharkReferente.id;
-            }
         }
-
-        // Seta o id do shark logado como shark criador da ocorrência
-        ocorrencia.sharkCriador!.id = reqShark.id;
-
-        // Se não tiver passado o sharkReferente, pega o próprio shark
-        ocorrencia.sharkReferente.id = ocorrencia.sharkReferente.id ? ocorrencia.sharkReferente.id : reqShark.id;
-
-        const dataSharkReferente = await SharkRepository.getById(ocorrencia.sharkReferente.id!);
-        valueExists(dataSharkReferente, errMsg.SHARK.REFERENCE_NOT_FOUND);
 
         const tipoOcorrencia = await TipoOcorrenciaRepository.getById(ocorrencia.tipoOcorrencia.id!);
         valueExists(tipoOcorrencia, errMsg.TIPO_OCORRENCIA.NOT_FOUND);
@@ -59,12 +49,16 @@ class SaveOcorrenciaService
 
         ocorrencia.tipoOcorrencia.nome = tipoOcorrencia?.nome;
         ocorrencia.tipoAssunto.nome = tipoAssunto?.nome;
-        ocorrencia.sharkReferente = dataSharkReferente!; // salva os dados do shark referente
 
         // Faz com que somente sharks do tipo GEP consigam enviar um valor na metragem, os demais serão 0
-        ocorrencia.valorMetragem = ocorrencia.valorMetragem && 
-            (reqShark.celula.id === 3) ? Number(ocorrencia.valorMetragem) : 0;
+        ocorrencia.valorMetragem = ocorrencia.valorMetragem && (reqShark.celula.id === 3) ? Number(ocorrencia.valorMetragem) : 0;
         
+        // Seta o id do shark logado como shark criador da ocorrência
+        ocorrencia.sharkCriador!.id = reqShark.id;
+
+        // Se o shark referênte não for passado, pega o id do shark logado
+        ocorrencia.sharkReferente.id = dataSharkReferente?.id ?? reqShark.id;
+
         // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência que não seja do tipo justificativa
         if(reqShark.celula.id !== 3 && (ocorrencia.tipoOcorrencia.id != 1))
             throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode enviar ocorrências do tipo justificativa.");
@@ -87,6 +81,13 @@ class SaveOcorrenciaService
 
         if(ocorrencia.id)
         {
+            // Impede que a ocorrência a ser atualizada se o shark referênte for diferente do shark referênte original da ocorrência.
+            if(ocorrenciaASerAtualizada != undefined)
+            {
+                if(ocorrenciaASerAtualizada.sharkReferente.id !== ocorrencia.sharkReferente.id)
+                    ocorrencia.sharkReferente.id = ocorrenciaASerAtualizada.sharkReferente.id;
+            }
+
             await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
                 await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
 
