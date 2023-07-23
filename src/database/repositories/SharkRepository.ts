@@ -7,18 +7,18 @@ class SharkRepository
 {
     /**
      * Traz todos os dados da tabela shark no banco de dados.
-     * @param limit - (opcional) limita o número de registros durante a seleção.
-     * @param offset - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param size - (opcional) limita o número de registros durante a seleção.
+     * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
      * @param membroAtivo - (opcional) especifica se o membro é ativo ou não ao retornar uma consulta.
      * @param nome - (opcional) especifica o nome do sharkno retorno da consulta.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async select(limit?:number, offset?:number, membroAtivo?:string, nome?:string): Promise<Shark[] | undefined>
+    async select(size?:number, page?:number, membroAtivo?:string, nome?:string): Promise<Shark[] | undefined>
     {
         try
         {
-            offset = (offset && offset > 0) ? offset : 0;
-            limit = (limit && limit > 0) ? limit : 0;
+            page = (page && page > 0) ? page : 0;
+            size = (size && size > 0) ? size : 0;
             membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : undefined;
 
             let query = db(TableNames.shark).select(
@@ -42,10 +42,10 @@ class SharkRepository
                 .from(`${TableNames.shark} as s`)
                 .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
                 .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
-                
+            
             // params
-            if(limit) query = query.limit(limit);
-            if(offset) query = query.offset(offset);
+            if(size) query = query.limit(size);
+            if(page) query = query.offset(page);
             if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
             if(nome) query = query.andWhere("nome", "like", `%${nome}%`);
             query = query.where("s.id", "<>", 1);

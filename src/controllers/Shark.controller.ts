@@ -41,13 +41,13 @@ class SharkController
     { 
         try
         {
-            const { limit, offset, membroAtivo, nome } = req.query;
+            const { size, page, membroAtivo, nome } = req.query;
             let result;
 
             if(req.params.id)
                 result = await getByIdSharkService.execute(req.params.id);
             else
-                result = await getSharkService.execute({ limit, offset, membroAtivo, nome});
+                result = await getSharkService.execute({ size, page, membroAtivo, nome});
 
             res.status(200).json(result);
         }

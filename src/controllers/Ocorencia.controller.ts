@@ -11,7 +11,7 @@ class OcorrenciaController
         try
         {
             const { 
-                limit, offset, membroAtivo, 
+                size, page, membroAtivo, 
                 nomeSharkCriador, nomeSharkReferente, 
                 emailSharkCriador, emailSharkReferente, 
                 tipoOcorrencia, tipoAssunto } = req.query;
@@ -22,8 +22,8 @@ class OcorrenciaController
                 result = await getByIdOcorrenciaService.execute(req.params.id);
             else
                 result = await getOcorrenciaService.execute({ 
-                    limit, 
-                    offset, 
+                    size, 
+                    page, 
                     membroAtivo,
                     nomeSharkCriador,
                     nomeSharkReferente,

@@ -5,8 +5,8 @@ import { BadRequestError } from "../../middlewares/Error.middleware";
 
 interface IRequestParams 
 { 
-    limit: any;
-    offset: any;
+    size: any;
+    page: any;
     membroAtivo: any;
     nomeSharkCriador: any;
     nomeSharkReferente: any;
@@ -25,15 +25,15 @@ class getOcorrenciaService
      */
     async execute(reqParam?: IRequestParams)
     {
-        if(reqParam?.limit && !isNumber(reqParam.limit))
-            throw new BadRequestError(errMsg.INVALID_DATA + " (limit)");
+        if(reqParam?.size && !isNumber(reqParam.size))
+            throw new BadRequestError(errMsg.INVALID_DATA + " (size)");
 
-        if(reqParam?.offset && !isNumber(reqParam.offset))
-            throw new BadRequestError(errMsg.INVALID_DATA + " (offset)");
+        if(reqParam?.page && !isNumber(reqParam.page))
+            throw new BadRequestError(errMsg.INVALID_DATA + " (page)");
 
         return await OcorrenciaRepository.select(
-            reqParam?.limit, 
-            reqParam?.offset, 
+            reqParam?.size, 
+            reqParam?.page, 
             reqParam?.membroAtivo,
             reqParam?.nomeSharkCriador,
             reqParam?.nomeSharkReferente,

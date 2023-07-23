@@ -7,8 +7,8 @@ class OcorrenciaRepository
 {
     /**
      * Traz todos os dados da tabela ocorrencia no banco de dados.
-     * @param limit - (opcional) limita o número de registros durante a seleção.
-     * @param offset - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param size - (opcional) limita o número de registros durante a seleção.
+     * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
      * @param membroAtivo - (opcional) especifica se o membro é ativo ou não ao retornar uma consulta.
      * @param nomeSharkCriador (opcional) especifica o nome do shark que criou as ocorrências no retorno da 
      *      consulta.
@@ -23,7 +23,7 @@ class OcorrenciaRepository
      * @returns uma promise contendo uma coleção de objetos. 
      */
     async select(
-        limit?:number, offset?:number, 
+        size?:number, page?:number, 
         membroAtivo?:string, nomeSharkCriador?: string,
         nomeSharkReferente?: string, emailSharkCriador?: string,
         emailSharkReferente?: string, tipoOcorrencia?:string, tipoAssunto?:string
@@ -31,8 +31,8 @@ class OcorrenciaRepository
     {
         try
         {
-            offset = (offset && offset > 0) ? offset : 0;
-            limit = (limit && limit > 0) ? limit : 0;
+            page = (page && page > 0) ? page : 0;
+            size = (size && size > 0) ? size : 0;
             membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
 
             let query = db(TableNames.shark)
@@ -73,8 +73,8 @@ class OcorrenciaRepository
             if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
             if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
             if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
-            if(limit) query = query.limit(limit);
-            if(offset) query = query.offset(offset);
+            if(size) query = query.limit(size);
+            if(page) query = query.offset(page);
             
             const data = await query.orderBy("oc.id");
             
@@ -195,7 +195,7 @@ class OcorrenciaRepository
                 mensagem: ocorrencia.mensagem,
                 valor_metragem: ocorrencia.valorMetragem
             })
-            .where({ id:ocorrencia.id })
+            .where({ id: ocorrencia.id })
             .returning("id")
             .then(row => { return row[0].id; });
     }

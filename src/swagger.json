@@ -7,6 +7,10 @@
   },
   "servers": [
     {
+      "url": "https://virtserver.swaggerhub.com/rossienzo/sistema-de-nofiticacoes/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
       "url": "http://localhost:3000/api",
       "description": "API de teste"
     },
@@ -151,7 +155,7 @@
         "description": "Rota responsável retornar todos os sharks (usuários)",
         "parameters": [
           {
-            "name": "offset",
+            "name": "page",
             "in": "query",
             "description": "especifica o número de registros a serem pulados ao retornar uma consulta",
             "required": false,
@@ -162,7 +166,7 @@
             }
           },
           {
-            "name": "limit",
+            "name": "size",
             "in": "query",
             "description": "limita o número de registros retornados por uma consulta",
             "required": false,
@@ -180,7 +184,7 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -909,7 +913,7 @@
         "description": "Rota responsável retornar todas as ocorrências",
         "parameters": [
           {
-            "name": "offset",
+            "name": "page",
             "in": "query",
             "description": "especifica o número de registros a serem pulados ao retornar uma consulta",
             "required": false,
@@ -920,7 +924,7 @@
             }
           },
           {
-            "name": "limit",
+            "name": "size",
             "in": "query",
             "description": "limita o número de registros retornados por uma consulta",
             "required": false,
@@ -938,7 +942,7 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
