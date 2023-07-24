@@ -4,7 +4,7 @@ import { sharkFormValidation } from "../../helpers/sharkValidation";
 import { checkId } from "../../helpers/validation";
 import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import getByIdCelulaService from "../celula/getById.celula.service";
-import getByIdDistanciaPercorridaService from "../distanciaPercorrida/getById.distanciaPercorrida.service";
+import getByIdDistanciaPercorridaService from "../gestaoNotificacao/distanciaPercorrida/getById.distanciaPercorrida.service";
 
 class SaveSharkService 
 {
