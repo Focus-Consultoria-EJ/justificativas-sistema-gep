@@ -2,10 +2,10 @@ import { Router } from "express";
 import publicRoutes from "./public.routes";
 import sharkRoutes from "./sharks.routes";
 import celulaRoutes from "./celulas.routes";
-import distanciaResRoutes from "./distancias.routes";
-import tipoOcorrenciasRoutes from "./tipoOcorrencias.routes";
-import tipoAssuntosRoutes from "./tipoAssuntos.routes";
-import ocorrenciaRoutes from "./ocorrencias.routes";
+import distanciaResRoutes from "./gestaoNotificacao/distancias.routes";
+import tipoOcorrenciasRoutes from "./gestaoNotificacao/tipoOcorrencias.routes";
+import tipoAssuntosRoutes from "./gestaoNotificacao/tipoAssuntos.routes";
+import ocorrenciaRoutes from "./gestaoNotificacao/ocorrencias.routes";
 
 const routes = Router();
 

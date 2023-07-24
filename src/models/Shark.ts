@@ -1,5 +1,5 @@
 import { Celula } from "./Celula";
-import { DistanciaResidencia } from "./DistanciaResidencia";
+import { DistanciaResidencia } from "./gestaoNotificacao/DistanciaResidencia";
 
 export interface Shark
 {
