@@ -214,6 +214,17 @@ class OcorrenciaRepository
     }
 
     /**
+     * Remote todos os registros do ocorrencia
+     * @returns uma promise com informações dos itens removidos.
+     */
+    async deleteAllOcorrencia(): Promise<any | undefined>
+    {
+        return await db(TableNames.ocorrencia)
+            .del()
+            .where("id", ">", 0);
+    }
+
+    /**
     * Insere na tabela ocorrencia_log no banco de dados.
     * @param idTipoAcaoLog - o identificador relacionado ao tipo de ação. 1 - Inserção, 2 - Atualização, 3 - Remoção.
     * @param id - o identificador da ocorrência que foi inserida. 
@@ -227,6 +238,17 @@ class OcorrenciaRepository
                 id_tipo_acao_log: idTipoAcaoLog, 
                 id_ocorrencia: id, 
                 id_shark_editor: idSharkEditor});
+    }
+
+    /**
+     * Remote todos os registros do ocorrecia_log
+     * @returns uma promise com informações dos itens removidos.
+     */
+    async deleteAllOcorrenciaLog(): Promise<any | undefined>
+    {
+        return await db(TableNames.ocorrencia_log)
+            .del()
+            .where("id", ">", 0);
     }
 }
 
