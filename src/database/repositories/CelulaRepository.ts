@@ -1,3 +1,4 @@
+import { InternalServerError } from "../../middlewares/Error.middleware";
 import { Celula } from "../../models/Celula";
 import { TableNames } from "../TableNames";
 import db from "../db";
@@ -10,7 +11,18 @@ class CelulaRepository
      */
     async select(): Promise<Celula[] | undefined>
     {
-        return await db(TableNames.celula);
+        try
+        {
+            const data = await db(TableNames.celula).orderBy("id");
+            
+            const celulas: Celula[] = data.map(celula => ({
+                id: celula.id,
+                nome: celula.nome
+            }));
+            
+            return celulas;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }   
     
     /**
@@ -20,9 +32,18 @@ class CelulaRepository
      */
     async getById(id: number): Promise<Celula | undefined>
     {
-        return await db(TableNames.celula)
-            .where({ id: id })
-            .first();
+        try
+        {
+            const data =  await db(TableNames.celula)
+                .where({ id: id })
+                .first();
+            
+            if(!data)
+                return undefined;
+
+            return { id: data.id, nome: data.nome };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**

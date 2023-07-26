@@ -17,7 +17,7 @@ class CelulaController
             else
                 result = await getCelulaService.execute();
 
-            res.status(200).json({data: result });
+            res.status(200).json(result);
         }
         catch(err) { next(err); }
     }

@@ -26,6 +26,17 @@ export const emailValidation = (email:string) =>
 };
 
 /**
+ * Verifica se o cpf é válido. O formato esperado é 123.456.789-10.
+ * @param cpf - o cpf a ser testado.
+ * @returns um boolean indicando se o cpf é válido.
+ */
+export const CPFValidation = (cpf: string) =>
+{
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+    return cpfRegex.test(cpf);
+};
+
+/**
  * Verifica se um texto é um número.
  * @param num - o valor a ser testado.
  * @returns um boolean indicando se o e-mail é válido.
@@ -99,3 +110,18 @@ export const dataFormatToBR = (data: Date) =>
     
     return `${dia}/${mes}/${ano}`;
 }; 
+
+/**
+ * Remove todos os caracteres não numéricos do número telefônico.
+ * @param phone - um número telefônico
+ * @returns o telefône contendo apenas os números
+ */
+export const phoneFormat = (phone: string) => 
+{ 
+    if (phone)
+        return phone.replace(/\D/g, ""); 
+    return null;
+};
+
+    
+

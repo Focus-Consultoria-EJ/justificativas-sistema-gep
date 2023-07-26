@@ -1,4 +1,4 @@
-import { InternalServerError } from "../../middlewares/Error.middleware";
+import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import { Shark } from "../../models/Shark";
 import { TableNames } from "../TableNames";
 import db from "../db";
@@ -7,26 +7,71 @@ class SharkRepository
 {
     /**
      * Traz todos os dados da tabela shark no banco de dados.
-     * @param limit - (opcional) limita o número de registros durante a seleção.
-     * @param offset - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param size - (opcional) limita o número de registros durante a seleção.
+     * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
      * @param membroAtivo - (opcional) especifica se o membro é ativo ou não ao retornar uma consulta.
      * @param nome - (opcional) especifica o nome do sharkno retorno da consulta.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async select(limit?:number, offset?:number, membroAtivo?:string, nome?:string): Promise<Shark[] | undefined>
+    async select(size?:number, page?:number, membroAtivo?:string, nome?:string): Promise<Shark[] | undefined>
     {
-        offset = (offset && offset > 0) ? offset : 0;
-        limit = (limit && limit > 0) ? limit : 0;
-        membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : undefined;
+        try
+        {
+            page = (page && page > 0) ? page : 0;
+            size = (size && size > 0) ? size : 0;
+            membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : undefined;
 
-        let query = db(TableNames.shark).where("id", "<>", 1);
-        
-        if(limit) query = query.limit(limit);
-        if(offset) query = query.offset(offset);
-        if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
-        if(nome) query = query.andWhere("nome", "like", `%${nome}%`);
+            let query = db(TableNames.shark).select(
+                "s.id",
+                "s.nome",
+                "s.email",
+                "s.telefone",
+                "s.cpf",
+                "s.id_distancia_residencia",
+                "dr.distancia",
+                "s.matricula",
+                "s.senha",
+                "s.id_celula",
+                "c.nome as nome_celula",
+                "s.num_projeto",
+                "s.metragem",
+                "s.admin",
+                "s.membro_ativo",
+                "s.data_criacao"
+            )
+                .from(`${TableNames.shark} as s`)
+                .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
+                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
+            
+            // params
+            if(size) query = query.limit(size);
+            if(page) query = query.offset(page);
+            if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
+            if(nome) query = query.andWhere("nome", "like", `%${nome}%`);
+            query = query.where("s.id", "<>", 1);
 
-        return await query.orderBy("id");
+            const data = await query.orderBy("s.id");
+
+            const sharks: Shark[] = data.map(shark => ({
+                id: shark.id,
+                nome: shark.nome,
+                email: shark.email,
+                telefone: shark.telefone,
+                cpf: shark.cpf,
+                distancia: { id: shark.id_distancia_residencia, distancia: shark.distancia },
+                matricula: shark.matricula,
+                senha: shark.senha,
+                celula: { id: shark.id_celula, nome: shark.nome_celula },
+                numProjeto: shark.num_projeto,
+                metragem: shark.metragem,
+                admin: shark.admin,
+                membroAtivo: shark.membro_ativo,
+                dataCriacao: shark.data_criacao
+            }));
+            
+            return sharks;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**
@@ -36,11 +81,57 @@ class SharkRepository
      */
     async getById(id: number): Promise<Shark | undefined>
     {
-        return await db(TableNames.shark)
-            .where({ id: id })
-            .first();
-    }
+        try
+        {
+            let query = db(TableNames.shark).select(
+                "s.id",
+                "s.nome",
+                "s.email",
+                "s.telefone",
+                "s.cpf",
+                "s.id_distancia_residencia",
+                "dr.distancia",
+                "s.matricula",
+                "s.senha",
+                "s.id_celula",
+                "c.nome as nome_celula",
+                "s.num_projeto",
+                "s.metragem",
+                "s.admin",
+                "s.membro_ativo",
+                "s.data_criacao"
+            )
+                .from(`${TableNames.shark} as s`)
+                .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
+                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
+                
+            // params
+            query = query.where("s.id", "=", id);
+    
+            const data =  await query.first();
+    
+            if(!data)
+                return undefined;
 
+            return {
+                id: data.id,
+                nome: data.nome,
+                email: data.email,
+                telefone: data.telefone,
+                cpf: data.cpf,
+                distancia: { id: data.id_distancia_residencia, distancia: data.distancia },
+                matricula: data.matricula,
+                senha: data.senha,
+                celula: { id: data.id_celula, nome: data.nome_celula },
+                numProjeto: data.num_projeto,
+                metragem: data.metragem,
+                admin: data.admin,
+                membroAtivo: data.membro_ativo,
+                dataCriacao: data.data_criacao
+            };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
+    }
 
     /**
      * Verifica se um usuário existe de acordo com um campo.
@@ -50,7 +141,7 @@ class SharkRepository
      */
     async userExists(col: string, data:string): Promise<boolean>
     {
-        if( col === "email" || col === "matricula")
+        if( col === "email" || col === "matricula" || col === "cpf")
         {
             const result = await db(TableNames.shark)
                 .where({ [col]: data })
@@ -75,9 +166,56 @@ class SharkRepository
      */
     async getByEmail(email:string)
     {
-        return await db("shark")
-            .where({ email: email })
-            .first();
+        try
+        {
+            let query = db(TableNames.shark).select(
+                "s.id",
+                "s.nome",
+                "s.email",
+                "s.telefone",
+                "s.cpf",
+                "s.id_distancia_residencia",
+                "dr.distancia",
+                "s.matricula",
+                "s.senha",
+                "s.id_celula",
+                "c.nome as nome_celula",
+                "s.num_projeto",
+                "s.metragem",
+                "s.admin",
+                "s.membro_ativo",
+                "s.data_criacao"
+            )
+                .from(`${TableNames.shark} as s`)
+                .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
+                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
+                
+            // params
+            query = query.where("s.email", "=", email);
+    
+            const data =  await query.first();
+
+            if(!data)
+                return undefined;
+
+            return {
+                id: data.id,
+                nome: data.nome,
+                email: data.email,
+                telefone: data.telefone,
+                cpf: data.cpf,
+                distancia: { id: data.id_distancia_residencia, distancia: data.distancia },
+                matricula: data.matricula,
+                senha: data.senha,
+                celula: { id: data.id_celula, nome: data.nome_celula },
+                numProjeto: data.num_projeto,
+                metragem: data.metragem,
+                admin: data.admin,
+                membroAtivo: data.membro_ativo,
+                dataCriacao: data.data_criacao
+            };
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
     
     /**
@@ -89,7 +227,7 @@ class SharkRepository
      */
     async verifyIfDataIsFromOwnUser(id: number, col: string, data:string): Promise<boolean>
     {
-        if( col === "email" || col === "matricula")
+        if( col === "email" || col === "matricula" || col === "cpf")
         {
             const result = await db.raw(`SELECT * FROM shark WHERE id = ${id} AND ${col} = '${data}';`)
                 .then(result => { return result.rows; }); // ignora os buffers
@@ -119,6 +257,7 @@ class SharkRepository
             email: shark.email,
             telefone: shark.telefone,
             id_distancia_residencia: shark.distancia?.id ?? null,
+            cpf: shark.cpf,
             matricula: shark.matricula,
             senha: shark.senha,
             id_celula: shark.celula.id,
@@ -141,43 +280,53 @@ class SharkRepository
     {
         let cols;
 
-        if(shark.senha)
+        try
         {
-            cols = {
-                nome: shark.nome,
-                email: shark.email,
-                telefone: shark.telefone,
-                id_distancia_residencia: shark.distancia?.id ?? null,
-                matricula: shark.matricula,
-                senha: shark.senha,
-                id_celula: shark.celula.id,
-                num_projeto: shark.numProjeto,
-                metragem: shark.metragem,
-                admin: shark.admin,
-                membro_ativo: shark.membroAtivo
-            };
-        }
-        else
-        {
-            cols = {
-                nome: shark.nome,
-                email: shark.email,
-                telefone: shark.telefone,
-                id_distancia_residencia: shark.distancia?.id ?? null,
-                matricula: shark.matricula,
-                id_celula: shark.celula.id,
-                num_projeto: shark.numProjeto,
-                metragem: shark.metragem,
-                admin: shark.admin,
-                membro_ativo: shark.membroAtivo
-            };
-        }
+            if(shark.senha)
+            {
+                cols = {
+                    nome: shark.nome,
+                    email: shark.email,
+                    telefone: shark.telefone,
+                    id_distancia_residencia: shark.distancia?.id ?? null,
+                    cpf: shark.cpf,
+                    matricula: shark.matricula,
+                    senha: shark.senha,
+                    id_celula: shark.celula.id,
+                    num_projeto: shark.numProjeto,
+                    metragem: shark.metragem,
+                    admin: shark.admin,
+                    membro_ativo: shark.membroAtivo
+                };
+            }
+            else
+            {
+                cols = {
+                    nome: shark.nome,
+                    email: shark.email,
+                    telefone: shark.telefone,
+                    id_distancia_residencia: shark.distancia?.id ?? null,
+                    cpf: shark.cpf,
+                    matricula: shark.matricula,
+                    id_celula: shark.celula.id,
+                    num_projeto: shark.numProjeto,
+                    metragem: shark.metragem,
+                    admin: shark.admin,
+                    membro_ativo: shark.membroAtivo
+                };
+            }
 
-        return await db(TableNames.shark)
-            .update(cols)
-            .where({ id: shark.id })
-            .returning("id")
-            .then(row => { return row[0].id; });
+            if(shark.id == 1)
+                throw new BadRequestError("Não foi possível atualizar este usuário.");
+
+            return await db(TableNames.shark)
+                .update(cols)
+                .where({ id: shark.id })
+                .returning("id")
+                .then(row => { return row[0].id; });
+        }
+        catch (err) { 
+            throw new InternalServerError(String(err)); }
     }
 
     /**

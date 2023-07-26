@@ -3,7 +3,7 @@ import { errMsg } from "../../helpers/ErrorMessages";
 import { isNumber } from "../../helpers/validation";
 import { BadRequestError } from "../../middlewares/Error.middleware";
 
-interface IRequestParams { limit: any, offset: any, membroAtivo: any, nome: any }
+interface IRequestParams { size: any, page: any, membroAtivo: any, nome: any }
 
 class getSharkService 
 {
@@ -14,13 +14,13 @@ class getSharkService
      */
     async execute(reqParam?: IRequestParams)
     {
-        if(reqParam?.limit && !isNumber(reqParam.limit))
-            throw new BadRequestError(errMsg.INVALID_DATA + " (limit)");
+        if(reqParam?.size && !isNumber(reqParam.size))
+            throw new BadRequestError(errMsg.INVALID_DATA + " (size)");
 
-        if(reqParam?.offset && !isNumber(reqParam.offset))
-            throw new BadRequestError(errMsg.INVALID_DATA + " (offset)");
-            
-        return await SharkRepository.select(reqParam?.limit, reqParam?.offset, reqParam?.membroAtivo, reqParam?.nome);
+        if(reqParam?.page && !isNumber(reqParam.page))
+            throw new BadRequestError(errMsg.INVALID_DATA + " (page)");
+        
+        return await SharkRepository.select(reqParam?.size, reqParam?.page, reqParam?.membroAtivo, reqParam?.nome);
     }
 }
 
