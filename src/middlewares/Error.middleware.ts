@@ -59,6 +59,7 @@ class ErrorMiddleware
         }
 
         res.status(error.statusCode ?? 500).json({ message });
+        next();
     }
 }
 

@@ -6,7 +6,8 @@ import { Request, Response, NextFunction } from "express";
  */
 const adminMiddleware = async (req: Request, res: Response, next: NextFunction) =>
 {   
-    if(req.shark.admin)
+    //console.log(req.shark)
+    if(req.shark.role.id === 2 || req.shark.role.id === 3)
         next();
     else
         return res.status(403).send("Acesso restrito para adminstradores!");    

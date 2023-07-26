@@ -18,7 +18,7 @@ class getByIdSharkService
         
         if(!result || arrayIsEmpty(result))
             throw new BadRequestError(errMsg.SHARK.NOT_FOUND); 
-
+            
         return result;
     }
 }

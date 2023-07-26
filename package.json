@@ -15,6 +15,7 @@
     "knex:seed-test:production": "knex --knexfile dist/config/knexfile.js seed:run --env production",
     "knex:make": "knex --knexfile src/config/knexfile.ts migrate:make",
     "knex:seed": "knex --knexfile src/config/knexfile.ts seed:run",
+    "knex:seed:shark": "knex --knexfile src/config/knexfile.ts --specific=01_create_sharks.ts seed:run ",
     "knex:seed:ocorrencia": "knex --knexfile src/config/knexfile.ts --specific=02_create_ocorrencias.ts seed:run ",
     "knex:latest": "knex --knexfile src/config/knexfile.ts migrate:latest",
     "knex:rollback-all": "knex --knexfile src/config/knexfile.ts migrate:rollback --all"

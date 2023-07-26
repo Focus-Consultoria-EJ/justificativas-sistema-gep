@@ -59,7 +59,7 @@ export const development: Knex.Config = {
     connection: {
         host: "localhost",
         port: 5432,
-        database: "db_focus_gep_backend",
+        database: "db_test",
         user: "postgres",
         password: "root"
     },

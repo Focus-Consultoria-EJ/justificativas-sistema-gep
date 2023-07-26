@@ -1,4 +1,5 @@
 import { Celula } from "./Celula";
+import { Role } from "./Role";
 import { DistanciaResidencia } from "./gestaoNotificacao/DistanciaResidencia";
 
 export interface Shark
@@ -6,6 +7,7 @@ export interface Shark
     id?: number;
     nome: string;
     email: string;
+    emailPessoal?: string;
     telefone?: string;
     distancia?: DistanciaResidencia; // id DistanciaResidencia
     cpf?: string;
@@ -14,7 +16,7 @@ export interface Shark
     celula: Celula; // id Celula
     numProjeto?: number;
     metragem?: number;
-    admin?: number;
+    role?: Role;
     membroAtivo?: number;
     dataCriacao?: Date;
 }

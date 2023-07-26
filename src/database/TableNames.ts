@@ -3,7 +3,9 @@
 export enum TableNames {
     distancia_residencia = "distancia_residencia",
     celula = "celula",
+    role = "role",
     shark = "shark",
+    email_pessoal = "email_pessoal",
     tipo_acao_log = "tipo_acao_log",
     tipo_ocorrencia = "tipo_ocorrencia",
     tipo_assunto = "tipo_assunto",

@@ -26,8 +26,14 @@ export const errMsg =
         REFERENCE_UNINFORMED: "O shark referente não foi informado.",
         ALREADY_EXISTS: "O shark já existe.",
         EMAIL_EXISTS: "O e-mail já existe.",
+        EMAIL_PESSOAL_EXISTS: "O e-mail pessoal já existe",
         MATRICULA_EXISTS: "A matrícula já existe.",
         CPF_EXISTS: "O cpf já existe."
+    },
+    ROLE:
+    {
+        NOT_FOUND: "A role não foi encontrada.",
+        UNINFORMED: "A role não foi informada"
     },
     TIPO_OCORRENCIA:
     {

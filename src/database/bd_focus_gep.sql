@@ -1,4 +1,4 @@
--- CREATE DATABASE IF NOT EXISTS db_focus_gep_backend;
+CREATE SCHEMA public;-- CREATE DATABASE IF NOT EXISTS db_focus_gep_backend;
 -- \c db_focus_gep_backend;
 
 -- begin;
@@ -51,33 +51,53 @@ INSERT INTO distancia_residencia (distancia) VALUES ('Perto');
 INSERT INTO distancia_residencia (distancia) VALUES ('Longe');
 INSERT INTO distancia_residencia (distancia) VALUES ('Muito Longe');
 
+CREATE TABLE role (
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(60) NOT NULL
+);
+
+INSERT INTO role (nome) VALUES ('member');
+INSERT INTO role (nome) VALUES ('admin');
+INSERT INTO role (nome) VALUES ('dev');
+
 CREATE TABLE shark (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(300) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
     telefone VARCHAR(14),
-    id_distancia_residencia SMALLINT,
-    matricula VARCHAR(15) NOT NULL,
+    id_distancia_residencia SMALLINT NOT NULL,
+    matricula VARCHAR(15) NOT NULL UNIQUE,
     senha VARCHAR(60) NOT NULL,
     id_celula SMALLINT NOT NULL,
     num_projeto SMALLINT NOT NULL DEFAULT 0,
     metragem SMALLINT NOT NULL DEFAULT 24,
-    admin BOOLEAN NOT NULL DEFAULT FALSE,
+    id_role SMALLINT NOT NULL DEFAULT 1, -- DEFAULT member
     membro_ativo BOOLEAN DEFAULT TRUE,
     data_criacao TIMESTAMP NOT NULL DEFAULT NOW(),
-  CONSTRAINT fk_shark__id_distancia_residencia FOREIGN KEY (id_distancia_residencia)
+  	CONSTRAINT fk_shark__id_distancia_residencia FOREIGN KEY (id_distancia_residencia)
 		REFERENCES distancia_residencia(id) ON DELETE CASCADE ON UPDATE CASCADE,  
 	CONSTRAINT fk_shark__id_celula FOREIGN KEY (id_celula)
-		REFERENCES celula(id) ON DELETE CASCADE ON UPDATE CASCADE
+		REFERENCES celula(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_shark__id_role FOREIGN KEY (id_role)
+		REFERENCES role(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Login: email ou matricula, Senha: f0K!1503
-INSERT INTO shark (nome, email, matricula, senha, id_celula, admin)
-	VALUES ('admin', 'admin@hotmail.com', '0000000', '$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6', 3, '1');
+INSERT INTO shark (nome, email, cpf, matricula, senha, id_celula, id_role)
+	VALUES ('admin', 'admin@hotmail.com', '123.456.789-10', '0000000', '$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6', 3, 3);
+	
+CREATE TABLE email_pessoal (
+	id SERIAL PRIMARY KEY,
+	id_shark SMALLINT NOT NULL,
+	email VARCHAR(100) NOT NULL UNIQUE,
+	CONSTRAINT fk_email_pessoal__shark_id FOREIGN KEY (id_shark)
+		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
+);	
 	
 CREATE TABLE tipo_acao_log (
 	id SERIAL PRIMARY KEY,
-  nome VARCHAR(40) NOT NULL
+  	nome VARCHAR(40) NOT NULL
 );
 
 INSERT INTO tipo_acao_log (nome) VALUES ('Inserção');
