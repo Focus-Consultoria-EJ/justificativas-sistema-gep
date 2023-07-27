@@ -8,9 +8,7 @@ import { isNumber, isValidDate } from "../validation";
  */
 export const ocorrenciaFormValidation = async (ocorrencia: any): Promise<Ocorrencia | string> => 
 {
-    if(ocorrencia.sharkReferente && (!isNumber(ocorrencia.sharkReferente) || parseInt(ocorrencia.sharkReferente) < 0))
-        return "Digite um shark referente válido.";
-           
+               
     if(!ocorrencia.tipoAssunto || !isNumber(ocorrencia.tipoAssunto) || parseInt(ocorrencia.tipoAssunto) < 0)
         return "Digite um tipo de assunto válido.";   
 
@@ -20,9 +18,16 @@ export const ocorrenciaFormValidation = async (ocorrencia: any): Promise<Ocorren
     if(!ocorrencia.mensagem || String(ocorrencia.mensagem).length <= 4 || String(ocorrencia.mensagem).length >= 300)
         return "A mensagem precisa ser maior que 4 caracteres. (max: 300)"; 
 
+    // Campos Opcionais abaixo:    
+
+    if(ocorrencia.sharkReferente && (!isNumber(ocorrencia.sharkReferente) || parseInt(ocorrencia.sharkReferente) < 0))
+        return "Digite um shark referente válido.";
+
+    ocorrencia.valorMetragem = (ocorrencia.valorMetragem === "") ? undefined : ocorrencia.valorMetragem;
     if(ocorrencia.valorMetragem && (!isNumber(ocorrencia.valorMetragem) || parseInt(ocorrencia.valorMetragem) < 0))
         return "Digite um valor de metragem que seja maior que 0."; 
 
+    ocorrencia.dataOcorrido = (ocorrencia.dataOcorrido === "") ? undefined : ocorrencia.dataOcorrido;
     if(ocorrencia.dataOcorrido && !isValidDate(ocorrencia.dataOcorrido))
         return "A data do ocorrido está inválida.";
 

@@ -92,10 +92,10 @@ class SaveSharkService
         /* UPDATE */
         if(dataForm.shark.id)
         {   
-            // Salva o log de usuário
             if(reqShark)
             {
                 await SharkRepository.updateAllData(dataForm.shark, dataForm.emailPessoal).then(async (idShark) => {
+                    // Salva o log de usuário
                     await SharkRepository.insertSharkLog(2, idShark, reqShark.id!);
                 });
             }
@@ -106,12 +106,12 @@ class SaveSharkService
         /* INSERT */
         else
         {   
-            // Salva o log de usuário
             if(reqShark)
-            {
+            {   
                 await SharkRepository.insertAllData(dataForm.shark, dataForm.emailPessoal).then(async (idShark) => {
+                    // Salva o log de usuário
                     await SharkRepository.insertSharkLog(1, idShark, reqShark.id!);
-                });
+                }); 
             }
             else
                 throw new InternalServerError("O shark da requisição não está setado");

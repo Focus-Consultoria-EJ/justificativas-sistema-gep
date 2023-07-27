@@ -53,7 +53,7 @@ class SharkRepository
             if(size) query = query.limit(size);
             if(page) query = query.offset(page);
             if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
-            if(nome) query = query.andWhere("nome", "like", `%${nome}%`);
+            if(nome) query = query.andWhere("s.nome", "like", `%${nome}%`);
             query = query.where("s.id", "<>", 1);
 
             const data = await query.orderBy("s.id");
@@ -281,7 +281,7 @@ class SharkRepository
                     nome: shark.nome,
                     email: shark.email,
                     telefone: shark.telefone,
-                    id_distancia_residencia: shark.distancia?.id ?? null,
+                    id_distancia_residencia: shark.distancia?.id,
                     cpf: shark.cpf,
                     matricula: shark.matricula,
                     senha: shark.senha,

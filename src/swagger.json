@@ -7,10 +7,6 @@
   },
   "servers": [
     {
-      "url": "https://virtserver.swaggerhub.com/rossienzo/sistema-de-nofiticacoes/1.0.0",
-      "description": "SwaggerHub API Auto Mocking"
-    },
-    {
       "url": "http://localhost:3000/api",
       "description": "API de teste"
     },
@@ -272,27 +268,30 @@
                 "Shark 1": {
                   "value": {
                     "nome": "Clara da Silva",
-                    "email": "clarasilva100@hotmail.com",
+                    "emailFocus": "clarasilva100@consultoriafocus.com",
+                    "emailPessoal": "clarasilva100@hotmail.com",
                     "matricula": 123456789,
                     "cpf": "123.456.789-10",
                     "distancia": 2,
                     "senha": "123456789",
                     "celula": 3,
                     "numProjeto": 2,
-                    "admin": 1
+                    "role": 2
                   }
                 },
                 "Shark 2": {
                   "value": {
                     "nome": "Paulo Miguel de Carvalho",
-                    "email": "pmicar22@hotmail.com",
+                    "emailFocus": "clarasilva100@consultoriafocus.com",
+                    "emailPessoal": "clarasilva100@hotmail.com",
                     "matricula": 1234567892,
                     "cpf": "123.456.789-10",
                     "distancia": 1,
                     "senha": "12345678910",
                     "telefone": "22999923100",
                     "celula": 1,
-                    "metragem": 30
+                    "metragem": 30,
+                    "membroAtivo": 0
                   }
                 }
               }
@@ -546,7 +545,8 @@
                     "senha": "12345678910",
                     "telefone": "22999923100",
                     "celula": 1,
-                    "metragem": 30
+                    "metragem": 30,
+                    "membroAtivo": 0
                   }
                 }
               }
@@ -2636,7 +2636,8 @@
         "required": [
           "celula",
           "distancia",
-          "email",
+          "emailFocus",
+          "emailPessoal",
           "matricula",
           "nome",
           "senha"
@@ -2650,6 +2651,9 @@
             "type": "string"
           },
           "email": {
+            "type": "string"
+          },
+          "emailPessoal": {
             "type": "string"
           },
           "telefone": {
@@ -2680,12 +2684,11 @@
             "type": "string",
             "description": "Se não passado o padrão é 24"
           },
-          "admin": {
-            "type": "integer",
-            "description": "Se não passado o padrão é 0"
+          "role": {
+            "$ref": "#/components/schemas/Shark_role"
           },
           "membroAtivo": {
-            "type": "integer",
+            "type": "boolean",
             "description": "Se não passado o padrão é 1"
           },
           "dataCriacao": {
@@ -2699,7 +2702,8 @@
           "celula",
           "cpf",
           "distancia",
-          "email",
+          "emailFocus",
+          "emailPessoal",
           "matricula",
           "nome",
           "senha"
@@ -2709,7 +2713,10 @@
           "nome": {
             "type": "string"
           },
-          "email": {
+          "emailFocus": {
+            "type": "string"
+          },
+          "emailPessoal": {
             "type": "string"
           },
           "matricula": {
@@ -2737,16 +2744,16 @@
             "description": "Se não passado o padrão é 24"
           },
           "membroAtivo": {
-            "type": "integer",
+            "type": "boolean",
             "description": "Se não passado o padrão é 1"
           },
           "numProjeto": {
             "type": "integer",
             "description": "Se não passado o padrão é 0"
           },
-          "admin": {
+          "role": {
             "type": "integer",
-            "description": "Se não passado o padrão é 0"
+            "description": "Se não passado o padrão é 1"
           }
         }
       },
@@ -2814,7 +2821,7 @@
           },
           "dataOcorrido": {
             "type": "string",
-            "description": "Se não passado pega o dia atual",
+            "description": "Se não passado pega o dia atual. (YYYY-MM-DD)",
             "format": "date-time"
           },
           "dataCriacao": {
@@ -2851,7 +2858,7 @@
           },
           "dataOcorrido": {
             "type": "string",
-            "description": "Se não passado pega o dia atual",
+            "description": "Se não passado pega o dia atual. (YYYY-MM-DD)",
             "format": "date-time"
           }
         }
@@ -2963,8 +2970,8 @@
           "metragem": {
             "type": "integer"
           },
-          "admin": {
-            "type": "boolean"
+          "role": {
+            "$ref": "#/components/schemas/ValidateTokenData_celula"
           },
           "jwt": {
             "$ref": "#/components/schemas/ValidateTokenData_jwt"
@@ -2998,6 +3005,19 @@
           },
           "nome": {
             "type": "string"
+          }
+        }
+      },
+      "Shark_role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 1"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Se não passado o padrão é member"
           }
         }
       },

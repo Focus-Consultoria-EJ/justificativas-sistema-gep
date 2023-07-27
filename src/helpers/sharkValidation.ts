@@ -56,24 +56,32 @@ export const sharkFormValidation = async (shark: any, actionUpdate = false): Pro
     if(!shark.celula || !isNumber(shark.celula) || parseInt(shark.celula) < 0)
         return "Digite uma célula válida.";
 
+    // Campos Opcionais abaixo:
+
     if(shark.telefone && !phoneValidation(shark.telefone))
         return "Digite um telefone válido.";
-    
-    if(shark.membroAtivo && (!isNumber(shark.membroAtivo) || 
-        (parseInt(shark.membroAtivo) < 0 || parseInt(shark.membroAtivo) > 1)) )
+
+    shark.membroAtivo = (shark.membroAtivo === "") ? undefined : shark.membroAtivo;
+    if(shark.membroAtivo && (shark.membroAtivo !== "true" && shark.membroAtivo !== "false" && 
+        shark.membroAtivo !== "0" && shark.membroAtivo !== "1") )
         return "Digite um membro ativo válido.";
 
+    shark.numProjeto = (shark.numProjeto === "") ? undefined : shark.numProjeto;
     if(shark.numProjeto && (!isNumber(shark.numProjeto) || parseInt(shark.celula) < 0) )
         return "Digite um número de projeto válido.";
 
-    if(shark.metragem && (!isNumber(shark.metragem) || parseInt(shark.celula) < 0) )
+    shark.metragem = (shark.metragem === "") ? undefined : shark.metragem;
+    if(shark.metragem && ( !isNumber(shark.metragem) || parseInt(shark.celula) < 0) )
         return "Digite uma metragem maior que 0.";
 
-    if(shark.role && (!isNumber(shark.role) || parseInt(shark.role) < 0))
+    shark.role = (shark.role === "") ? undefined : shark.role;
+    if(shark.role === "" || (shark.role && (!isNumber(shark.role) || parseInt(shark.role) < 0)) )
         return "Digite um valor válido para o role.";
 
     // Criptografa a Senha
     shark.senha = shark.senha !== undefined ? await passwordEncrypt(shark.senha) : "";
+
+    shark.membroAtivo = (shark.membroAtivo == "true" || shark.membroAtivo == 1) ? true : false;
 
     return {
         shark: {
@@ -86,7 +94,7 @@ export const sharkFormValidation = async (shark: any, actionUpdate = false): Pro
             celula: { id: shark.celula },
             telefone: phoneFormat(shark.telefone)!,
             senha: shark.senha,
-            numProjeto: shark.numProjeto,
+            numProjeto: shark.numProjeto ?? 0,
             metragem: shark.metragem ?? 24,
             role: { id: shark.role ?? 1 }, // Se não passado, será membro
             membroAtivo: shark.membroAtivo ?? true,

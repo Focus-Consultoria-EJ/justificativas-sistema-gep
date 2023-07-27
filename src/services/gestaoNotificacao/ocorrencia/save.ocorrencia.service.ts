@@ -22,7 +22,7 @@ class SaveOcorrenciaService
         
         const ocorrencia = await ocorrenciaFormValidation(data);
         let ocorrenciaASerAtualizada;
-
+        
         if(typeof ocorrencia === "string")
             throw new BadRequestError(ocorrencia);
 
@@ -83,7 +83,7 @@ class SaveOcorrenciaService
         // Define que o segundo aviso (id = 5) retire 2 de metragem
         if (ocorrencia.tipoOcorrencia.id == 5)
             ocorrencia.valorMetragem = 2;
-
+            
         if(ocorrencia.id)
         {
             await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
