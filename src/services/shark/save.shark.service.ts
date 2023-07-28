@@ -88,7 +88,7 @@ class SaveSharkService
 
         // Verifica se o id da role é válida
         await getByIdRoleService.execute(dataForm.shark.role?.id);
-        
+
         /* UPDATE */
         if(dataForm.shark.id)
         {   

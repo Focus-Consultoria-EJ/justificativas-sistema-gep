@@ -80,8 +80,9 @@ export const sharkFormValidation = async (shark: any, actionUpdate = false): Pro
 
     // Criptografa a Senha
     shark.senha = shark.senha !== undefined ? await passwordEncrypt(shark.senha) : "";
-
-    shark.membroAtivo = (shark.membroAtivo == "true" || shark.membroAtivo == 1) ? true : false;
+    
+    if(shark.membroAtivo)
+        shark.membroAtivo = (shark.membroAtivo == "true" || shark.membroAtivo == 1) ? true : false;
 
     return {
         shark: {
