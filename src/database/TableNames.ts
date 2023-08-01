@@ -10,6 +10,8 @@ export enum TableNames {
     tipo_ocorrencia = "tipo_ocorrencia",
     tipo_assunto = "tipo_assunto",
     shark_log = "shark_log",
+    nivel_advertencia = "nivel_advertencia",
+    nivel_gratificacao = "nivel_gratificacao",
     ocorrencia = "ocorrencia",
     ocorrencia_log = "ocorrencia_log",
     evento = "evento",

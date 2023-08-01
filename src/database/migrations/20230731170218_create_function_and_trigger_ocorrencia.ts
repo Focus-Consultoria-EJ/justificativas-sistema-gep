@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void>
         DECLARE
             vIdAdvertencia INT;
             vIdGratificacao INT;
-            vIdSegundoAviso INT;
+            vIdAviso INT;
         BEGIN
             -- Salva o id referente ao tipo de ocorrência advertência
             SELECT id INTO vIdAdvertencia FROM tipo_ocorrencia
@@ -19,9 +19,9 @@ export async function up(knex: Knex): Promise<void>
             SELECT id INTO vIdGratificacao FROM tipo_ocorrencia
             WHERE nome ILIKE '%grat%';
             
-            -- Salva o id referente ao tipo de ocorrência Segundo aviso
-            SELECT id INTO vIdSegundoAviso FROM tipo_ocorrencia
-            WHERE nome ILIKE '%Segundo%';
+            -- Salva o id referente ao tipo de ocorrência aviso
+            SELECT id INTO vIdAviso FROM tipo_ocorrencia
+            WHERE nome ILIKE '%aviso%';
         
             IF (new.valor_metragem != 0) THEN
                 -- Se for advertência subtrai a metragem
@@ -31,7 +31,7 @@ export async function up(knex: Knex): Promise<void>
                 ELSIF (new.id_tipo_ocorrencia = vIdGratificacao) THEN
                     UPDATE shark SET metragem = metragem + new.valor_metragem
                     WHERE id = new.id_shark_referente;
-                ELSIF (new.id_tipo_ocorrencia = vIdSegundoAviso) THEN
+                ELSIF (new.id_tipo_ocorrencia = vIdAviso) THEN
                     UPDATE shark SET metragem = metragem - new.valor_metragem
                     WHERE id = new.id_shark_referente;
                 END IF;

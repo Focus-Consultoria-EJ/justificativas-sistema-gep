@@ -11,9 +11,11 @@ export async function up(knex: Knex): Promise<void>
         table.smallint("id_tipo_assunto").notNullable();
         table.string("mensagem", 500).notNullable();
         table.smallint("valor_metragem").defaultTo(0);
-        table.timestamp("data_criacao").defaultTo(knex.fn.now());
+        table.smallint("id_nivel_advertencia"),
+        table.smallint("id_nivel_gratificacao"),
         table.smallint("id_shark_criador").notNullable();
         table.smallint("id_shark_referente").notNullable();
+        table.timestamp("data_criacao").defaultTo(knex.fn.now());
     
         table
             .foreign("id_tipo_ocorrencia")
@@ -29,6 +31,20 @@ export async function up(knex: Knex): Promise<void>
             .onDelete("CASCADE")
             .onUpdate("CASCADE");
         
+        table
+            .foreign("id_nivel_advertencia")
+            .references("id")
+            .inTable(TableNames.nivel_advertencia)
+            .onDelete("RESTRICT")
+            .onUpdate("RESTRICT");
+
+        table
+            .foreign("id_nivel_gratificacao")
+            .references("id")
+            .inTable(TableNames.nivel_gratificacao)
+            .onDelete("RESTRICT")
+            .onUpdate("RESTRICT");
+
         table.foreign("id_shark_criador")
             .references("id")
             .inTable(TableNames.shark)

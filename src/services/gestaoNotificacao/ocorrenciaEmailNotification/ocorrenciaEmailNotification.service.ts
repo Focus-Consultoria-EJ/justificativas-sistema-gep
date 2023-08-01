@@ -21,10 +21,14 @@ class ocorrenciaEmailNotification extends emailService
 
         if(tipoOcorrencia.includes("aviso"))
         {
-            if(tipoOcorrencia.includes("primeiro"))
+            if(ocorrencia.valorMetragem === 0)
                 tipoOcorrencia = "Aviso Comum";
-            else if(tipoOcorrencia.includes("segundo"))
+            else if(ocorrencia.valorMetragem > 0)
+            {
                 tipoOcorrencia = "Segundo aviso";
+                metragemAtual -= ocorrencia.valorMetragem;
+                linhaAtualizacao = "Metragem a perder com o ";
+            }
 
             artigo = "um";
         }
@@ -40,12 +44,6 @@ class ocorrenciaEmailNotification extends emailService
             metragemAtual -= ocorrencia.valorMetragem;
             linhaAtualizacao = "Metragem a perder com a ";
         }
-        else if(tipoOcorrencia.includes("Segundo"))
-        {
-            metragemAtual -= ocorrencia.valorMetragem;
-            linhaAtualizacao = "Metragem a perder com o ";
-        }
-            
             
         // Define o primeiro caractere para maiúsculo
         tipoOcorrencia = tipoOcorrencia.charAt(0).toUpperCase() + tipoOcorrencia.slice(1);

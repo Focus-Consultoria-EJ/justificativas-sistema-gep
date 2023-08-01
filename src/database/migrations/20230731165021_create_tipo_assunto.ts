@@ -11,13 +11,13 @@ export async function up(knex: Knex): Promise<void>
         console.log("Tabela " + TableNames.tipo_assunto + " criada.");
 
         return knex(TableNames.tipo_assunto).insert([
-            { nome: "Plantão" },
-            { nome: "Reunião de célula" },
-            { nome: "Reunião geral" },
-            { nome: "Reunião de projetos" },
-            { nome: "Shark-in ou Shark-out" },
-            { nome: "Treinamento" },
-            { nome: "Outros" },
+            { nome: "plantão" },
+            { nome: "reunião de célula" },
+            { nome: "reunião geral" },
+            { nome: "reunião de projetos" },
+            { nome: "shark-in ou shark-out" },
+            { nome: "treinamento" },
+            { nome: "outros" },
         ]);
     }).then(()=> console.log("Registros inseridos na tabela " + TableNames.tipo_assunto + "."));
 }

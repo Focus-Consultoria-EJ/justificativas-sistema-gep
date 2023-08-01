@@ -122,4 +122,3 @@ export const phoneFormat = (phone: string) =>
         return phone.replace(/\D/g, ""); 
     return null;
 };
-

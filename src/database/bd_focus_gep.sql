@@ -1,4 +1,4 @@
-CREATE SCHEMA public;-- CREATE DATABASE IF NOT EXISTS db_focus_gep_backend;
+-- CREATE SCHEMA public;-- CREATE DATABASE IF NOT EXISTS db_focus_gep_backend;
 -- \c db_focus_gep_backend;
 
 -- begin;
@@ -9,47 +9,68 @@ CREATE TABLE tipo_ocorrencia (
     nome VARCHAR(300) NOT NULL
 );
 
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Justificativa');
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Não aceita');
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Plausível');
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Primeiro aviso');
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Segundo aviso');
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Gratificação');
-INSERT INTO tipo_ocorrencia (nome) VALUES ('Advertência');
+INSERT INTO tipo_ocorrencia (nome) VALUES ('justificativa');
+INSERT INTO tipo_ocorrencia (nome) VALUES ('não aceita');
+INSERT INTO tipo_ocorrencia (nome) VALUES ('plausível');
+INSERT INTO tipo_ocorrencia (nome) VALUES ('aviso');
+INSERT INTO tipo_ocorrencia (nome) VALUES ('gratificação');
+INSERT INTO tipo_ocorrencia (nome) VALUES ('advertência');
 
 CREATE TABLE tipo_assunto (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(300) NOT NULL
 );
 
-INSERT INTO tipo_assunto (nome) VALUES ('Plantão');
-INSERT INTO tipo_assunto (nome) VALUES ('Reunião de célula');
-INSERT INTO tipo_assunto (nome) VALUES ('Reunião geral');
-INSERT INTO tipo_assunto (nome) VALUES ('Reunião de projetos');
-INSERT INTO tipo_assunto (nome) VALUES ('Shark-in ou Shark-out');
-INSERT INTO tipo_assunto (nome) VALUES ('Treinamento');
-INSERT INTO tipo_assunto (nome) VALUES ('Outros');
+INSERT INTO tipo_assunto (nome) VALUES ('plantão');
+INSERT INTO tipo_assunto (nome) VALUES ('reunião de célula');
+INSERT INTO tipo_assunto (nome) VALUES ('reunião geral');
+INSERT INTO tipo_assunto (nome) VALUES ('reunião de projetos');
+INSERT INTO tipo_assunto (nome) VALUES ('shark-in ou shark-out');
+INSERT INTO tipo_assunto (nome) VALUES ('treinamento');
+INSERT INTO tipo_assunto (nome) VALUES ('outros');
+
+CREATE TABLE nivel_advertencia (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+	valor SMALLINT NOT NULL
+);
+
+INSERT INTO nivel_advertencia (nome, valor) VALUES ('leve', 2);
+INSERT INTO nivel_advertencia (nome, valor) VALUES ('moderado', 4);
+INSERT INTO nivel_advertencia (nome, valor) VALUES ('grave', 6);
+INSERT INTO nivel_advertencia (nome, valor) VALUES ('gravíssima', 8);
+INSERT INTO nivel_advertencia (nome, valor) VALUES ('gravíssima', 10);
+
+CREATE TABLE nivel_gratificacao (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+	valor SMALLINT NOT NULL
+);
+
+INSERT INTO nivel_gratificacao (nome, valor) VALUES ('bom', 1);
+INSERT INTO nivel_gratificacao (nome, valor) VALUES ('ótimo', 2);
+INSERT INTO nivel_gratificacao (nome, valor) VALUES ('excelente', 4);
 
 CREATE TABLE celula (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(300) NOT NULL
 );
 
-INSERT INTO celula (nome) VALUES ('Presidência');
-INSERT INTO celula (nome) VALUES ('Administração Financeira');
-INSERT INTO celula (nome) VALUES ('Gestão estratégica de pessoas');
-INSERT INTO celula (nome) VALUES ('Marketing');
-INSERT INTO celula (nome) VALUES ('Comercial');
-INSERT INTO celula (nome) VALUES ('Projetos');
+INSERT INTO celula (nome) VALUES ('presidência');
+INSERT INTO celula (nome) VALUES ('administração Financeira');
+INSERT INTO celula (nome) VALUES ('gestão estratégica de pessoas');
+INSERT INTO celula (nome) VALUES ('marketing');
+INSERT INTO celula (nome) VALUES ('comercial');
+INSERT INTO celula (nome) VALUES ('projetos');
 
 CREATE TABLE distancia_residencia (
     id SERIAL PRIMARY KEY,
     distancia VARCHAR(300) NOT NULL
 );
 
-INSERT INTO distancia_residencia (distancia) VALUES ('Perto');
-INSERT INTO distancia_residencia (distancia) VALUES ('Longe');
-INSERT INTO distancia_residencia (distancia) VALUES ('Muito Longe');
+INSERT INTO distancia_residencia (distancia) VALUES ('perto');
+INSERT INTO distancia_residencia (distancia) VALUES ('longe');
+INSERT INTO distancia_residencia (distancia) VALUES ('muito longe');
 
 CREATE TABLE role (
 	id SERIAL PRIMARY KEY,
@@ -84,8 +105,8 @@ CREATE TABLE shark (
 );
 
 -- Login: email ou matricula, Senha: f0K!1503
-INSERT INTO shark (nome, email, cpf, matricula, senha, id_celula, id_role)
-	VALUES ('admin', 'admin@hotmail.com', '123.456.789-10', '0000000', '$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6', 3, 3);
+INSERT INTO shark (nome, email, cpf, id_distancia_residencia, matricula, senha, id_celula, id_role)
+	VALUES ('admin', 'admin@hotmail.com', '123.456.789-10', 1, '0000000', '$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6', 3, 3);
 	
 CREATE TABLE email_pessoal (
 	id SERIAL PRIMARY KEY,
@@ -100,9 +121,9 @@ CREATE TABLE tipo_acao_log (
   	nome VARCHAR(40) NOT NULL
 );
 
-INSERT INTO tipo_acao_log (nome) VALUES ('Inserção');
-INSERT INTO tipo_acao_log (nome) VALUES ('Atualização');
-INSERT INTO tipo_acao_log (nome) VALUES ('Remoção');
+INSERT INTO tipo_acao_log (nome) VALUES ('inserção');
+INSERT INTO tipo_acao_log (nome) VALUES ('atualização');
+INSERT INTO tipo_acao_log (nome) VALUES ('remoção');
 
 CREATE TABLE shark_log (
   id SERIAL PRIMARY KEY,
@@ -118,18 +139,24 @@ CREATE TABLE shark_log (
 
 CREATE TABLE ocorrencia(
 	id SERIAL PRIMARY KEY,
-  data_ocorrido TIMESTAMP NOT NULL DEFAULT NOW(),
-  id_tipo_ocorrencia SMALLINT NOT NULL,
-  id_tipo_assunto SMALLINT NOT NULL,
-  mensagem VARCHAR(500) NOT NULL,
-  valor_metragem SMALLINT DEFAULT 0,
-  data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  id_shark_criador SMALLINT NOT NULL,
-  id_shark_referente SMALLINT NOT NULL,
-  CONSTRAINT fk_ocorrencia__tipo_ocorrencia_id FOREIGN KEY (id_tipo_ocorrencia)
+	data_ocorrido TIMESTAMP NOT NULL DEFAULT NOW(),
+	id_tipo_ocorrencia SMALLINT NOT NULL,
+	id_tipo_assunto SMALLINT NOT NULL,
+	mensagem VARCHAR(500) NOT NULL,
+	valor_metragem SMALLINT DEFAULT 0,
+	id_nivel_advertencia SMALLINT,
+	id_nivel_gratificacao SMALLINT,
+	id_shark_criador SMALLINT NOT NULL,
+	id_shark_referente SMALLINT NOT NULL,
+	data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT fk_ocorrencia__tipo_ocorrencia_id FOREIGN KEY (id_tipo_ocorrencia)
 		REFERENCES tipo_ocorrencia(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_ocorrencia__tipo_assunto_id FOREIGN KEY (id_tipo_assunto)
 		REFERENCES tipo_assunto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ocorrencia__nivel_advertencia_id FOREIGN KEY (id_nivel_advertencia)
+		REFERENCES nivel_advertencia(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_ocorrencia__nivel_gratificacao_id FOREIGN KEY (id_nivel_gratificacao)
+		REFERENCES nivel_gratificacao(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 	CONSTRAINT fk_ocorrencia__shark_id_criador FOREIGN KEY (id_shark_criador)
 		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_ocorrencia__shark_id_referente FOREIGN KEY (id_shark_referente)
@@ -173,6 +200,7 @@ RETURNS TRIGGER AS $$
 DECLARE
 	vIdAdvertencia INT;
 	vIdGratificacao INT;
+	vIdAviso INT;
 BEGIN
 	-- Salva o id referente ao tipo de ocorrência advertência
 	SELECT id INTO vIdAdvertencia FROM tipo_ocorrencia
@@ -182,6 +210,10 @@ BEGIN
 	SELECT id INTO vIdGratificacao FROM tipo_ocorrencia
 	WHERE nome ILIKE '%grat%';
 
+	-- Salva o id referente ao tipo de ocorrência aviso
+	SELECT id INTO vIdAviso FROM tipo_ocorrencia
+	WHERE nome ILIKE '%aviso%';
+			
 	IF (new.valor_metragem != 0) THEN
 		-- Se for advertência subtrai a metragem
 		IF (new.id_tipo_ocorrencia = vIdAdvertencia) THEN -- Alterar o valor de acordo com id da advertência na tabela tipo_ocorrencia
@@ -189,6 +221,9 @@ BEGIN
 			WHERE id = new.id_shark_referente;
 		ELSIF (new.id_tipo_ocorrencia = vIdGratificacao) THEN
 			UPDATE shark SET metragem = metragem + new.valor_metragem
+			WHERE id = new.id_shark_referente;
+		ELSIF (new.id_tipo_ocorrencia = vIdAviso) THEN
+			UPDATE shark SET metragem = metragem - new.valor_metragem
 			WHERE id = new.id_shark_referente;
 		END IF;
 	END IF;

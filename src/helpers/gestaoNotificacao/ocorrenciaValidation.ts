@@ -27,6 +27,14 @@ export const ocorrenciaFormValidation = async (ocorrencia: any): Promise<Ocorren
     if(ocorrencia.valorMetragem && (!isNumber(ocorrencia.valorMetragem) || parseInt(ocorrencia.valorMetragem) < 0))
         return "Digite um valor de metragem que seja maior que 0."; 
 
+    ocorrencia.nivelAdvertencia = (ocorrencia.nivelAdvertencia === "") ? undefined : ocorrencia.nivelAdvertencia;
+    if(ocorrencia.nivelAdvertencia && (!isNumber(ocorrencia.nivelAdvertencia) || parseInt(ocorrencia.nivelAdvertencia) < 0))
+        return "Digite um nível de advertência válido"; 
+
+    ocorrencia.nivelGratificacao = (ocorrencia.nivelGratificacao === "") ? undefined : ocorrencia.nivelGratificacao;
+    if(ocorrencia.nivelGratificacao && (!isNumber(ocorrencia.nivelGratificacao) || parseInt(ocorrencia.nivelGratificacao) < 0))
+        return "Digite um nível de gratificação válido"; 
+
     ocorrencia.dataOcorrido = (ocorrencia.dataOcorrido === "") ? undefined : ocorrencia.dataOcorrido;
     if(ocorrencia.dataOcorrido && !isValidDate(ocorrencia.dataOcorrido))
         return "A data do ocorrido está inválida.";
@@ -37,7 +45,9 @@ export const ocorrenciaFormValidation = async (ocorrencia: any): Promise<Ocorren
         tipoOcorrencia: { id: ocorrencia.tipoOcorrencia },
         tipoAssunto: { id: ocorrencia.tipoAssunto },
         mensagem: ocorrencia.mensagem,
-        valorMetragem: ocorrencia.valorMetragem,
+        valorMetragem: 0,
+        nivelAdvertencia: { id: ocorrencia.nivelAdvertencia },
+        nivelGratificacao: { id: ocorrencia.nivelGratificacao },
         sharkReferente: { id: ocorrencia.sharkReferente, nome: ocorrencia.sharkReferenteNome, 
             email: ocorrencia.sharkReferenteEmail, celula: { id: ocorrencia.sharkReferenteCelula} },
         sharkCriador: { id: undefined, nome: "", 

@@ -11,13 +11,12 @@ export async function up(knex: Knex): Promise<void>
         console.log("Tabela " + TableNames.tipo_ocorrencia + " criada.");
 
         return knex(TableNames.tipo_ocorrencia).insert([
-            { nome: "Justificativa" },
-            { nome: "Não aceita" },
-            { nome: "Plausível" },
-            { nome: "Primeiro aviso" },
-            { nome: "Segundo aviso" },
-            { nome: "Gratificação" },
-            { nome: "Advertência" },
+            { nome: "justificativa" },
+            { nome: "não aceita" },
+            { nome: "plausível" },
+            { nome: "aviso" },
+            { nome: "gratificação" },
+            { nome: "advertência" },
         ]);
     }).then(()=> console.log("Registros inseridos na tabela " + TableNames.tipo_ocorrencia + "."));
 }

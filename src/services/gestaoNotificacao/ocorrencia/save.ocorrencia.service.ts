@@ -1,4 +1,6 @@
 import SharkRepository from "../../../database/repositories/SharkRepository";
+import NivelAdvertenciaRepository from "../../../database/repositories/gestaoNotificacao/NivelAdvertenciaRepository";
+import NivelGratificacaoRepository from "../../../database/repositories/gestaoNotificacao/NivelGratificacaoRepository";
 import OcorrenciaRepository from "../../../database/repositories/gestaoNotificacao/OcorrenciaRepository";
 import TipoAssuntoRepository from "../../../database/repositories/gestaoNotificacao/TipoAssuntoRepository";
 import TipoOcorrenciaRepository from "../../../database/repositories/gestaoNotificacao/TipoOcorrenciaRepository";
@@ -56,33 +58,47 @@ class SaveOcorrenciaService
         const tipoAssunto = await TipoAssuntoRepository.getById(ocorrencia.tipoAssunto.id!);
         valueExists(tipoAssunto, errMsg.TIPO_ASSUNTO.NOT_FOUND);
 
-        ocorrencia.tipoOcorrencia.nome = tipoOcorrencia?.nome;
-        ocorrencia.tipoAssunto.nome = tipoAssunto?.nome;
+        ocorrencia.tipoOcorrencia = tipoOcorrencia!;
+        ocorrencia.tipoAssunto = tipoAssunto!;
         ocorrencia.sharkReferente = dataSharkReferente!; // salva os dados do shark referente
-
-        // Faz com que somente sharks do tipo GEP consigam enviar um valor na metragem, os demais serão 0
-        ocorrencia.valorMetragem = ocorrencia.valorMetragem && 
-            (reqShark.celula.id === 3) ? Number(ocorrencia.valorMetragem) : 0;
         
         // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência que não seja do tipo justificativa
-        if(reqShark.celula.id !== 3 && (ocorrencia.tipoOcorrencia.id != 1))
+        if(reqShark.celula.id !== 3 && reqShark.role?.id !== 3 && (ocorrencia.tipoOcorrencia.id != 1))
             throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode enviar ocorrências do tipo justificativa.");
 
         // Bloqueia o usuário comum (não de GEP) de enviar uma ocorrência relacionada a outro usuário
-        if(reqShark.celula.id !== 3 && (ocorrencia.sharkCriador?.id != ocorrencia.sharkReferente.id))
+        if(reqShark.celula.id !== 3 && reqShark.role?.id !== 3 && (ocorrencia.sharkCriador?.id != ocorrencia.sharkReferente.id))
             throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo.");
 
-        // Define que uma ocorrência do tipo justificativa retire 0 de metragem
-        if (ocorrencia.tipoOcorrencia.id == 1)
-            ocorrencia.valorMetragem = 0;
-        
-        // Define que o primeiro aviso (id = 4) retire 0 de metragem
-        if (ocorrencia.tipoOcorrencia.id == 4)
-            ocorrencia.valorMetragem = 0;
+        // Ocorrência do tipo aviso
+        if(ocorrencia.tipoOcorrencia.id === 4)
+        {
+            // Se segundo aviso, retira 2 da metragem
+            if(await OcorrenciaRepository.getAvisoRepetido(ocorrencia))
+                ocorrencia.valorMetragem = 2;
+        }   
+        // Ocorrência do tipo gratificação
+        else if(ocorrencia.tipoOcorrencia.id === 5)
+        {
+            if(!ocorrencia.nivelGratificacao?.id)
+                throw new BadRequestError("Uma ocorrência do tipo gratificação precisa que o nível da gratificação seja passado.");
+            
+            const nivelGrat = await NivelGratificacaoRepository.getById(ocorrencia.nivelGratificacao.id!);
+            valueExists(nivelGrat, errMsg.NIVEL_GRATIFICACAO.NOT_FOUND);
+            
+            ocorrencia.valorMetragem = Number(nivelGrat?.valor);
+        }
+        // Ocorrência do tipo Advertência
+        else if(ocorrencia.tipoOcorrencia.id === 6)
+        {
+            if(!ocorrencia.nivelAdvertencia?.id)
+                throw new BadRequestError("Uma ocorrência do tipo advertência precisa que o nível da advertência seja passado.");
 
-        // Define que o segundo aviso (id = 5) retire 2 de metragem
-        if (ocorrencia.tipoOcorrencia.id == 5)
-            ocorrencia.valorMetragem = 2;
+            const nivelAdver = await NivelAdvertenciaRepository.getById(ocorrencia.nivelAdvertencia.id!);
+            valueExists(nivelAdver, errMsg.NIVEL_ADVERTENCIA.NOT_FOUND);
+
+            ocorrencia.valorMetragem = Number(nivelAdver?.valor);
+        }
             
         if(ocorrencia.id)
         {
@@ -90,7 +106,7 @@ class SaveOcorrenciaService
                 await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
 
                 // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
-                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 7))
+                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 6))
                 {
                     ocEmailNotificaService.to = ocorrencia.sharkReferente.email;
                     const html = ocEmailNotificaService.notificationEmail(ocorrencia.sharkReferente, ocorrencia); 
@@ -104,7 +120,7 @@ class SaveOcorrenciaService
                 await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
 
                 // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
-                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 7))
+                if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 6))
                 {
                     ocEmailNotificaService.to = ocorrencia.sharkReferente.email;
                     const html = ocEmailNotificaService.notificationEmail(ocorrencia.sharkReferente, ocorrencia); 

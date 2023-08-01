@@ -47,6 +47,18 @@ export const errMsg =
         ALREADY_EXISTS: "O tipo de assunto já existe.",
         UNINFORMED: "O tipo de assunto não foi informado"
     },
+    NIVEL_GRATIFICACAO: 
+    {
+        NOT_FOUND: "o nível de gratificação não foi encontrado.",
+        ALREADY_EXISTS: "O nível de gratificação já existe.",
+        UNINFORMED: "O nível de gratificação não foi informado"
+    },
+    NIVEL_ADVERTENCIA: 
+    {
+        NOT_FOUND: "o nível de advertência não foi encontrado.",
+        ALREADY_EXISTS: "O nível de advertência já existe.",
+        UNINFORMED: "O nível de advertência não foi informado"
+    },
     OCORRENCIA:
     {
         NOT_FOUND: "A ocorrência não foi encontrada.",

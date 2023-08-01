@@ -45,6 +45,12 @@ class OcorrenciaRepository
                     "tas.nome as tipo_assunto",
                     "oc.mensagem",
                     "oc.valor_metragem",
+                    "nvg.id as id_nivel_gratificacao",
+                    "nvg.nome as nome_nivel_gratificacao",
+                    "nvg.valor as valor_nivel_gratificacao",
+                    "nva.id as id_nivel_advertencia",
+                    "nva.nome as nome_nivel_advertencia",
+                    "nva.valor as valor_nivel_advertencia",
                     "sc.id as id_shark_criador",
                     "sc.nome as nome_shark_criador",
                     "sc.email as email_shark_criador",
@@ -64,6 +70,8 @@ class OcorrenciaRepository
                 .innerJoin(`${TableNames.celula} as scc`, "sc.id_celula", "scc.id")
                 .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
                 .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
+                .leftJoin(`${TableNames.nivel_gratificacao} as nvg`, "oc.id_nivel_gratificacao", "nvg.id")
+                .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
                 .where("sc.membro_ativo", "=", membroAtivo);
                 
 
@@ -78,20 +86,33 @@ class OcorrenciaRepository
             
             const data = await query.orderBy("oc.id");
             
-            const ocorrencias: Ocorrencia[] = data.map(ocorrencia => ({
-                id: ocorrencia.id,
-                dataOcorrido: ocorrencia.data_ocorrido,
-                tipoOcorrencia: { id: ocorrencia.id_tipo_ocorrencia, nome: ocorrencia.tipo_ocorrencia },
-                tipoAssunto: { id: ocorrencia.id_tipo_assunto, nome: ocorrencia.tipo_assunto },
-                mensagem: ocorrencia.mensagem,
-                valorMetragem: ocorrencia.valor_metragem,
-                sharkCriador: { id: ocorrencia.id_shark_criador, nome: ocorrencia.nome_shark_criador, 
-                    email: ocorrencia.email_shark_criador, celula: { id: ocorrencia.id_celula_shark_criador, nome: ocorrencia.nome_celula_shark_criador }
-                },
-                sharkReferente: { id: ocorrencia.id_shark_referente, nome: ocorrencia.nome_shark_referente, 
-                    email: ocorrencia.email_shark_referente, celula: { id: ocorrencia.id_celula_shark_referente, nome: ocorrencia.nome_celula_shark_referente } },
-                dataCriacao: ocorrencia.data_criacao
-            }));
+            const ocorrencias: Ocorrencia[] = data.map(ocorrencia => {
+                const ocorrenciaEditada = {
+                    id: ocorrencia.id,
+                    dataOcorrido: ocorrencia.data_ocorrido,
+                    tipoOcorrencia: { id: ocorrencia.id_tipo_ocorrencia, nome: ocorrencia.tipo_ocorrencia },
+                    tipoAssunto: { id: ocorrencia.id_tipo_assunto, nome: ocorrencia.tipo_assunto },
+                    mensagem: ocorrencia.mensagem,
+                    valorMetragem: ocorrencia.valor_metragem,
+                    nivelGratificacao: { id: ocorrencia.id_nivel_gratificacao, nome: ocorrencia.nome_nivel_gratificacao, valor: ocorrencia.valor_nivel_gratificacao},
+                    nivelAdvertencia: { id: ocorrencia.id_nivel_advertencia, nome: ocorrencia.nome_nivel_advertencia, valor: ocorrencia.valor_nivel_advertencia},
+                    sharkCriador: { id: ocorrencia.id_shark_criador, nome: ocorrencia.nome_shark_criador, 
+                        email: ocorrencia.email_shark_criador, celula: { id: ocorrencia.id_celula_shark_criador, nome: ocorrencia.nome_celula_shark_criador }
+                    },
+                    sharkReferente: { id: ocorrencia.id_shark_referente, nome: ocorrencia.nome_shark_referente, 
+                        email: ocorrencia.email_shark_referente, celula: { id: ocorrencia.id_celula_shark_referente, nome: ocorrencia.nome_celula_shark_referente } },
+                    dataCriacao: ocorrencia.data_criacao
+                } as Ocorrencia;
+
+                // Remove o item da ocorrência caso o id seja null
+                if(ocorrenciaEditada.nivelGratificacao?.id === null)
+                    delete ocorrenciaEditada.nivelGratificacao;
+
+                if(ocorrenciaEditada.nivelAdvertencia?.id === null)
+                    delete ocorrenciaEditada.nivelAdvertencia;
+
+                return ocorrenciaEditada;
+            });
             
             return await ocorrencias;
         }
@@ -117,6 +138,12 @@ class OcorrenciaRepository
                     "tas.nome as tipo_assunto",
                     "oc.mensagem",
                     "oc.valor_metragem",
+                    "nvg.id as id_nivel_gratificacao",
+                    "nvg.nome as nome_nivel_gratificacao",
+                    "nvg.valor as valor_nivel_gratificacao",
+                    "nva.id as id_nivel_advertencia",
+                    "nva.nome as nome_nivel_advertencia",
+                    "nva.valor as valor_nivel_advertencia",
                     "sc.id as id_shark_criador",
                     "sc.nome as nome_shark_criador",
                     "sc.email as email_shark_criador",
@@ -136,26 +163,63 @@ class OcorrenciaRepository
                 .innerJoin(`${TableNames.celula} as scc`, "sc.id_celula", "scc.id")
                 .innerJoin(`${TableNames.shark} as sr`, "oc.id_shark_referente", "sr.id")
                 .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
+                .leftJoin(`${TableNames.nivel_gratificacao} as nvg`, "oc.id_nivel_gratificacao", "nvg.id")
+                .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
                 .andWhere("oc.id", "=", id)
                 .first();
 
             if(!data)
                 return undefined;
 
-            return {
+            const ocorrrencia = {
                 id: data.id,
                 dataOcorrido: data.data_ocorrido,
                 tipoOcorrencia: { id: data.id_tipo_ocorrencia, nome: data.tipo_ocorrencia },
                 tipoAssunto: { id: data.id_tipo_assunto, nome: data.tipo_assunto },
                 mensagem: data.mensagem,
                 valorMetragem: data.valor_metragem,
+                nivelGratificacao: { id: data.id_nivel_gratificacao, nome: data.nome_nivel_gratificacao, valor: data.valor_nivel_gratificacao},
+                nivelAdvertencia: { id: data.id_nivel_advertencia, nome: data.nome_nivel_advertencia, valor: data.valor_nivel_advertencia},
                 sharkCriador: { id: data.id_shark_criador, nome: data.nome_shark_criador, 
                     email: data.email_shark_criador, celula: { id: data.id_celula_shark_criador, nome: data.nome_celula_shark_criador }
                 },
                 sharkReferente: { id: data.id_shark_referente, nome: data.nome_shark_referente, 
                     email: data.email_shark_referente, celula: { id: data.id_celula_shark_referente, nome: data.nome_celula_shark_referente } },
                 dataCriacao: data.data_criacao
-            };
+            } as Ocorrencia;
+
+            // Remove o item da ocorrência caso o id seja null
+            if(ocorrrencia.nivelGratificacao?.id === null)
+                delete ocorrrencia.nivelGratificacao;
+
+            if(ocorrrencia.nivelAdvertencia?.id === null )
+                delete ocorrrencia.nivelAdvertencia;
+
+            return ocorrrencia;
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
+    }
+
+    /**
+     * Verifica se já existe uma ocorrência do tipo aviso, associado a um determinado
+     * shark e também de um tipo de assunto repetido dentro do período de 6 meses.
+     * @param ocorrencia - a ocorrência a ser verificada.
+     * @returns true se for uma ocorrência que já existe
+     */
+    async getAvisoRepetido(ocorrencia: Ocorrencia): Promise<boolean>
+    {
+        try
+        {
+            const result = await db(TableNames.ocorrencia)
+                .where("id_tipo_ocorrencia", "=", ocorrencia.tipoOcorrencia.id!)
+                .andWhere("id_tipo_assunto", "=", ocorrencia.tipoAssunto.id!)
+                .andWhere("id_shark_referente", "=", ocorrencia.sharkReferente.id!)
+                .andWhere("data_criacao", ">=", db.raw("NOW() - INTERVAL '6 months' "));
+        
+            if(result.length)
+                return true;
+            else
+                return false;
         }
         catch (err) { throw new InternalServerError(String(err)); }
     }
@@ -173,6 +237,8 @@ class OcorrenciaRepository
             id_tipo_assunto: ocorrencia.tipoAssunto.id,
             mensagem: ocorrencia.mensagem,
             valor_metragem: ocorrencia.valorMetragem,
+            id_nivel_gratificacao: ocorrencia.nivelGratificacao?.id,
+            id_nivel_advertencia: ocorrencia.nivelAdvertencia?.id,
             id_shark_criador: ocorrencia.sharkCriador?.id,
             id_shark_referente: ocorrencia.sharkReferente.id
         })

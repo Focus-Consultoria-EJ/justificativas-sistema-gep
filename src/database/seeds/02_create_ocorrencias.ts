@@ -1,13 +1,18 @@
 import { Knex } from "knex";
 import { isNumber } from "../../helpers/validation";
 import { TableNames } from "../TableNames";
-import { Ocorrencia } from "../../models/gestaoNotificacao/Ocorrencia";
 
 /**
  * Verifica se o número de itens a serem criados foi passado no cli. Se não, define o número de registros para 15.
  */
 const numRegistros: number = isNumber(process.argv[process.argv.length - 1]) ? parseInt(process.argv[process.argv.length - 1]) : 15;
 
+/**
+ * Gera um número aleatório entre os índices do array.
+ * @param arrayNums - um array de números (referente a cada id existente).
+ * @returns um índice do array.
+ */
+const randomIndexOfArray = (arrayNums: Array<number>) => { return arrayNums[Math.floor(Math.random() * arrayNums.length)]; };
 
 /**
  * Gera um número aleatório entre o valor mínimo e máximo.
@@ -67,6 +72,8 @@ interface DadosToDB
     id_tipo_assunto: number,
     mensagem: string,
     valor_metragem: number, 
+    id_nivel_gratificacao?: number,
+    id_nivel_advertencia?: number,
     id_shark_criador: number, 
     id_shark_referente: number
 }
@@ -76,35 +83,32 @@ interface DadosToDB
  * @param numRegistros - O número de registros a serem gerados na seed.
  * @returns uma promise contendo uma coleção de objetos relacionadas a tabela shark.
  */
-const generateData = async (numRegistros: number, arrayOfIds: Array<number>) => {
+const generateData = async (numRegistros: number, idsSharks: Array<number>, idsTipoOcorencias: Array<number>, idsTipoAssuntos: Array<number>,
+    idsNivelGratificacao: Array<number>, idsNivelAdvertencia: Array<number>) => {
 
     const dadosGerados: DadosToDB[] = [];
-
-    const ocorrencia: Ocorrencia = {
-        id: 1,
-        tipoOcorrencia: { id: random(1, 7) },
-        tipoAssunto: { id: random(1, 7) },
-        mensagem: "Mensagem padrão.",
-        valorMetragem: random(0, 12),
-        sharkReferente: { id: random(1, 15), celula: {id: random(1, 6) }, email: "test@hotmail.com", nome: "Nome test"},
-        dataOcorrido: getRandomDateInMonthsAndYears(1, 12, 2014, 2023),
-    };
 
     for (let i = 0; i < numRegistros; i++)
     {
         // Pega um id aleatório dentro do array
-        const randomIndex = Math.floor(Math.random() * arrayOfIds.length);
+        const tipoOcorrencia = randomIndexOfArray(idsTipoOcorencias);
+        const tipoAssunto = randomIndexOfArray(idsTipoAssuntos);
+        const mensagem = `${i} - mensagem padrão.`;
+        const valorMetragem = random(0, 12);
+        const sharkReferente = { id: randomIndexOfArray(idsSharks), celula: {id: random(1, 6) }, email: "test@hotmail.com", nome: "Nome test"};
+        const dataOcorrido = getRandomDateInMonthsAndYears(1, 12, 2014, 2023);
+        let nivelGratificacao;
+        let nivelAdvertencia;
 
-        const tipoOcorrencia = ocorrencia.tipoOcorrencia.id = random(1, 7);
-        const tipoAssunto = ocorrencia.tipoAssunto.id = random(1, 7);
-        const mensagem = ocorrencia.mensagem = `${i} - mensagem padrão.`;
-        const valorMetragem = ocorrencia.valorMetragem = random(0, 12);
-        const sharkReferente = ocorrencia.sharkReferente = { id: arrayOfIds[randomIndex], celula: {id: random(1, 6) }, email: "test@hotmail.com", nome: "Nome test"};
-        const dataOcorrido = ocorrencia.dataOcorrido = getRandomDateInMonthsAndYears(1, 12, 2014, 2023);
+        if(tipoOcorrencia === 5)
+            nivelGratificacao = randomIndexOfArray(idsNivelGratificacao);
+        else if(tipoOcorrencia === 6)
+            nivelAdvertencia = randomIndexOfArray(idsNivelAdvertencia);
 
         dadosGerados.push({ 
             data_ocorrido: dataFormatToDataBase(dataOcorrido), id_tipo_assunto: tipoAssunto, id_shark_referente: sharkReferente.id,
-            id_tipo_ocorrencia: tipoOcorrencia, mensagem: mensagem, valor_metragem: valorMetragem, id_shark_criador: 1
+            id_tipo_ocorrencia: tipoOcorrencia, mensagem: mensagem, valor_metragem: valorMetragem, id_shark_criador: 1,
+            id_nivel_gratificacao: nivelGratificacao, id_nivel_advertencia: nivelAdvertencia
         });
     }
 
@@ -113,11 +117,17 @@ const generateData = async (numRegistros: number, arrayOfIds: Array<number>) => 
 
 export async function seed(knex: Knex) 
 {
-    const ids = (await knex(TableNames.shark)).map(obj => obj.id);
+    const idsSharks = (await knex(TableNames.shark)).map(obj => obj.id);
+    const idsTipoOcorencias = (await knex(TableNames.tipo_ocorrencia)).map(obj => obj.id);
+    const idsTipoAssuntos = (await knex(TableNames.tipo_assunto)).map(obj => obj.id);
+    const idsNivelAdvertencia = (await knex(TableNames.nivel_advertencia)).map(obj => obj.id);
+    const idsNivelGratificacao = (await knex(TableNames.nivel_gratificacao)).map(obj => obj.id);
     
-    if(ids[0] === 1)
-        ids.shift(); // remove o id 1
+    if(idsSharks[0] === 1)
+        idsSharks.shift(); // remove o id 1
+    
+    const dadosGerados = await generateData(numRegistros, idsSharks, idsTipoOcorencias, idsTipoAssuntos, 
+        idsNivelGratificacao, idsNivelAdvertencia);
 
-    const dadosGerados = await generateData(numRegistros, ids);
     await knex(TableNames.ocorrencia).insert(dadosGerados);
 }

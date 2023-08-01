@@ -1,4 +1,6 @@
 import { Shark } from "../Shark";
+import { NivelAdvertencia } from "./NivelAdvertencia";
+import { NivelGratificacao } from "./NivelGratificacao";
 import { TipoAssunto } from "./TipoAssunto";
 import { TipoOcorrencia } from "./TipoOcorrencia";
 
@@ -10,6 +12,8 @@ export interface Ocorrencia
     tipoAssunto: TipoAssunto;
     mensagem: string;
     valorMetragem: number;
+    nivelAdvertencia?: NivelAdvertencia;
+    nivelGratificacao?: NivelGratificacao;
     sharkCriador?: Shark;
     sharkReferente: Shark;
     dataCriacao?: Date;
