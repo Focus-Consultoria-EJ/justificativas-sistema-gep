@@ -388,6 +388,13 @@ class SharkRepository
             .del();
     }
 
+    async resetMetragem(): Promise<any | undefined>
+    {
+        return await db(TableNames.shark)
+            .update({ metragem: 24 })
+            .where("id", ">", 0); 
+    }
+
     /**
     * Insere na tabela shark_log no banco de dados.
     * @param idTipoAcaoLog - o identificador relacionado ao tipo de ação. 1 - Inserção, 2 - Atualização, 3 - Remoção.

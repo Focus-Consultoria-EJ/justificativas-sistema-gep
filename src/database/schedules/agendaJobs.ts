@@ -1,4 +1,5 @@
 import { jobApagaOcorrencias } from "./gestaoNotificacao/delete_ocorrencias";
+import { jobResetMetragemSharks } from "./gestaoNotificacao/reset_metragem_sharks";
 
 /**
  * Agenda funções que serão executadas em determinada data.
@@ -6,4 +7,5 @@ import { jobApagaOcorrencias } from "./gestaoNotificacao/delete_ocorrencias";
 export function agendaJobs() 
 {
     jobApagaOcorrencias();
+    jobResetMetragemSharks();
 }
