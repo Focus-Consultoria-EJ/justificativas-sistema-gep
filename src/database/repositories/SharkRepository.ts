@@ -379,20 +379,43 @@ class SharkRepository
         catch (err) { throw new InternalServerError(String(err)); }
     }
 
+    /**
+     * Remove o item na tabela shark no banco de dados.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
     async delete(id: number): Promise<any | undefined>
     {
         return await db(TableNames.shark)
             .select()
             .where({ id: id })
-            .where("id", "<>", 1) // Não permite deletar o usuário base
+            .andWhere("id", "<>", 1) // Não permite deletar o usuário base
             .del();
     }
 
+    /**
+     * Atuliza o membro ativo de um shark para false.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
+    async softDelete(id: number): Promise<any | undefined>
+    {
+        return await db(TableNames.shark)
+            .update({ membro_ativo: false})
+            .where({ id: id })
+            .andWhere("id", "<>", 1);
+    }
+
+    /**
+     * Remove o item na tabela shark no banco de dados.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
     async resetMetragem(): Promise<any | undefined>
     {
         return await db(TableNames.shark)
             .update({ metragem: 24 })
-            .where("id", ">", 0); 
+            .where("id", ">", 0);
     }
 
     /**

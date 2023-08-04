@@ -6,7 +6,7 @@ import { gepAuthMiddleware } from "../middlewares/gepAuth.middleware";
 const sharkRoutes = Router();
 
 sharkRoutes.route("/sharks")
-    .get(authMiddleware, SharkController.select)
+    .get(authMiddleware, gepAuthMiddleware, SharkController.select)
     .post(authMiddleware, gepAuthMiddleware, SharkController.save);
     
 sharkRoutes.route("/sharks/:id")

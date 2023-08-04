@@ -24,11 +24,15 @@ class SharkController
             const shark = await getByUsernameService.execute(data.login);
             
             if(!shark)
-                throw new CustomError("Usuário não encontrado.", 400);
+                throw new CustomError("O shark não foi encontrado.", 400);
+
+            // Proíbe o usuário inativo de realizar o login
+            if(!shark.membroAtivo)
+                throw new CustomError("O shark não está ativo.", 400);
         
             // Verifica se a senha digitada é igual ao do banco de dados
             if(!await passwordCompare(data.senha, shark.senha))
-                throw new CustomError("E-mail ou senha inválidos!", 401);
+                throw new CustomError("Senha inválida!", 401);
 
             const token = JWTService.sign({ id: shark.id });
 
