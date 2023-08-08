@@ -20,3 +20,12 @@ export interface Shark
     membroAtivo?: number;
     dataCriacao?: Date;
 }
+
+export interface LogShark
+{
+    id?: number;
+    tipoAcaoLog?: { id: number, nome: string };
+    shark?: Shark;
+    sharkEditor?: Shark;
+    dataAcao?: Date;
+}

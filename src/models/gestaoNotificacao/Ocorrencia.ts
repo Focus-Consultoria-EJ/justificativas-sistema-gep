@@ -18,3 +18,12 @@ export interface Ocorrencia
     sharkReferente: Shark;
     dataCriacao?: Date;
 }
+
+export interface LogOcorrencia
+{
+    id?: number;
+    tipoAcaoLog?: { id: number, nome: string };
+    ocorrencia?: Ocorrencia;
+    sharkEditor?: Shark;
+    dataAcao?: Date;
+}

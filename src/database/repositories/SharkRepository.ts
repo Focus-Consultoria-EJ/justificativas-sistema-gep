@@ -1,6 +1,6 @@
 import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import { EmailPessoal } from "../../models/EmailPessoal";
-import { Shark } from "../../models/Shark";
+import { LogShark, Shark } from "../../models/Shark";
 import { TableNames } from "../TableNames";
 import db from "../db";
 
@@ -416,6 +416,107 @@ class SharkRepository
         return await db(TableNames.shark)
             .update({ metragem: 24 })
             .where("id", ">", 0);
+    }
+
+    /* SEÇÃO DO LOG DE SHARKS */
+
+    /**
+     * Traz todos os logs das ações realizadas na tabela shark no banco de dados.
+     * @param size - (opcional) limita o número de registros durante a seleção.
+     * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @returns uma promise contendo uma coleção de objetos. 
+     */
+    async selectSharkLog(size?:number, page?:number): Promise<LogShark[] | undefined>
+    {
+        let query = db(TableNames.ocorrencia_log)
+            .select(
+                "sl.id",
+                "tal.id as id_tipo_acao_log",
+                "tal.nome as tipo_acao",
+                "s.id as id_shark_editado",
+                "s.nome as nome_shark_editado",
+                "s.email as email_shark_editado",
+                "se.id as id_shark_criador",
+                "se.nome as nome_shark_criador",
+                "se.email as email_shark_criador",
+                "sl.data_acao"
+            )
+            .from(`${TableNames.shark_log} as sl`)
+            .innerJoin(`${TableNames.tipo_acao_log} as tal`, "tal.id", "sl.id_tipo_acao_log")
+            .leftJoin(`${TableNames.shark} as s`, "s.id", "sl.id_shark")
+            .innerJoin(`${TableNames.shark} as se`, "se.id", "sl.id_shark_editor");
+
+        if(size) query = query.limit(size);
+        if(page) query = query.offset(page);
+
+        const data = await query.orderBy("sl.id");
+
+        const LogSharks: LogShark[] = data.map(data => {
+            return {
+                id: data.id,
+                tipoAcaoLog: { id: data.id_tipo_acao_log, nome: data.tipo_acao },
+                shark: { 
+                    id: data.id_shark_editado, 
+                    nome: data.nome_shark_editado, 
+                    email: data.email_shark_editado
+                },
+                sharkEditor: { 
+                    id: data.id_shark_criador, 
+                    nome: data.nome_shark_criador, 
+                    email:  data.email_shark_criador
+                },
+                dataAcao: data.data_acao
+            } as LogShark;
+        });
+            
+        return LogSharks;
+    }
+
+    /**
+     * Traz todos os logs das ações realizadas na tabela shark de acordo com o id.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise contendo um objeto. 
+     */
+    async getByIdSharkLog(id: number): Promise<LogShark | undefined>
+    {
+        const data = await db(TableNames.shark_log)
+            .select(
+                "sl.id",
+                "tal.id as id_tipo_acao_log",
+                "tal.nome as tipo_acao",
+                "s.id as id_shark_editado",
+                "s.nome as nome_shark_editado",
+                "s.email as email_shark_editado",
+                "se.id as id_shark_criador",
+                "se.nome as nome_shark_criador",
+                "se.email as email_shark_criador",
+                "sl.data_acao"
+            )
+            .from(`${TableNames.shark_log} as sl`)
+            .innerJoin(`${TableNames.tipo_acao_log} as tal`, "tal.id", "sl.id_tipo_acao_log")
+            .leftJoin(`${TableNames.shark} as s`, "s.id", "sl.id_shark")
+            .innerJoin(`${TableNames.shark} as se`, "se.id", "sl.id_shark_editor")
+            .andWhere("sl.id", "=", id)
+            .first();
+
+        if(!data)
+            return undefined;
+
+        return {
+            id: data.id,
+            tipoAcaoLog: { id: data.id_tipo_acao_log, nome: data.tipo_acao },
+            shark: { 
+                id: data.id_shark_editado, 
+                nome: data.nome_shark_editado, 
+                email: data.email_shark_editado
+            },
+            sharkEditor: { 
+                id: data.id_shark_criador, 
+                nome: data.nome_shark_criador, 
+                email:  data.email_shark_criador
+            },
+            dataAcao: data.data_acao
+        } as LogShark;
     }
 
     /**
