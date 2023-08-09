@@ -14,11 +14,5 @@ sharkRoutes.route("/sharks/:id")
     .put(authMiddleware, gepAuthMiddleware, SharkController.save)
     .delete(authMiddleware, gepAuthMiddleware, SharkController.delete);
 
-sharkRoutes.route("/log-sharks")
-    .get(authMiddleware,  gepAuthMiddleware, SharkController.selectLog);
-
-sharkRoutes.route("/log-sharks/:id")
-    .get(authMiddleware,  gepAuthMiddleware, SharkController.selectLog); 
-
 export default sharkRoutes;
 

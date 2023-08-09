@@ -3,8 +3,6 @@ import getOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/ge
 import deleteOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/delete.ocorrencia.service";
 import saveOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/save.ocorrencia.service";
 import getByIdOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/getById.ocorrencia.service";
-import getLogOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/getLog.ocorrencia.service";
-import getByIdLogOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/getByIdLog.ocorrencia.service";
 
 class OcorrenciaController
 {
@@ -61,24 +59,6 @@ class OcorrenciaController
             await deleteOcorrenciaService.execute(req.params.id, req.shark);
 
             return res.status(204).send();
-        }
-        catch(err) { next(err); }
-    }
-
-    async selectLog(req: Request, res: Response, next: NextFunction)
-    { 
-        try
-        {
-            const { size, page } = req.query;
-            
-            let result;
-            
-            if(req.params.id)
-                result = await getByIdLogOcorrenciaService.execute(req.params.id);
-            else
-                result = await getLogOcorrenciaService.execute({ size, page });
-
-            res.status(200).json(result);
         }
         catch(err) { next(err); }
     }

@@ -14,11 +14,5 @@ ocorrenciaRoutes.route("/ocorrencias/:id")
     .put(authMiddleware, gepAuthMiddleware, OcorenciaController.save)
     .delete(authMiddleware, gepAuthMiddleware, OcorenciaController.delete);
 
-ocorrenciaRoutes.route("/log-ocorrencias")
-    .get(authMiddleware,  gepAuthMiddleware, OcorenciaController.selectLog);
-
-ocorrenciaRoutes.route("/log-ocorrencias/:id")
-    .get(authMiddleware,  gepAuthMiddleware, OcorenciaController.selectLog);
-
 export default ocorrenciaRoutes;
 
