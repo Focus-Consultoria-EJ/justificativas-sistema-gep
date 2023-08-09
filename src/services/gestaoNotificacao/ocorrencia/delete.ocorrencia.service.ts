@@ -1,6 +1,9 @@
+import SharkRepository from "../../../database/repositories/SharkRepository";
 import OcorrenciaRepository from "../../../database/repositories/gestaoNotificacao/OcorrenciaRepository";
 import { errMsg } from "../../../helpers/ErrorMessages";
 import { checkId, valueExists } from "../../../helpers/validation";
+import { BadRequestError } from "../../../middlewares/Error.middleware";
+import ocEmailNotificaService from "../ocorrenciaEmailNotification/ocorrenciaEmailNotification.service";
 
 class DeleteOcorrenciaService 
 {
@@ -13,11 +16,27 @@ class DeleteOcorrenciaService
     {
         id = checkId(id);
 
-        const result = await OcorrenciaRepository.getById(id);
-        valueExists(result, errMsg.OCORRENCIA.NOT_FOUND);
+        const ocorrencia = await OcorrenciaRepository.getById(id);
+        valueExists(ocorrencia, errMsg.OCORRENCIA.NOT_FOUND);
             
-        await OcorrenciaRepository.delete(id);
-        await OcorrenciaRepository.insertOcorrenciaLog(3, id, reqShark.id!);
+        await OcorrenciaRepository.delete(id).then(async () => {
+            await OcorrenciaRepository.insertOcorrenciaLog(3, id, reqShark.id!);
+            
+            // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
+            if(ocorrencia?.valorMetragem !== 0 || ocorrencia?.tipoOcorrencia.id === 4)
+            {
+                const sharkReferente = await SharkRepository.getById(Number(ocorrencia?.sharkReferente.id));
+
+                if(!sharkReferente)
+                    throw new BadRequestError("Não foi possível enviar o e-mail pois o shark referente não foi encontrado.");
+               
+                ocEmailNotificaService.to = ocorrencia?.sharkReferente.email;
+                const html = ocEmailNotificaService.notificationEmailOnDelete(sharkReferente, ocorrencia!); 
+                await ocEmailNotificaService.sendMail(html);
+            }
+        });
+        
+
     }
 }
 

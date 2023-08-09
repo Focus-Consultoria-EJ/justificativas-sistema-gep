@@ -1,5 +1,5 @@
 import { InternalServerError } from "../../../middlewares/Error.middleware";
-import { Ocorrencia } from "../../../models/gestaoNotificacao/Ocorrencia";
+import { LogOcorrencia, Ocorrencia } from "../../../models/gestaoNotificacao/Ocorrencia";
 import { TableNames } from "../../TableNames";
 import db from "../../db";
 
@@ -72,15 +72,16 @@ class OcorrenciaRepository
                 .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
                 .leftJoin(`${TableNames.nivel_gratificacao} as nvg`, "oc.id_nivel_gratificacao", "nvg.id")
                 .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
-                .where("sc.membro_ativo", "=", membroAtivo);
+                .where("sc.membro_ativo", "=", membroAtivo)
+                .andWhere((builder) => {
+                    if(nomeSharkCriador) builder.orWhere("sc.nome", "ilike", `%${nomeSharkCriador}%`);
+                    if(nomeSharkReferente) builder.orWhere("sr.nome", "ilike", `%${nomeSharkReferente}%`);
+                    if(emailSharkCriador) builder.orWhere("sc.email", "ilike", `%${emailSharkCriador}%`);
+                    if(emailSharkReferente) builder.orWhere("sr.email", "ilike", `%${emailSharkReferente}%`);
+                    if(tipoOcorrencia) builder.orWhere("toc.nome", "ilike", `%${tipoOcorrencia}%`);
+                    if(tipoAssunto) builder.orWhere("tas.nome", "ilike", `%${tipoAssunto}%`);
+                });
                 
-
-            if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
-            if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
-            if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
-            if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
-            if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
-            if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
             if(size) query = query.limit(size);
             if(page) query = query.offset(page);
             
@@ -288,6 +289,106 @@ class OcorrenciaRepository
         return await db(TableNames.ocorrencia)
             .del()
             .where("id", ">", 0);
+    }
+
+    
+    /* SEÇÃO DO LOG DE OCORRÊNCIAS */
+
+    /**
+     * Traz todos os logs das ações realizadas na tabela ocorrencia no banco de dados.
+     * @param size - (opcional) limita o número de registros durante a seleção.
+     * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @returns uma promise contendo uma coleção de objetos. 
+     */
+    async selectOcorrenciaLog(size?:number, page?:number): Promise<LogOcorrencia[] | undefined>
+    {
+        let query = db(TableNames.ocorrencia_log)
+            .select(
+                "ol.id",
+                "tal.id as id_tipo_acao_log",
+                "tal.nome as tipo_acao",
+                "o.id as id_ocorrencia",
+                "o.id_shark_criador",
+                "osc.nome as nome_shark_criador",
+                "osc.email as email_shark_criador",
+                "se.id as id_shark_editor",
+                "se.nome as nome_shark_editor",
+                "se.email as email_shark_editor",
+                "ol.data_acao"
+            )
+            .from(`${TableNames.ocorrencia_log} as ol`)
+            .innerJoin(`${TableNames.tipo_acao_log} as tal`, "tal.id", "ol.id_tipo_acao_log")
+            .innerJoin(`${TableNames.shark} as se`, "se.id", "ol.id_shark_editor")
+            .leftJoin(`${TableNames.ocorrencia} as o`, "o.id", "ol.id_ocorrencia")
+            .innerJoin(`${TableNames.shark} as osc`, "o.id_shark_criador", "osc.id");
+
+        if(size) query = query.limit(size);
+        if(page) query = query.offset(page);
+
+        const data = await query.orderBy("ol.id");
+
+        const LogOcorrencias: LogOcorrencia[] = data.map(data => {
+            return {
+                id: data.id,
+                tipoAcaoLog: { id: data.id_tipo_acao_log, nome: data.tipo_acao },
+                ocorrencia: { 
+                    id: data.id, 
+                    sharkCriador: { id: data.id_shark_criador, nome: data.nome_shark_criador, email: data.email_shark_criador }  
+                },
+                sharkEditor: { 
+                    id: data.id_shark_editor, 
+                    nome: data.nome_shark_editor, 
+                    email: data.email_shark_editor 
+                },
+                dataAcao: data.data_acao
+            } as LogOcorrencia;
+        });
+            
+        return LogOcorrencias;
+    }
+
+    /**
+     * Traz todos os logs das ações realizadas na tabela ocorrencia de acordo com o id.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise contendo um objeto. 
+     */
+    async getByIdOcorrenciaLog(id: number): Promise<LogOcorrencia | undefined>
+    {
+        const data = await db(TableNames.ocorrencia_log)
+            .select(
+                "ol.id",
+                "tal.id as id_tipo_acao_log",
+                "tal.nome as tipo_acao",
+                "o.id as id_ocorrencia",
+                "o.id_shark_criador",
+                "osc.nome as nome_shark_criador",
+                "osc.email as email_shark_criador",
+                "se.id as id_shark_editor",
+                "se.nome as nome_shark_editor",
+                "se.email as email_shark_editor",
+                "ol.data_acao"
+            )
+            .from(`${TableNames.ocorrencia_log} as ol`)
+            .innerJoin(`${TableNames.tipo_acao_log} as tal`, "tal.id", "ol.id_tipo_acao_log")
+            .innerJoin(`${TableNames.shark} as se`, "se.id", "ol.id_shark_editor")
+            .leftJoin(`${TableNames.ocorrencia} as o`, "o.id", "ol.id_ocorrencia")
+            .innerJoin(`${TableNames.shark} as osc`, "o.id_shark_criador", "osc.id")
+            .andWhere("ol.id", "=", id)
+            .first();
+
+        if(!data)
+            return undefined;
+        
+        return {
+            id: data.id,
+            tipoAcaoLog: { id: data.id_tipo_acao_log, nome: data.tipo_acao },
+            ocorrencia: { 
+                id: data.id, 
+                sharkCriador: { id: data.id_shark_criador, nome: data.nome_shark_criador, email: data.email_shark_criador }  
+            },
+            sharkEditor: { id: data.id_shark_editor, nome: data.nome_shark_editor, email: data.email_shark_editor },
+            dataAcao: data.data_acao
+        } as LogOcorrencia;
     }
 
     /**

@@ -6,6 +6,6 @@ import { jobResetMetragemSharks } from "./gestaoNotificacao/reset_metragem_shark
  */
 export function agendaJobs() 
 {
-    jobApagaOcorrencias();
-    jobResetMetragemSharks();
+    jobResetMetragemSharks(); // 2º
+    jobApagaOcorrencias(); // 1º
 }

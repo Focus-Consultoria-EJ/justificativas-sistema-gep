@@ -70,6 +70,17 @@ class SaveOcorrenciaService
         if(reqShark.celula.id !== 3 && reqShark.role?.id !== 3 && (ocorrencia.sharkCriador?.id != ocorrencia.sharkReferente.id))
             throw new BadRequestError("Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo.");
 
+        // Bloqueia que uma ocorrência que não seja do tipo advertência ou gratificação receba os níveis
+        if((ocorrencia.tipoOcorrencia.id === 1 || 
+            ocorrencia.tipoOcorrencia.id === 2 || 
+            ocorrencia.tipoOcorrencia.id === 3 || 
+            ocorrencia.tipoOcorrencia.id === 4 ) && ( ocorrencia.nivelAdvertencia?.id || ocorrencia.nivelGratificacao?.id) )
+            throw new BadRequestError("Este tipo de ocorrência não pode receber nível de advertência ou gratificação.");
+        else if(ocorrencia.tipoOcorrencia.id === 5 && ocorrencia.nivelAdvertencia?.id)
+            throw new BadRequestError("Este tipo de ocorrência não pode receber nível de advertência.");
+        else if(ocorrencia.tipoOcorrencia.id === 6 && ocorrencia.nivelGratificacao?.id)
+            throw new BadRequestError("Este tipo de ocorrência não pode receber nível de gratificação.");
+
         // Ocorrência do tipo aviso
         if(ocorrencia.tipoOcorrencia.id === 4)
         {
@@ -102,6 +113,11 @@ class SaveOcorrenciaService
             
         if(ocorrencia.id)
         {
+            if( ocorrenciaASerAtualizada?.tipoOcorrencia.id === 4 ||
+                ocorrenciaASerAtualizada?.tipoOcorrencia.id === 5 ||
+                ocorrenciaASerAtualizada?.tipoOcorrencia.id === 6 )
+                throw new BadRequestError("Não é possível atualizar uma ocorrência que é do tipo aviso, gratificação ou advertência.");
+                
             await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
                 await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
 

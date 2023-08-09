@@ -7,6 +7,8 @@ import getByUsernameService from "../services/shark/getByUsername.service";
 import { passwordCompare } from "../middlewares/password.middleware";
 import JWTService from "../services/jwt/JWT.service";
 import getByIdSharkService from "../services/shark/getById.shark.service";
+import getByIdLogSharkService from "../services/shark/getByIdLog.shark.service";
+import getLogSharkService from "../services/shark/getLog.shark.service";
 
 class SharkController
 {
@@ -88,6 +90,24 @@ class SharkController
             await deleteSharkService.execute(req.params.id, req.shark);
 
             return res.status(204).send();
+        }
+        catch(err) { next(err); }
+    }
+
+    async selectLog(req: Request, res: Response, next: NextFunction)
+    { 
+        try
+        {
+            const { size, page } = req.query;
+            
+            let result;
+
+            if(req.params.id)
+                result = await getByIdLogSharkService.execute(req.params.id);
+            else
+                result = await getLogSharkService.execute({ size, page });
+
+            res.status(200).json(result);
         }
         catch(err) { next(err); }
     }
