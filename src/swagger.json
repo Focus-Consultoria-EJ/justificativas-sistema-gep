@@ -23,7 +23,7 @@
     "/login": {
       "post": {
         "tags": [
-          "Login"
+          "Public"
         ],
         "summary": "Login na plataforma",
         "description": "Rota responsável por gerar o token JWT",
@@ -103,10 +103,150 @@
         }
       }
     },
+    "/forgot-password": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Envia e-mail para resetar a senha do shark",
+        "description": "Rota responsável por enviar um email de redefinição de senha.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotpassword_body"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotpassword_body_1"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "email": "emailtest6@hotmail.com"
+                  }
+                },
+                "Example 2": {
+                  "value": {
+                    "email": "test2@hotmail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token inválido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Um email de redefinição de senha foi enviado para o endereço fornecido."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "O email não está associado a nenhum shark."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Faz a atualização da senha do shark",
+        "description": "Rota responsável por atualizar a senha do shark.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/resetpassword_body"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resetpassword_body_1"
+              },
+              "examples": {
+                "Login 1": {
+                  "value": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkxNjgwODgwLCJleHAiOjE2OTE2ODI2ODB9.jG2VofhJzOoAvNL-ty5Jlz6W7DxcaD7hqcbXyI4prVA",
+                    "senha": "123456789"
+                  }
+                },
+                "Login 2": {
+                  "value": {
+                    "token": "asdfsgafhgahIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkxNjgwODgwLCJleHAiOjE2OTE2ODI2ODB9.jG2VofhJzOoAvNL-ty5Jlz6W7DxcaD7hqcbXyI4prVA",
+                    "senha": "asberfw3432"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/validateToken": {
       "get": {
         "tags": [
-          "Login"
+          "Sharks"
         ],
         "summary": "Valida o Token e traz os dados do usuário",
         "description": "Rota responsável por retornar todos os dados contidos no usuário salvo na requisição",
@@ -4322,6 +4462,52 @@
         "type": "object",
         "properties": {
           "token": {
+            "type": "string"
+          }
+        }
+      },
+      "forgotpassword_body": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "forgotpassword_body_1": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "resetpassword_body": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "resetpassword_body_1": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "senha": {
             "type": "string"
           }
         }

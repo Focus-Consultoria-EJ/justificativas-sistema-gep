@@ -5,6 +5,9 @@ import { gepAuthMiddleware } from "../middlewares/gepAuth.middleware";
 
 const sharkRoutes = Router();
 
+sharkRoutes.route("/validateToken")
+    .get(authMiddleware, SharkController.getSharkFromRequest);
+
 sharkRoutes.route("/sharks")
     .get(authMiddleware, gepAuthMiddleware, SharkController.select)
     .post(authMiddleware, gepAuthMiddleware, SharkController.save);

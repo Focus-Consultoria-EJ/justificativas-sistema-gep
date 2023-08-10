@@ -418,6 +418,25 @@ class SharkRepository
             .where("id", ">", 0);
     }
 
+    /**
+     * Atualiza a senha do shark.
+     * @param shark - os dados do tipo Shark
+     * @returns uma promise com o id que foi inserido.
+     */
+    async resetPassword(shark: Shark)
+    {
+        try
+        {
+            return await db(TableNames.shark)
+                .update({
+                    senha: shark.senha
+                })
+                .where({ id: shark.id });
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
+    }
+
+
     /* SEÇÃO DO LOG DE SHARKS */
 
     /**

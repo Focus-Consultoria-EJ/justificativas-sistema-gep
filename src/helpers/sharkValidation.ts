@@ -11,6 +11,18 @@ export interface SharkForm
 }
 
 /**
+ * Verifica se a senha está no formato esperado.
+ * @param senha - a senha a ser validada.
+ * @returns a senha caso esteja, se não retorna false.
+ */
+export const sharkPasswordCheck = (senha: string) => 
+{
+    if(String(senha).length < 8 || String(senha).length >= 30)
+        return false;
+    return senha;
+};
+
+/**
  * Verifica os dados vindo do header de shark.
  * @param shark - um objeto contendo as informações do shark.
  * @param actionUpdate - um boolean especificando se o formulário é do tipo insert ou update. Por padrão,
@@ -22,12 +34,12 @@ export const sharkFormValidation = async (shark: any, actionUpdate = false): Pro
     // Só verifica o campo se a ação for do tipo update e a senha tiver setada.
     if(actionUpdate)
     {
-        if(shark.senha && (String(shark.senha).length < 8 || String(shark.senha).length >= 30))
+        if(shark.senha && !sharkPasswordCheck(shark.senha))
             return "Digite uma senha com 8 ou mais caracteres. (max: 30)";
     }
     else
     {
-        if(!shark.senha || String(shark.senha).length < 8 || String(shark.senha).length >= 30)
+        if(!shark.senha || !sharkPasswordCheck(shark.senha))
             return "Digite uma senha com 8 ou mais caracteres. (max: 30)";
     }
 

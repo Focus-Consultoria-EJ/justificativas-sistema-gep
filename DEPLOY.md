@@ -12,6 +12,8 @@
     - `MAILER_PORT` seguido da porta utilizada pelo servidor, no caso do gmail '465'
     - `MAILER_AUTH_USER ` seguido do e-mail que irá lançar os e-mails, ex: 'example@gmail.com'
     - `MAILER_AUTH_PASS` seguido da senha associada ao e-mail 
+    - `URL_FRONT_END` = url do front-end, ex: https://url-frontend.com.br (Sem a barra no final!)
+
 
 ## Deploy do DB
 
