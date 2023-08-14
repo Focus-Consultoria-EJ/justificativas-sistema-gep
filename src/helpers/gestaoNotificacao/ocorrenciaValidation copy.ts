@@ -41,7 +41,7 @@ export const ocorrenciaFormValidation = async (ocorrencia: any): Promise<Ocorren
 
     return {
         id: ocorrencia.id,
-        dataOcorrido: ocorrencia.dataOcorrido ?? ( ocorrencia.id ? ocorrencia.dataOcorrido : new Date() ),
+        dataOcorrido: ocorrencia.dataOcorrido ?? new Date(),
         tipoOcorrencia: { id: ocorrencia.tipoOcorrencia },
         tipoAssunto: { id: ocorrencia.tipoAssunto },
         mensagem: ocorrencia.mensagem,
