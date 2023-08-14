@@ -6,11 +6,11 @@ import TipoAssuntoController from "../../controllers/gestaoNotificacao/TipoAssun
 const tipoAssuntosRoutes = Router();
 
 tipoAssuntosRoutes.route("/tipo-assuntos")
-    .get(authMiddleware, gepAuthMiddleware, TipoAssuntoController.select)
+    .get(authMiddleware, TipoAssuntoController.select)
     .post(authMiddleware, gepAuthMiddleware, TipoAssuntoController.save);
 
 tipoAssuntosRoutes.route("/tipo-assuntos/:id")
-    .get(authMiddleware, gepAuthMiddleware, TipoAssuntoController.select)
+    .get(authMiddleware, TipoAssuntoController.select)
     .put(authMiddleware, gepAuthMiddleware, TipoAssuntoController.save)
     .delete(authMiddleware, gepAuthMiddleware, TipoAssuntoController.delete);
 

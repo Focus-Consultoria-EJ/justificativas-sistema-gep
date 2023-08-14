@@ -6,11 +6,11 @@ import NivelAdvertenciaController from "../../controllers/gestaoNotificacao/Nive
 const nivelAdvertenciaRoutes = Router();
 
 nivelAdvertenciaRoutes.route("/niveis-advertencia")
-    .get(authMiddleware, gepAuthMiddleware, NivelAdvertenciaController.select)
+    .get(authMiddleware, NivelAdvertenciaController.select)
     .post(authMiddleware, gepAuthMiddleware, NivelAdvertenciaController.save);
 
 nivelAdvertenciaRoutes.route("/niveis-advertencia/:id")
-    .get(authMiddleware, gepAuthMiddleware, NivelAdvertenciaController.select)
+    .get(authMiddleware, NivelAdvertenciaController.select)
     .put(authMiddleware, gepAuthMiddleware, NivelAdvertenciaController.save)
     .delete(authMiddleware, gepAuthMiddleware, NivelAdvertenciaController.delete);
 

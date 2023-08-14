@@ -6,11 +6,11 @@ import NivelGratificacaoController from "../../controllers/gestaoNotificacao/Niv
 const nivelGratificacaoRoutes = Router();
 
 nivelGratificacaoRoutes.route("/niveis-gratificacao")
-    .get(authMiddleware, gepAuthMiddleware, NivelGratificacaoController.select)
+    .get(authMiddleware, NivelGratificacaoController.select)
     .post(authMiddleware, gepAuthMiddleware, NivelGratificacaoController.save);
 
 nivelGratificacaoRoutes.route("/niveis-gratificacao/:id")
-    .get(authMiddleware, gepAuthMiddleware, NivelGratificacaoController.select)
+    .get(authMiddleware, NivelGratificacaoController.select)
     .put(authMiddleware, gepAuthMiddleware, NivelGratificacaoController.save)
     .delete(authMiddleware, gepAuthMiddleware, NivelGratificacaoController.delete);
 

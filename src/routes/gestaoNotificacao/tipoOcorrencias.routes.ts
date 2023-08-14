@@ -6,11 +6,11 @@ import TipoOcorenciaController from "../../controllers/gestaoNotificacao/TipoOco
 const tipoOcorrenciasRoutes = Router();
 
 tipoOcorrenciasRoutes.route("/tipo-ocorrencias")
-    .get(authMiddleware, gepAuthMiddleware, TipoOcorenciaController.select)
+    .get(authMiddleware, TipoOcorenciaController.select)
     .post(authMiddleware, gepAuthMiddleware, TipoOcorenciaController.save);
 
 tipoOcorrenciasRoutes.route("/tipo-ocorrencias/:id")
-    .get(authMiddleware, gepAuthMiddleware, TipoOcorenciaController.select)
+    .get(authMiddleware, TipoOcorenciaController.select)
     .put(authMiddleware, gepAuthMiddleware, TipoOcorenciaController.save)
     .delete(authMiddleware, gepAuthMiddleware, TipoOcorenciaController.delete);
 
