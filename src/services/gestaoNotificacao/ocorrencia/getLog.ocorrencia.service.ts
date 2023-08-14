@@ -7,6 +7,7 @@ interface IRequestParams
 { 
     size: any;
     page: any;
+    order: any;
 }
 
 class getLogOcorrenciaService 
@@ -27,6 +28,7 @@ class getLogOcorrenciaService
         return await OcorrenciaRepository.selectOcorrenciaLog(
             reqParam?.size, 
             reqParam?.page, 
+            reqParam?.order
         );
     }
 }

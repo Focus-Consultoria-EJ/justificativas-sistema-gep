@@ -2,6 +2,7 @@ import { InternalServerError } from "../../../middlewares/Error.middleware";
 import { LogOcorrencia, Ocorrencia } from "../../../models/gestaoNotificacao/Ocorrencia";
 import { TableNames } from "../../TableNames";
 import db from "../../db";
+import { membroAtivoParameter, orderByParameter, pageParameter, sizeParameter } from "../../Parameters";
 
 class OcorrenciaRepository
 {
@@ -23,17 +24,19 @@ class OcorrenciaRepository
      * @returns uma promise contendo uma coleção de objetos. 
      */
     async select(
-        size?:number, page?:number, 
-        membroAtivo?:string, nomeSharkCriador?: string,
+        size?: number, page?: number, 
+        membroAtivo?: string, nomeSharkCriador?: string,
         nomeSharkReferente?: string, emailSharkCriador?: string,
-        emailSharkReferente?: string, tipoOcorrencia?:string, tipoAssunto?:string
+        emailSharkReferente?: string, tipoOcorrencia?: string, tipoAssunto?: string,
+        order?: string
     ): Promise<Ocorrencia[] | undefined>
     {
         try
         {
-            page = (page && page > 0) ? page : 0;
-            size = (size && size > 0) ? size : 0;
-            membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : "true";
+            page = pageParameter(page);
+            size = sizeParameter(size);
+            membroAtivo = membroAtivoParameter(membroAtivo, "true");
+            order = orderByParameter(order, "DESC");
 
             let query = db(TableNames.shark)
                 .select(
@@ -72,20 +75,19 @@ class OcorrenciaRepository
                 .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
                 .leftJoin(`${TableNames.nivel_gratificacao} as nvg`, "oc.id_nivel_gratificacao", "nvg.id")
                 .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
-                .where("sc.membro_ativo", "=", membroAtivo)
-                .andWhere((builder) => {
-                    if(nomeSharkCriador) builder.orWhere("sc.nome", "ilike", `%${nomeSharkCriador}%`);
-                    if(nomeSharkReferente) builder.orWhere("sr.nome", "ilike", `%${nomeSharkReferente}%`);
-                    if(emailSharkCriador) builder.orWhere("sc.email", "ilike", `%${emailSharkCriador}%`);
-                    if(emailSharkReferente) builder.orWhere("sr.email", "ilike", `%${emailSharkReferente}%`);
-                    if(tipoOcorrencia) builder.orWhere("toc.nome", "ilike", `%${tipoOcorrencia}%`);
-                    if(tipoAssunto) builder.orWhere("tas.nome", "ilike", `%${tipoAssunto}%`);
-                });
+                .where("sc.membro_ativo", "=", membroAtivo!);
+
+            if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
+            if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
+            if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
+            if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
+            if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
+            if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
                 
             if(size) query = query.limit(size);
             if(page) query = query.offset(page);
             
-            const data = await query.orderBy("oc.id");
+            const data = await query.orderBy("oc.id", order);
             
             const ocorrencias: Ocorrencia[] = data.map(ocorrencia => {
                 const ocorrenciaEditada = {
@@ -298,10 +300,15 @@ class OcorrenciaRepository
      * Traz todos os logs das ações realizadas na tabela ocorrencia no banco de dados.
      * @param size - (opcional) limita o número de registros durante a seleção.
      * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param order - (opcional) especifica se a ordenação é crescente ou decrescente.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async selectOcorrenciaLog(size?:number, page?:number): Promise<LogOcorrencia[] | undefined>
+    async selectOcorrenciaLog(size?:number, page?:number, order?: string): Promise<LogOcorrencia[] | undefined>
     {
+        size = sizeParameter(size);
+        page = pageParameter(page);
+        order = orderByParameter(order, "DESC");
+
         let query = db(TableNames.ocorrencia_log)
             .select(
                 "ol.id",
@@ -325,7 +332,7 @@ class OcorrenciaRepository
         if(size) query = query.limit(size);
         if(page) query = query.offset(page);
 
-        const data = await query.orderBy("ol.id");
+        const data = await query.orderBy("ol.id", order);
 
         const LogOcorrencias: LogOcorrencia[] = data.map(data => {
             return {

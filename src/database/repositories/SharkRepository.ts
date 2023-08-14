@@ -3,6 +3,7 @@ import { EmailPessoal } from "../../models/EmailPessoal";
 import { LogShark, Shark } from "../../models/Shark";
 import { TableNames } from "../TableNames";
 import db from "../db";
+import { membroAtivoParameter, orderByParameter, pageParameter, sizeParameter } from "../Parameters";
 
 class SharkRepository
 {
@@ -11,17 +12,19 @@ class SharkRepository
      * @param size - (opcional) limita o número de registros durante a seleção.
      * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
      * @param membroAtivo - (opcional) especifica se o membro é ativo ou não ao retornar uma consulta.
-     * @param nome - (opcional) especifica o nome do sharkno retorno da consulta.
+     * @param nome - (opcional) especifica o nome do shark no retorno da consulta.
+     * @param order - (opcional) especifica se a ordenação é crescente ou decrescente.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async select(size?:number, page?:number, membroAtivo?:string, nome?:string): Promise<Shark[] | undefined>
+    async select(size?:number, page?:number, membroAtivo?:string, nome?:string, order?: string): Promise<Shark[] | undefined>
     {
         try
         {
-            page = (page && page > 0) ? page : 0;
-            size = (size && size > 0) ? size : 0;
-            membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : undefined;
-
+            page = pageParameter(page);
+            size = sizeParameter(size); 
+            membroAtivo = membroAtivoParameter(membroAtivo);
+            order = orderByParameter(order, "ASC"); 
+            
             let query = db(TableNames.shark).select(
                 "s.id",
                 "s.nome",
@@ -56,7 +59,7 @@ class SharkRepository
             if(nome) query = query.andWhere("s.nome", "like", `%${nome}%`);
             query = query.where("s.id", "<>", 1);
 
-            const data = await query.orderBy("s.id");
+            const data = await query.orderBy("s.id", order);
 
             const sharks: Shark[] = data.map(shark => ({
                 id: shark.id,
@@ -443,10 +446,15 @@ class SharkRepository
      * Traz todos os logs das ações realizadas na tabela shark no banco de dados.
      * @param size - (opcional) limita o número de registros durante a seleção.
      * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param order - (opcional) especifica se a ordenação é crescente ou decrescente.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async selectSharkLog(size?:number, page?:number): Promise<LogShark[] | undefined>
+    async selectSharkLog(size?:number, page?:number, order?: string): Promise<LogShark[] | undefined>
     {
+        size = sizeParameter(size);
+        page = pageParameter(page);
+        order = orderByParameter(order, "DESC");
+        
         let query = db(TableNames.ocorrencia_log)
             .select(
                 "sl.id",
@@ -468,7 +476,7 @@ class SharkRepository
         if(size) query = query.limit(size);
         if(page) query = query.offset(page);
 
-        const data = await query.orderBy("sl.id");
+        const data = await query.orderBy("sl.id", order);
 
         const LogSharks: LogShark[] = data.map(data => {
             return {

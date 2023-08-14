@@ -112,13 +112,13 @@ class SharkController
     { 
         try
         {
-            const { size, page, membroAtivo, nome } = req.query;
+            const { size, page, membroAtivo, nome, order } = req.query;
             let result;
 
             if(req.params.id)
                 result = await getByIdSharkService.execute(req.params.id);
             else
-                result = await getSharkService.execute({ size, page, membroAtivo, nome});
+                result = await getSharkService.execute({ size, page, membroAtivo, nome, order});
 
             res.status(200).json(result);
         }
@@ -163,14 +163,14 @@ class SharkController
     { 
         try
         {
-            const { size, page } = req.query;
+            const { size, page, order } = req.query;
             
             let result;
 
             if(req.params.id)
                 result = await getByIdLogSharkService.execute(req.params.id);
             else
-                result = await getLogSharkService.execute({ size, page });
+                result = await getLogSharkService.execute({ size, page, order });
 
             res.status(200).json(result);
         }

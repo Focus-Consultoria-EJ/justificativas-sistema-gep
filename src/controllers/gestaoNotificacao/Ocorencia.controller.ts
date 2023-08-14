@@ -16,7 +16,7 @@ class OcorrenciaController
                 size, page, membroAtivo, 
                 nomeSharkCriador, nomeSharkReferente, 
                 emailSharkCriador, emailSharkReferente, 
-                tipoOcorrencia, tipoAssunto } = req.query;
+                tipoOcorrencia, tipoAssunto, order } = req.query;
                 
             let result;
             
@@ -32,7 +32,8 @@ class OcorrenciaController
                     emailSharkCriador,
                     emailSharkReferente,
                     tipoOcorrencia,
-                    tipoAssunto
+                    tipoAssunto,
+                    order
                 });
 
             res.status(200).json(result);
@@ -69,14 +70,14 @@ class OcorrenciaController
     { 
         try
         {
-            const { size, page } = req.query;
+            const { size, page, order } = req.query;
             
             let result;
             
             if(req.params.id)
                 result = await getByIdLogOcorrenciaService.execute(req.params.id);
             else
-                result = await getLogOcorrenciaService.execute({ size, page });
+                result = await getLogOcorrenciaService.execute({ size, page, order });
 
             res.status(200).json(result);
         }

@@ -7,16 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://virtserver.swaggerhub.com/rossienzo/sistema-de-nofiticacoes/1.0.0",
-      "description": "SwaggerHub API Auto Mocking"
+      "url": "https://backend-gep-postgresql.herokuapp.com/api",
+      "description": "API de produção"
     },
     {
       "url": "http://localhost:3000/api",
       "description": "API de teste"
-    },
-    {
-      "url": "https://backend-gep-postgresql.herokuapp.com/api",
-      "description": "API de produção"
     }
   ],
   "paths": {
@@ -297,7 +293,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "especifica o número de registros a serem pulados ao retornar uma consulta",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -308,7 +304,7 @@
           {
             "name": "size",
             "in": "query",
-            "description": "limita o número de registros retornados por uma consulta",
+            "description": "limita o número de registros retornados por uma consulta. (default 20)",
             "required": false,
             "style": "form",
             "explode": true,
@@ -317,9 +313,20 @@
             }
           },
           {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default ASC)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "membroAtivo",
             "in": "query",
-            "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false)",
+            "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false).",
             "required": false,
             "style": "form",
             "explode": true,
@@ -330,7 +337,7 @@
           {
             "name": "nome",
             "in": "query",
-            "description": "retorna o shark de acordo com os caracteres inseridos.",
+            "description": "retorna o shark pelo nome.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1059,7 +1066,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "especifica o número de registros a serem pulados ao retornar uma consulta",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1070,7 +1077,7 @@
           {
             "name": "size",
             "in": "query",
-            "description": "limita o número de registros retornados por uma consulta",
+            "description": "limita o número de registros retornados por uma consulta.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1079,9 +1086,20 @@
             }
           },
           {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default DESC)  .",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "membroAtivo",
             "in": "query",
-            "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false)",
+            "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false). (default true)",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1092,7 +1110,7 @@
           {
             "name": "nomeSharkCriador",
             "in": "query",
-            "description": "retorna as ocorrências relacionadas ao nome do shark as criou",
+            "description": "retorna as ocorrências relacionadas ao nome do shark as criou.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1103,7 +1121,7 @@
           {
             "name": "nomeSharkReferente",
             "in": "query",
-            "description": "retorna as ocorrências relacionadas ao nome do shark que a ocorrência foi destinada",
+            "description": "retorna as ocorrências relacionadas ao nome do shark que a ocorrência foi destinada.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1114,7 +1132,7 @@
           {
             "name": "emailSharkCriador",
             "in": "query",
-            "description": "retorna as ocorrências relacionadas ao email do shark as criou",
+            "description": "retorna as ocorrências relacionadas ao email do shark as criou.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1125,7 +1143,7 @@
           {
             "name": "emailSharkReferente",
             "in": "query",
-            "description": "retorna as ocorrências relacionadas ao email do shark que a ocorrência foi destinada",
+            "description": "retorna as ocorrências relacionadas ao email do shark que a ocorrência foi destinada.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1136,7 +1154,7 @@
           {
             "name": "tipoOcorrencia",
             "in": "query",
-            "description": "retorna as ocorrências relacionadas ao tipo de ocorrência",
+            "description": "retorna as ocorrências relacionadas ao tipo de ocorrência.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -1147,7 +1165,7 @@
           {
             "name": "tipoAssunto",
             "in": "query",
-            "description": "retorna as ocorrências relacionadas ao tipo de assunto",
+            "description": "retorna as ocorrências relacionadas ao tipo de assunto.",
             "required": false,
             "style": "form",
             "explode": true,
@@ -3664,6 +3682,41 @@
         ],
         "summary": "Retorna todas os dados do log de ocorrências",
         "description": "Rota responsável por retornar o log de ações executada nas ocorrências.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "limita o número de registros retornados por uma consulta. (default 20)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default DESC)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "data",
@@ -3825,6 +3878,41 @@
         ],
         "summary": "Retorna todas os dados do log de sharks",
         "description": "Rota responsável por retornar o log de ações executada nos sharks.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "limita o número de registros retornados por uma consulta. (default 20)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default DESC)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "data",
