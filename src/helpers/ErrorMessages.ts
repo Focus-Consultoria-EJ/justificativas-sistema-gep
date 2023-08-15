@@ -64,5 +64,13 @@ export const errMsg =
         NOT_FOUND: "A ocorrência não foi encontrada.",
         ALREADY_EXISTS: "A ocorrência já existe.",
         UNINFORMED_MSG: "A mensagem da ocorrência não foi informada."
+    },
+    
+    /* Precificação */
+    SERVICO:
+    {
+        NOT_FOUND: "O serviço não foi encontrado.",
+        ALREADY_EXISTS: "O serviço já existe.",
+        UNINFORMED_MSG: "O nome do serviço não foi informado."
     }
 };
