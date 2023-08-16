@@ -1,5 +1,4 @@
 import ServicoRepository from "../../../database/repositories/precificacao/ServicoRepository";
-
 class GetServicoService 
 {
     /**

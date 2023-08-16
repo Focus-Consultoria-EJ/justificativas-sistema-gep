@@ -11,6 +11,6 @@ export interface Cliente
     estado?: string;
     cidade?: string;
     sexo?: string;  
-    porteCliente: PorteCliente;
-    dataCriacao: Date;
+    porteCliente?: PorteCliente;
+    dataCriacao?: Date;
 }

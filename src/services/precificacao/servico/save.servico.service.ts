@@ -25,7 +25,6 @@ class SaveServicoService
 
         const result = await ServicoRepository.existsByName(servico.nome!);
         
-        // Verifica se a distancia já existe
         if(result)
             throw new BadRequestError(errMsg.SERVICO.ALREADY_EXISTS);
 

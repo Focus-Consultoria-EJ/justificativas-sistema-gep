@@ -9,6 +9,10 @@ import ocorrenciaRoutes from "./gestaoNotificacao/ocorrencias.routes";
 import nivelGratificacaoRoutes from "./gestaoNotificacao/nivelGratificacao.routes";
 import nivelAdvertenciaRoutes from "./gestaoNotificacao/nivelAdvertencia.routes";
 import servicosRoutes from "./precificacao/servicos.routes";
+import porteClientesRoutes from "./precificacao/porteClientes.routes";
+import clientesRoutes from "./precificacao/clientes.routes";
+import TipoPrecoRoutes from "./precificacao/tipoPrecos.routes";
+import PrecificacoesRoutes from "./precificacao/precificacoes.routes";
 
 const routes = Router();
 
@@ -26,5 +30,9 @@ routes.use(nivelAdvertenciaRoutes);
 
 // Precificação
 routes.use(servicosRoutes);
+routes.use(porteClientesRoutes);
+routes.use(clientesRoutes);
+routes.use(TipoPrecoRoutes);
+routes.use(PrecificacoesRoutes);
 
 export default routes;

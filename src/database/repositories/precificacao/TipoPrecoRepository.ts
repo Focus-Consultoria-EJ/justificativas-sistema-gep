@@ -1,37 +1,38 @@
 import db from "../../db";
 import { TableNames } from "../../TableNames";
 import { InternalServerError } from "../../../middlewares/Error.middleware";
-import { Servico } from "../../../models/precificacao/Servico";
 import { valueAlreadyExistsInColumn } from "../../commonQuerys";
+import { TipoPreco } from "../../../models/precificacao/TipoPreco";
+
 class ServicoRepository
 {
     /**
-     * Traz todos os dados da tabela servico no banco de dados.
+     * Traz todos os dados da tabela tipo_preco no banco de dados.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async select(): Promise<Servico[] | undefined>
+    async select(): Promise<TipoPreco[] | undefined>
     {
         try
         {
-            const data = await db(TableNames.servico).orderBy("id");
+            const data = await db(TableNames.tipo_preco).orderBy("id");
 
-            const servicos: Servico[] = data.map(data => ({ id: data.id, nome: data.nome }));
+            const tipoPrecos: TipoPreco[] = data.map(data => ({ id: data.id, nome: data.nome }));
 
-            return servicos;
+            return tipoPrecos;
         }
         catch (err) { throw new InternalServerError(String(`Erro em ${this.constructor.name}: ${err}`)); }
     }   
 
     /**
-     * Traz uma linha da tabela servico no banco de dados de acordo com o id.
+     * Traz uma linha da tabela tipo_preco no banco de dados de acordo com o id.
      * @param id - identificador relacionado a um item do banco de dados.
      * @returns uma promise contendo um objeto. 
      */
-    async getById(id: number): Promise<Servico | undefined>
+    async getById(id: number): Promise<TipoPreco | undefined>
     {
         try
         {
-            const data = await db(TableNames.servico)
+            const data = await db(TableNames.tipo_preco)
                 .where({ id: id })
                 .first();
 
@@ -44,48 +45,48 @@ class ServicoRepository
     }
 
     /**
-     * Verifica se o nome já existe na tabela serviço.
-     * @param nome - o nome do serviço.
+     * Verifica se o nome já existe na tabela tipo_preco.
+     * @param nome - o nome do preço.
      * @returns uma promise do tipo boolean. 
      */
     async existsByName(nome: string): Promise<boolean | undefined>
     {
-        return await valueAlreadyExistsInColumn(TableNames.servico, ["nome"], [nome])
+        return await valueAlreadyExistsInColumn(TableNames.tipo_preco, ["nome"], [nome])
             .catch(err => { 
                 throw new InternalServerError(String(`Erro em ${this.constructor.name}. ${err.message}`)); 
             });
     }
 
     /**
-     * Insere o item na tabela servico no banco de dados.
-     * @param servico - um objeto do tipo Servico.
+     * Insere o item na tabela tipo_preco no banco de dados.
+     * @param tipoPreco - um objeto do tipo TipoPreco.
      * @returns - uma promise com as informações da inserção.
      */
-    async insert(servico: Servico): Promise<any | undefined>
+    async insert(tipoPreco: TipoPreco): Promise<any | undefined>
     {
-        return await db(TableNames.servico).insert({ nome: servico.nome });
+        return await db(TableNames.tipo_preco).insert({ nome: tipoPreco.nome });
     }
 
     /**
-     * Atualiza o item na tabela servico no banco de dados.
-     * @param servico - um objeto do tipo Servico.
+     * Atualiza o item na tabela tipo_preco no banco de dados.
+     * @param tipoPreco - um objeto do tipo TipoPreco.
      * @returns - uma promise com as informações da atualização.
      */
-    async update(servico: Servico): Promise<any | undefined>
+    async update(tipoPreco: TipoPreco): Promise<any | undefined>
     {
-        return await db(TableNames.servico)
-            .update({ nome: servico.nome })
-            .where({ id: servico.id });
+        return await db(TableNames.tipo_preco)
+            .update({ nome: tipoPreco.nome })
+            .where({ id: tipoPreco.id });
     }
 
     /**
-     * Remove o item na tabela servico no banco de dados.
+     * Remove o item na tabela tipo_preco no banco de dados.
      * @param id - identificador relacionado a um item do banco de dados.
      * @returns uma promise com informações do item removido.
      */
     async delete(id: number): Promise<any | undefined>
     {
-        return await db(TableNames.servico)
+        return await db(TableNames.tipo_preco)
             .select()
             .where({ id: id })
             .del();
