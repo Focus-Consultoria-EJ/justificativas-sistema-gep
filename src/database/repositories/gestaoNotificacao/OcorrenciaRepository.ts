@@ -77,12 +77,12 @@ class OcorrenciaRepository
                 .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
                 .where("sc.membro_ativo", "=", membroAtivo!);
 
-            if(nomeSharkCriador) query = query.andWhere("sc.nome", "like", `%${nomeSharkCriador}%`);
-            if(nomeSharkReferente) query = query.andWhere("sr.nome", "like", `%${nomeSharkReferente}%`);
-            if(emailSharkCriador) query = query.andWhere("sc.email", "like", `%${emailSharkCriador}%`);
-            if(emailSharkReferente) query = query.andWhere("sr.email", "like", `%${emailSharkReferente}%`);
-            if(tipoOcorrencia) query = query.andWhere("toc.nome", "like", `%${tipoOcorrencia}%`);
-            if(tipoAssunto) query = query.andWhere("tas.nome", "like", `%${tipoAssunto}%`);
+            if(nomeSharkCriador) query = query.andWhere("sc.nome", "ilike", `%${nomeSharkCriador}%`);
+            if(nomeSharkReferente) query = query.andWhere("sr.nome", "ilike", `%${nomeSharkReferente}%`);
+            if(emailSharkCriador) query = query.andWhere("sc.email", "ilike", `%${emailSharkCriador}%`);
+            if(emailSharkReferente) query = query.andWhere("sr.email", "ilike", `%${emailSharkReferente}%`);
+            if(tipoOcorrencia) query = query.andWhere("toc.nome", "ilike", `%${tipoOcorrencia}%`);
+            if(tipoAssunto) query = query.andWhere("tas.nome", "ilike", `%${tipoAssunto}%`);
                 
             if(size) query = query.limit(size);
             if(page) query = query.offset(page);
