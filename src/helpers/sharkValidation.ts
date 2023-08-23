@@ -17,9 +17,11 @@ export interface SharkForm
  */
 export const sharkPasswordCheck = (senha: string) => 
 {
-    if(String(senha).length < 8 || String(senha).length >= 30)
-        return false;
-    return senha;
+    const senhaLength = String(senha).length;
+    if (senhaLength >= 8 && senhaLength <= 30) {
+        return senha;
+    }
+    return false;
 };
 
 /**
@@ -43,14 +45,14 @@ export const sharkFormValidation = async (shark: any, actionUpdate = false): Pro
             return "Digite uma senha com 8 ou mais caracteres. (max: 30)";
     }
 
-    if(!shark.nome || String(shark.nome).length < 4 || String(shark.nome).length >= 120)
+    if(!shark.nome || String(shark.nome).length < 4 || String(shark.nome).length > 120)
         return "Digite um nome com 4 ou mais caracteres. (max: 120)";
 
-    if(!shark.emailFocus || !emailValidation(shark.emailFocus))
-        return "Digite um email Focus válido.";
+    if(!shark.emailFocus || !emailValidation(shark.emailFocus) || shark.emailFocus.length > 200)
+        return "Digite um email Focus válido. (max: 200)";
 
-    if(!shark.emailPessoal || !emailValidation(shark.emailPessoal))
-        return "Digite um email pessoal válido.";
+    if(!shark.emailPessoal || !emailValidation(shark.emailPessoal) || shark.emailPessoal.length > 200)
+        return "Digite um email pessoal válido. (max: 200)";
 
     if(shark.emailPessoal === shark.email)
         return "Os emails não podem ser idênticos";
