@@ -45,10 +45,11 @@ class OcorrenciaController
     {
         const data = { ...req.body };
         if(req.params.id) data.id = req.params.id;
+        const file = req.file;
 
         try
         {
-            await saveOcorrenciaService.execute(data, req.shark);
+            await saveOcorrenciaService.execute(data, req.shark, file);
 
             return res.status(204).send();
         }

@@ -1,3 +1,4 @@
+import { ENABLE_UPLOAD_FILES, FILE_MAX_SIZE } from "../../../config/multer";
 import SharkRepository from "../../../database/repositories/SharkRepository";
 import NivelAdvertenciaRepository from "../../../database/repositories/gestaoNotificacao/NivelAdvertenciaRepository";
 import NivelGratificacaoRepository from "../../../database/repositories/gestaoNotificacao/NivelGratificacaoRepository";
@@ -7,9 +8,10 @@ import TipoOcorrenciaRepository from "../../../database/repositories/gestaoNotif
 import { errMsg } from "../../../helpers/ErrorMessages";
 import { ocorrenciaFormValidation } from "../../../helpers/gestaoNotificacao/ocorrenciaValidation";
 import { checkId, valueExists } from "../../../helpers/validation";
-import { BadRequestError } from "../../../middlewares/Error.middleware";
+import { BadRequestError, InternalServerError } from "../../../middlewares/Error.middleware";
 import { Shark } from "../../../models/Shark";
 import ocEmailNotificaService from "../ocorrenciaEmailNotification/ocorrenciaEmailNotification.service";
+import saveOcorrenciaUploadFileService from "./UploadFIle/save.ocorrencia.uploadFile.service";
 
 class SaveOcorrenciaService 
 {
@@ -18,12 +20,18 @@ class SaveOcorrenciaService
      * @param data - os dados vindos do header.
      * @param reqShark - os dados do shark salvo na requisição do Express.
      */
-    async execute(data: any, reqShark: Shark): Promise<void>
+    async execute(data: any, reqShark: Shark, file?: Express.Multer.File): Promise<void>
     {
         data.id = checkId(data.id);
         
         const ocorrencia = await ocorrenciaFormValidation(data);
         let ocorrenciaASerAtualizada;
+
+        if(file)
+        {
+            if(file.size >= FILE_MAX_SIZE)
+                throw new BadRequestError("O arquivo deve ser menor que 3MB.");
+        }
         
         if(typeof ocorrencia === "string")
             throw new BadRequestError(ocorrencia);
@@ -110,7 +118,7 @@ class SaveOcorrenciaService
 
             ocorrencia.valorMetragem = Number(nivelAdver?.valor);
         }
-            
+
         if(ocorrencia.id)
         {
             if( ocorrenciaASerAtualizada?.tipoOcorrencia.id === 4 ||
@@ -120,6 +128,13 @@ class SaveOcorrenciaService
                 
             await OcorrenciaRepository.update(ocorrencia).then(async idInserted => {
                 await OcorrenciaRepository.insertOcorrenciaLog(2,idInserted, reqShark.id!);
+
+                // Faz o upload do arquivo e atualiza no banco de dados
+                if(file && ENABLE_UPLOAD_FILES)
+                {
+                    await saveOcorrenciaUploadFileService.execute(file, ocorrencia, true)
+                        .catch(err => { throw new InternalServerError(err); });
+                }
 
                 // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
                 if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 6))
@@ -134,6 +149,14 @@ class SaveOcorrenciaService
         {
             await OcorrenciaRepository.insert(ocorrencia).then(async idInserted => {
                 await OcorrenciaRepository.insertOcorrenciaLog(1,idInserted, reqShark.id!);
+
+                // Faz o upload do arquivo e insere no banco de dados
+                if(file && ENABLE_UPLOAD_FILES)
+                {
+                    ocorrencia.id = idInserted;
+                    await saveOcorrenciaUploadFileService.execute(file, ocorrencia)
+                        .catch(err => { throw new InternalServerError(err); });
+                }
 
                 // Lança o E-mail (Primeiro/Segundo aviso, advertência, gratificação)
                 if(ocorrencia.tipoOcorrencia.id && (ocorrencia.tipoOcorrencia.id >= 4 && ocorrencia.tipoOcorrencia.id <= 6))

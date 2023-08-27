@@ -7,6 +7,25 @@ import { membroAtivoParameter, orderByParameter, pageParameter, sizeParameter } 
 class OcorrenciaRepository
 {
     /**
+     * Remove alguns atributos que sejam nulos.
+     * @param ocorrencia - objeto do tipo ocorrência.
+     * @returns o objeto com os atributos removidos.
+     */
+    removeSelectedNullAttributes(ocorrencia: Ocorrencia)
+    {
+        if(ocorrencia.nivelGratificacao?.id === null)
+            delete ocorrencia.nivelGratificacao;
+
+        if(ocorrencia.nivelAdvertencia?.id === null)
+            delete ocorrencia.nivelAdvertencia;
+
+        if(ocorrencia.uploadFile?.id === null)
+            delete ocorrencia.uploadFile;
+
+        return ocorrencia;
+    }
+
+    /**
      * Traz todos os dados da tabela ocorrencia no banco de dados.
      * @param size - (opcional) limita o número de registros durante a seleção.
      * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
@@ -64,6 +83,9 @@ class OcorrenciaRepository
                     "sr.email as email_shark_referente",
                     "sr.id_celula as id_celula_shark_referente",
                     "src.nome as nome_celula_shark_referente",
+                    "upf.id as id_updetad_file",
+                    "upf.google_drive_id as id_google_drive",
+                    "upf.nome_arquivo as nome_arquivo",
                     "oc.data_criacao"
                 )
                 .from(`${TableNames.ocorrencia} as oc`)
@@ -75,6 +97,7 @@ class OcorrenciaRepository
                 .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
                 .leftJoin(`${TableNames.nivel_gratificacao} as nvg`, "oc.id_nivel_gratificacao", "nvg.id")
                 .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
+                .leftJoin(`${TableNames.upload_file} as upf`, "oc.id", "upf.id_ocorrencia")
                 .where("sc.membro_ativo", "=", membroAtivo!);
 
             if(nomeSharkCriador) query = query.andWhere("sc.nome", "ilike", `%${nomeSharkCriador}%`);
@@ -104,17 +127,11 @@ class OcorrenciaRepository
                     },
                     sharkReferente: { id: ocorrencia.id_shark_referente, nome: ocorrencia.nome_shark_referente, 
                         email: ocorrencia.email_shark_referente, celula: { id: ocorrencia.id_celula_shark_referente, nome: ocorrencia.nome_celula_shark_referente } },
+                    uploadFile: { id: ocorrencia.id_updetad_file, googleDriveId: ocorrencia.id_google_drive, nomeArquivo: ocorrencia.nome_arquivo },
                     dataCriacao: ocorrencia.data_criacao
                 } as Ocorrencia;
 
-                // Remove o item da ocorrência caso o id seja null
-                if(ocorrenciaEditada.nivelGratificacao?.id === null)
-                    delete ocorrenciaEditada.nivelGratificacao;
-
-                if(ocorrenciaEditada.nivelAdvertencia?.id === null)
-                    delete ocorrenciaEditada.nivelAdvertencia;
-
-                return ocorrenciaEditada;
+                return {...this.removeSelectedNullAttributes(ocorrenciaEditada) };
             });
             
             return await ocorrencias;
@@ -157,6 +174,9 @@ class OcorrenciaRepository
                     "sr.email as email_shark_referente",
                     "sr.id_celula as id_celula_shark_referente",
                     "src.nome as nome_celula_shark_referente",
+                    "upf.id as id_updetad_file",
+                    "upf.google_drive_id as id_google_drive",
+                    "upf.nome_arquivo as nome_arquivo",
                     "oc.data_criacao"
                 )
                 .from(`${TableNames.ocorrencia} as oc`)
@@ -168,6 +188,7 @@ class OcorrenciaRepository
                 .innerJoin(`${TableNames.celula} as src`, "sr.id_celula", "src.id")
                 .leftJoin(`${TableNames.nivel_gratificacao} as nvg`, "oc.id_nivel_gratificacao", "nvg.id")
                 .leftJoin(`${TableNames.nivel_advertencia} as nva`, "oc.id_nivel_advertencia", "nva.id")
+                .leftJoin(`${TableNames.upload_file} as upf`, "oc.id", "upf.id_ocorrencia")
                 .andWhere("oc.id", "=", id)
                 .first();
 
@@ -188,17 +209,11 @@ class OcorrenciaRepository
                 },
                 sharkReferente: { id: data.id_shark_referente, nome: data.nome_shark_referente, 
                     email: data.email_shark_referente, celula: { id: data.id_celula_shark_referente, nome: data.nome_celula_shark_referente } },
+                uploadFile: { id: data.id_updetad_file, googleDriveId: data.id_google_drive, nomeArquivo: data.nome_arquivo },
                 dataCriacao: data.data_criacao
             } as Ocorrencia;
 
-            // Remove o item da ocorrência caso o id seja null
-            if(ocorrrencia.nivelGratificacao?.id === null)
-                delete ocorrrencia.nivelGratificacao;
-
-            if(ocorrrencia.nivelAdvertencia?.id === null )
-                delete ocorrrencia.nivelAdvertencia;
-
-            return ocorrrencia;
+            return {...this.removeSelectedNullAttributes(ocorrrencia) };
         }
         catch (err) { throw new InternalServerError(String(err)); }
     }

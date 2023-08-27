@@ -13,7 +13,10 @@
     - `MAILER_AUTH_USER ` seguido do e-mail que irá lançar os e-mails, ex: 'example@gmail.com'
     - `MAILER_AUTH_PASS` seguido da senha associada ao e-mail 
     - `URL_FRONT_END` = url do front-end, ex: https://url-frontend.com.br (Sem a barra no final!)
-
+    - `ENABLE_UPLOAD_FILES` = habilita o upload/remoção de arquivos no drive, por default é true 
+    - `ID_GOOGLE_FOLDER` = Se a variável ENABLE_UPLOAD_FILES for true, deve ser passado aqui o id da pasta
+    do google drive que foi compartilhada. (Normalmente este id está na URL quando se está dentro da pasta)
+    (ATENÇÃO: baixar o arquivo .json com as credenciais no site do google API, renomea-lo como 'google_api_credentials.json' e inseri-lo dentro da pasta src/config)
 
 ## Deploy do DB
 
@@ -31,13 +34,16 @@
 
 O retorno esperado do passo 6 é:
 A variável de ambiente DATABASE_URL não foi setada ou é inválida. (se em desenvolvimento ignorar)
-Using environment: production
+Using environment: development
 Tabela distancia_residencia criada.
 Registros inseridos na tabela distancia_residencia.
 Tabela celula criada.
 Registros inseridos na tabela celula.
+Tabela role criada.
+Registros inseridos na tabela role.
 Tabela shark criada.
 Registro inserido na tabela shark.
+Tabela email_pessoal criada.
 Tabela tipo_acao_log criada.
 Registros inseridos na tabela tipo_acao_log.
 Tabela tipo_ocorrencia criada.
@@ -45,11 +51,15 @@ Registros inseridos na tabela tipo_ocorrencia.
 Tabela tipo_assunto criada.
 Registros inseridos na tabela tipo_assunto.
 Tabela shark_log criada.
+Tabela nivel_advertencia criada.
+Registros inseridos na tabela nivel_advertencia.
+Tabela nivel_gratificacao criada.
+Registros inseridos na tabela nivel_gratificacao.
 Tabela ocorrencia criada.
 Tabela ocorrencia_log criada.
-Tabela evento criada.
-Tabela presenca criada.
 Função de metragem criada
 Trigger de inserção de metragem criada
 Trigger de atualização de metragem criada
-Batch 1 run: 12 migrations
+Trigger de devolução de metragem criada
+Tabela upload_file criada.
+Batch 1 run: 15 migrations
