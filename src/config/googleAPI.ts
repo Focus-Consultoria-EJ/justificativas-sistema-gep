@@ -1,18 +1,20 @@
 import { google } from "googleapis";
-import path from "path";
 import { Stream } from "stream";
 import { InternalServerError } from "../middlewares/Error.middleware";
-import fs from "fs";
 import dotenv from "dotenv";
 import { ENABLE_UPLOAD_FILES } from "./multer";
+import credentialsJSON from "../google_api_credentials.json";
+
 dotenv.config();
 
-const GOOGLE_CREDENTIALS = path.join(__dirname + "/google_api_credentials.json");
+
 const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const ID_FOLDER_GOOGLE_DRIVE = process.env.ID_GOOGLE_FOLDER || "";
 
+const GOOGLE_CREDENTIALS = credentialsJSON;
+
 // Verificar se o arquivo de credenciais existe
-if (!fs.existsSync(GOOGLE_CREDENTIALS) && ENABLE_UPLOAD_FILES) {
+if (!GOOGLE_CREDENTIALS && ENABLE_UPLOAD_FILES) {
     console.error("O arquivo de credenciais não foi encontrado.");
     process.exit(1);
 }
@@ -25,7 +27,7 @@ if(ID_FOLDER_GOOGLE_DRIVE === "" && ENABLE_UPLOAD_FILES)
 }
 
 // Configuração da API do Google Drive
-const auth = new google.auth.GoogleAuth({ keyFile: GOOGLE_CREDENTIALS, scopes: SCOPES, });
+const auth = new google.auth.GoogleAuth({ credentials: GOOGLE_CREDENTIALS, scopes: SCOPES, });
   
 export async function uploadFileToDrive(file: Express.Multer.File) 
 {

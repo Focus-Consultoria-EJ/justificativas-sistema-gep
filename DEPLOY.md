@@ -18,16 +18,35 @@
     do google drive que foi compartilhada. (Normalmente este id está na URL quando se está dentro da pasta)
     (ATENÇÃO: baixar o arquivo .json com as credenciais no site do google API, renomea-lo como 'google_api_credentials.json' e inseri-lo dentro da pasta src/config)
 
+## Deploy do Google Drive (Habilitando o upload de arquivos)
+
+Observação: estes links contém informações de como configurar o node.js para se comunicar com a API do google
+- https://developers.google.com/drive/api/quickstart/nodejs?hl=pt-br
+- https://www.youtube.com/watch?v=gErpJee99Fs
+
+- **Passo 1**: acesse este link para habilitar o uso da API: https://console.cloud.google.com/projectselector2/apis/enableflow?apiid=drive.googleapis.com&hl=pt-br&pli=1&supportedpurview=project
+- **Passo 2**: clicar em 'Novo Projeto' e insira o nome do projeto e a organização (caso não tenha organização clique em 'Sem Organização'). Clique em próximo e 'Ativar'.
+- **Passo 3**: acesse a página de 'Tela de permissão OAuth', no link: https://console.cloud.google.com/apis/credentials/consent/edit;newAppInternalUser=false?hl=pt-br&project=sistema-rh-upload-drive .
+Preencha os campos obrigatórios e clique em 'Salvar e continuar'. Por fim, avance todos os próximos campos,
+não é necessário preenche-los.
+- **Passo 4**: após criado a conta de permissão, acesse na barra de pesquisa a tela do google drive API (https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com?q=search&referrer=search&hl=pt-br&project=sistema-rh-upload-drive), clique em 'Gerenciar' e clique em 'criar credenciais'. Selecione a opção 'Conta de serviço', preencha os campos e clique em 'Continuar' para avançar para o próximo item. No item 'conceder acesso a esta conta' procure pela opção 'Proprietário' e clique continuar.
+Por fim, clique em continuar novamente e será gerado a credencial.
+- **Passo 5**: acesse a conta de serviço gerada e clique na aba de 'Chaves' e clique em 'Adicionar Chave'. Selecione a opção Tipo de Chave 'JSON' e clique em criar. Será feito o download do arquivo.
+- **Passo 6**: renomeie o arquivo baixado para `google_api_credentials.json` e o insira dentro da pasta do projeto na mesma área do index.ts ou seja, em `/src`.
+- **Passo 7**: acesse a página do google drive (https://drive.google.com/drive/my-drive) e crie uma pasta que será utilizada para o armazenamento dos arquivos (ex: `sistema-rh-uploads`). Depois de criada, acesse a pasta, clique no nome dela e em 'Partilhar'. IMPORTANTE: aqui no partilhar você deve inserir o e-mail gerado na conta de serviço ao habilitar o uso da API, ele está localizado na aba 'contas de serviço' no google cloud. Exemplo de e-mail: `sistema-rh-focus@sistema-rh-upload-drive.iam.gserviceaccount.com`. Adicione o e-mail e o deixe com o tipo de acesso 'Editor', por fim, basta clicar em 'Enviar'.
+- **Passo 8**: na url da pasta criada no drive, copie o id do google e o insira na variável de ambiente `ID_GOOGLE_FOLDER` no heroku (caso esteja usando no local, adicione no arquivo .env). Exemplo de id do google: https://drive.google.com/drive/folders/1bANwIvdacNGzywjxwKD9-R7HIK6RNyDN aqui nesta url o id é `1bANwIvdacNGzywjxwKD9-R7HIK6RNyDN`.
+- **Passo 9**: por fim, se necessário reinicie o projeto
+
 ## Deploy do DB
 
 - **Passo 1**: acessar a aba 'Resources' do app
 - **Passo 2**: selecionar o banco de dados postgresql, o plano desejado e aguardar o tempo de criação do bd
 - **Passo 3**: certfique-se de que o HerokuCLI esteja instalado (https://devcenter.heroku.com/articles/heroku-cli)
 - **Passo 4**: realize o login no heroku, digite o comando 'heroku login'
-- **Passo 5**: acesse o app através do comando: 'heroku run bash --app nome-do-app-no-heroku'
+- **Passo 5**: acesse o app através do comando: 'heroku run bash --app nome-do-app-no-heroku'. Ex: `heroku run bash --app backend-gep-postgresql`.
 - **Passo 6**: digitar o comando `npm i dotenv` e depois, `npm i`
 - **Passo 7**: Atenção! o comando abaixo para o deploy do banco de dados. Se já houver dados importantes, é necessário fazer um backup.
-    - O comando `npm run knex:latest:production`, serve para criar as tabelas no banco
+    - O comando `npm run knex:latest:production`, serve para criar as tabelas no banco.
     
 **Caso seja necessário remover os dados usar o use o comando a seguir: O comando `knex:rollback:production`, serve para apagar todas as tabelas do banco**
             
