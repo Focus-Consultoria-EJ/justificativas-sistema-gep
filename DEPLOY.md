@@ -34,8 +34,9 @@ Por fim, clique em continuar novamente e será gerado a credencial.
 - **Passo 5**: acesse a conta de serviço gerada e clique na aba de 'Chaves' e clique em 'Adicionar Chave'. Selecione a opção Tipo de Chave 'JSON' e clique em criar. Será feito o download do arquivo.
 - **Passo 6**: renomeie o arquivo baixado para `google_api_credentials.json` e o insira dentro da pasta do projeto na mesma área do index.ts ou seja, em `/src`.
 - **Passo 7**: acesse a página do google drive (https://drive.google.com/drive/my-drive) e crie uma pasta que será utilizada para o armazenamento dos arquivos (ex: `sistema-rh-uploads`). Depois de criada, acesse a pasta, clique no nome dela e em 'Partilhar'. IMPORTANTE: aqui no partilhar você deve inserir o e-mail gerado na conta de serviço ao habilitar o uso da API, ele está localizado na aba 'contas de serviço' no google cloud. Exemplo de e-mail: `sistema-rh-focus@sistema-rh-upload-drive.iam.gserviceaccount.com`. Adicione o e-mail e o deixe com o tipo de acesso 'Editor', por fim, basta clicar em 'Enviar'.
-- **Passo 8**: na url da pasta criada no drive, copie o id do google e o insira na variável de ambiente `ID_GOOGLE_FOLDER` no heroku (caso esteja usando no local, adicione no arquivo .env). Exemplo de id do google: https://drive.google.com/drive/folders/1bANwIvdacNGzywjxwKD9-R7HIK6RNyDN aqui nesta url o id é `1bANwIvdacNGzywjxwKD9-R7HIK6RNyDN`.
-- **Passo 9**: por fim, se necessário reinicie o projeto
+- **Passo 8**: ainda na pasta do google drive, habilite em 'Partilhar' o acesso geral para 'Qualquer pessoa com o link' como 'Leitor. (Isso é importante para poder visualizar o item no front-end)
+- **Passo 9**: na url da pasta criada no drive, copie o id do google e o insira na variável de ambiente `ID_GOOGLE_FOLDER` no heroku (caso esteja usando no local, adicione no arquivo .env). Exemplo de id do google: https://drive.google.com/drive/folders/1bANwIvdacNGzywjxwKD9-R7HIK6RNyDN aqui nesta url o id é `1bANwIvdacNGzywjxwKD9-R7HIK6RNyDN`.
+- **Passo 10**: por fim, se necessário reinicie o projeto
 
 ## Deploy do DB
 
