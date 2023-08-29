@@ -13,6 +13,7 @@ import porteClientesRoutes from "./precificacao/porteClientes.routes";
 import clientesRoutes from "./precificacao/clientes.routes";
 import TipoPrecoRoutes from "./precificacao/tipoPrecos.routes";
 import PrecificacoesRoutes from "./precificacao/precificacoes.routes";
+import CustoRoutes from "./precificacao/custos.routes";
 
 const routes = Router();
 
@@ -34,5 +35,6 @@ routes.use(porteClientesRoutes);
 routes.use(clientesRoutes);
 routes.use(TipoPrecoRoutes);
 routes.use(PrecificacoesRoutes);
+routes.use(CustoRoutes);
 
 export default routes;

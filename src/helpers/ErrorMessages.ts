@@ -91,5 +91,9 @@ export const errMsg =
     {
         NOT_FOUND: "A precificação não foi encontrada.",
         ALREADY_EXISTS: "A precificação já existe."
+    },
+    CUSTO: 
+    {
+        NOT_FOUND: "O Custo não encontrado."
     }
 };
