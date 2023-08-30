@@ -28,7 +28,7 @@ export async function up(knex: Knex): Promise<void>
             .foreign("id_tipo_assunto")
             .references("id")
             .inTable(TableNames.tipo_assunto)
-            .onDelete("CASCADE")
+            .onDelete("RESTRICT")
             .onUpdate("CASCADE");
         
         table

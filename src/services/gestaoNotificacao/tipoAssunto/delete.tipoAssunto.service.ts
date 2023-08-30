@@ -1,6 +1,7 @@
 import TipoAssuntoRepository from "../../../database/repositories/gestaoNotificacao/TipoAssuntoRepository";
 import { errMsg } from "../../../helpers/ErrorMessages";
 import { checkId,  valueExists } from "../../../helpers/validation";
+import { InternalServerError } from "../../../middlewares/Error.middleware";
 import { TipoAssunto } from "../../../models/gestaoNotificacao/TipoAssunto";
 
 class DeleteTipoAssuntoService 
@@ -18,7 +19,12 @@ class DeleteTipoAssuntoService
         const result = await TipoAssuntoRepository.getById(tipoAssunto.id!);
         valueExists(result, errMsg.TIPO_ASSUNTO.NOT_FOUND);
             
-        await TipoAssuntoRepository.delete(tipoAssunto.id!);
+        await TipoAssuntoRepository.delete(tipoAssunto.id!).catch(err => {
+            if(err.code === "23503")
+                throw new InternalServerError("Erro: não foi possível remover o item, pois ele está associado a algum(ns) outro(s) item(ns) na tabela ocorrência."); 
+            else
+                throw new InternalServerError("Erro: " + err);
+        });
     }
 }
 

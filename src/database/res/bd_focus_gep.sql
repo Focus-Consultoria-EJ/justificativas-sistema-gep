@@ -175,6 +175,17 @@ CREATE TABLE ocorrencia_log (
 		REFERENCES shark(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE upload_file (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  google_drive_id VARCHAR(255) NOT NULL,
+  nome_arquivo VARCHAR(255) NOT NULL,
+  tipo_arquivo VARCHAR(50) NOT NULL,
+  id_ocorrencia SMALLINT NOT NULL,
+  data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_uploaded_files__ocorrencia_id FOREIGN KEY (id_ocorrencia)
+		REFERENCES ocorrencia(id) ON DELETE CASCADE ON UPDATE CASCADE,
+);
+
 CREATE TABLE evento (
 	id SERIAL PRIMARY KEY,
     titulo VARCHAR(300) NOT NULL,
