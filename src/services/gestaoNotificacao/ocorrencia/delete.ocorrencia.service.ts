@@ -1,9 +1,11 @@
+import { ENABLE_UPLOAD_FILES } from "../../../config/multer";
 import SharkRepository from "../../../database/repositories/SharkRepository";
 import OcorrenciaRepository from "../../../database/repositories/gestaoNotificacao/OcorrenciaRepository";
 import { errMsg } from "../../../helpers/ErrorMessages";
 import { checkId, valueExists } from "../../../helpers/validation";
 import { BadRequestError } from "../../../middlewares/Error.middleware";
 import ocEmailNotificaService from "../ocorrenciaEmailNotification/ocorrenciaEmailNotification.service";
+import deleteOcorrenciaUploadFileService from "./UploadFIle/delete.ocorrencia.uploadFile.service";
 
 class DeleteOcorrenciaService 
 {
@@ -18,7 +20,11 @@ class DeleteOcorrenciaService
 
         const ocorrencia = await OcorrenciaRepository.getById(id);
         valueExists(ocorrencia, errMsg.OCORRENCIA.NOT_FOUND);
-            
+        
+        // Apaga o arquivo no drive e remove ele do banco de dados
+        if(ENABLE_UPLOAD_FILES)
+            await deleteOcorrenciaUploadFileService.execute(id);
+
         await OcorrenciaRepository.delete(id).then(async () => {
             await OcorrenciaRepository.insertOcorrenciaLog(3, id, reqShark.id!);
             

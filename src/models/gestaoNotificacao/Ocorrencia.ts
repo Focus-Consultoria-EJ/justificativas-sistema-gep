@@ -3,6 +3,7 @@ import { NivelAdvertencia } from "./NivelAdvertencia";
 import { NivelGratificacao } from "./NivelGratificacao";
 import { TipoAssunto } from "./TipoAssunto";
 import { TipoOcorrencia } from "./TipoOcorrencia";
+import { UploadFile } from "./UploadFile";
 
 export interface Ocorrencia
 {
@@ -16,6 +17,7 @@ export interface Ocorrencia
     nivelGratificacao?: NivelGratificacao;
     sharkCriador?: Shark;
     sharkReferente: Shark;
+    uploadFile?: UploadFile;
     dataCriacao?: Date;
 }
 

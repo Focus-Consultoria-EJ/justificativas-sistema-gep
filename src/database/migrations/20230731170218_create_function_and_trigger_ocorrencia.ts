@@ -80,6 +80,8 @@ export async function down(knex: Knex): Promise<void>
         .then(() => { console.log("Trigger de inserção de metragem removida"); });
     await knex.schema.raw("DROP TRIGGER IF EXISTS tg_atualiza_metragem_update ON ocorrencia;")
         .then(() => { console.log("Trigger de atualização de metragem removida"); });
+    await knex.schema.raw("DROP TRIGGER IF EXISTS tg_devolve_metragem_delete ON ocorrencia;")
+        .then(() => { console.log("Trigger de devolver de metragem on delete removida"); });
     await knex.schema.raw("DROP FUNCTION IF EXISTS atualiza_metragem();")
         .then(() => { console.log("Função de atualização de metragem removida"); });
 }

@@ -16,6 +16,7 @@ export enum TableNames {
     ocorrencia_log = "ocorrencia_log",
     evento = "evento",
     presenca = "presenca",
+    upload_file = "upload_file",
     
     // Precificacao
     servico = "servico",
