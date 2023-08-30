@@ -25,9 +25,15 @@ export const errMsg =
         REFERENCE_NOT_FOUND: "O shark referente não foi encontrado.",
         REFERENCE_UNINFORMED: "O shark referente não foi informado.",
         ALREADY_EXISTS: "O shark já existe.",
-        EMAIL_EXISTS: "O e-mail já existe.",
+        EMAIL_EXISTS: "O e-mail focus já existe.",
+        EMAIL_PESSOAL_EXISTS: "O e-mail pessoal já existe",
         MATRICULA_EXISTS: "A matrícula já existe.",
         CPF_EXISTS: "O cpf já existe."
+    },
+    ROLE:
+    {
+        NOT_FOUND: "A role não foi encontrada.",
+        UNINFORMED: "A role não foi informada"
     },
     TIPO_OCORRENCIA:
     {
@@ -40,6 +46,18 @@ export const errMsg =
         NOT_FOUND: "O tipo de assunto não foi encontrado.",
         ALREADY_EXISTS: "O tipo de assunto já existe.",
         UNINFORMED: "O tipo de assunto não foi informado"
+    },
+    NIVEL_GRATIFICACAO: 
+    {
+        NOT_FOUND: "o nível de gratificação não foi encontrado.",
+        ALREADY_EXISTS: "O nível de gratificação já existe.",
+        UNINFORMED: "O nível de gratificação não foi informado"
+    },
+    NIVEL_ADVERTENCIA: 
+    {
+        NOT_FOUND: "o nível de advertência não foi encontrado.",
+        ALREADY_EXISTS: "O nível de advertência já existe.",
+        UNINFORMED: "O nível de advertência não foi informado"
     },
     OCORRENCIA:
     {

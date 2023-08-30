@@ -11,9 +11,9 @@ export async function up(knex: Knex): Promise<void>
         console.log("Tabela " + TableNames.tipo_acao_log + " criada.");
 
         return knex(TableNames.tipo_acao_log).insert([
-            { nome: "Inserção" },
-            { nome: "Atualização" },
-            { nome: "Remoção" }
+            { nome: "inserção" },
+            { nome: "atualização" },
+            { nome: "remoção" }
         ]);
     }).then(()=> console.log("Registros inseridos na tabela " + TableNames.tipo_acao_log + "."));
 }

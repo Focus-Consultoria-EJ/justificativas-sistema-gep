@@ -1,7 +1,9 @@
 import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
-import { Shark } from "../../models/Shark";
+import { EmailPessoal } from "../../models/EmailPessoal";
+import { LogShark, Shark } from "../../models/Shark";
 import { TableNames } from "../TableNames";
 import db from "../db";
+import { membroAtivoParameter, orderByParameter, pageParameter, sizeParameter } from "../Parameters";
 
 class SharkRepository
 {
@@ -10,21 +12,24 @@ class SharkRepository
      * @param size - (opcional) limita o número de registros durante a seleção.
      * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
      * @param membroAtivo - (opcional) especifica se o membro é ativo ou não ao retornar uma consulta.
-     * @param nome - (opcional) especifica o nome do sharkno retorno da consulta.
+     * @param nome - (opcional) especifica o nome do shark no retorno da consulta.
+     * @param order - (opcional) especifica se a ordenação é crescente ou decrescente.
      * @returns uma promise contendo uma coleção de objetos. 
      */
-    async select(size?:number, page?:number, membroAtivo?:string, nome?:string): Promise<Shark[] | undefined>
+    async select(size?:number, page?:number, membroAtivo?:string, nome?:string, order?: string): Promise<Shark[] | undefined>
     {
         try
         {
-            page = (page && page > 0) ? page : 0;
-            size = (size && size > 0) ? size : 0;
-            membroAtivo = (membroAtivo && membroAtivo === "true" || membroAtivo === "false") ? membroAtivo : undefined;
-
+            page = pageParameter(page);
+            size = sizeParameter(size); 
+            membroAtivo = membroAtivoParameter(membroAtivo);
+            order = orderByParameter(order, "ASC"); 
+            
             let query = db(TableNames.shark).select(
                 "s.id",
                 "s.nome",
                 "s.email",
+                "ep.email as email_pessoal",
                 "s.telefone",
                 "s.cpf",
                 "s.id_distancia_residencia",
@@ -35,27 +40,32 @@ class SharkRepository
                 "c.nome as nome_celula",
                 "s.num_projeto",
                 "s.metragem",
-                "s.admin",
+                "s.id_celula",
+                "s.id_role",
+                "r.nome as nome_role",
                 "s.membro_ativo",
                 "s.data_criacao"
             )
                 .from(`${TableNames.shark} as s`)
                 .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
-                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
+                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id")
+                .innerJoin(`${TableNames.role} as r`, "s.id_role", "r.id")
+                .leftJoin(`${TableNames.email_pessoal} as ep`, "ep.id_shark", "s.id");
             
             // params
             if(size) query = query.limit(size);
             if(page) query = query.offset(page);
             if(membroAtivo) query = query.andWhere("membro_ativo", "=", membroAtivo);
-            if(nome) query = query.andWhere("nome", "like", `%${nome}%`);
+            if(nome) query = query.andWhere("s.nome", "like", `%${nome}%`);
             query = query.where("s.id", "<>", 1);
 
-            const data = await query.orderBy("s.id");
+            const data = await query.orderBy("s.id", order);
 
             const sharks: Shark[] = data.map(shark => ({
                 id: shark.id,
                 nome: shark.nome,
                 email: shark.email,
+                emailPessoal: shark.email_pessoal,
                 telefone: shark.telefone,
                 cpf: shark.cpf,
                 distancia: { id: shark.id_distancia_residencia, distancia: shark.distancia },
@@ -64,10 +74,12 @@ class SharkRepository
                 celula: { id: shark.id_celula, nome: shark.nome_celula },
                 numProjeto: shark.num_projeto,
                 metragem: shark.metragem,
-                admin: shark.admin,
+                role: { id: shark.id_role, nome: shark.nome_role },
                 membroAtivo: shark.membro_ativo,
                 dataCriacao: shark.data_criacao
             }));
+
+            
             
             return sharks;
         }
@@ -87,6 +99,7 @@ class SharkRepository
                 "s.id",
                 "s.nome",
                 "s.email",
+                "ep.email as email_pessoal",
                 "s.telefone",
                 "s.cpf",
                 "s.id_distancia_residencia",
@@ -97,13 +110,17 @@ class SharkRepository
                 "c.nome as nome_celula",
                 "s.num_projeto",
                 "s.metragem",
-                "s.admin",
+                "s.id_role",
+                "s.id_celula",
+                "r.nome as nome_role",
                 "s.membro_ativo",
                 "s.data_criacao"
             )
                 .from(`${TableNames.shark} as s`)
                 .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
-                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
+                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id")
+                .innerJoin(`${TableNames.role} as r`, "s.id_role", "r.id")
+                .leftJoin(`${TableNames.email_pessoal} as ep`, "ep.id_shark", "s.id");
                 
             // params
             query = query.where("s.id", "=", id);
@@ -117,6 +134,7 @@ class SharkRepository
                 id: data.id,
                 nome: data.nome,
                 email: data.email,
+                emailPessoal: data.email_pessoal,
                 telefone: data.telefone,
                 cpf: data.cpf,
                 distancia: { id: data.id_distancia_residencia, distancia: data.distancia },
@@ -125,7 +143,7 @@ class SharkRepository
                 celula: { id: data.id_celula, nome: data.nome_celula },
                 numProjeto: data.num_projeto,
                 metragem: data.metragem,
-                admin: data.admin,
+                role: { id: data.id_role, nome: data.nome_role },
                 membroAtivo: data.membro_ativo,
                 dataCriacao: data.data_criacao
             };
@@ -172,6 +190,7 @@ class SharkRepository
                 "s.id",
                 "s.nome",
                 "s.email",
+                "ep.email as email_pessoal",
                 "s.telefone",
                 "s.cpf",
                 "s.id_distancia_residencia",
@@ -182,13 +201,17 @@ class SharkRepository
                 "c.nome as nome_celula",
                 "s.num_projeto",
                 "s.metragem",
-                "s.admin",
+                "s.id_celula",
+                "s.id_role",
+                "r.nome as nome_role",
                 "s.membro_ativo",
                 "s.data_criacao"
             )
                 .from(`${TableNames.shark} as s`)
                 .innerJoin(`${TableNames.distancia_residencia} as dr`, "s.id_distancia_residencia", "dr.id")
-                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id");
+                .innerJoin(`${TableNames.celula} as c`, "s.id_celula", "c.id")
+                .innerJoin(`${TableNames.role} as r`, "s.id_role", "r.id")
+                .leftJoin(`${TableNames.email_pessoal} as ep`, "ep.id_shark", "s.id");
                 
             // params
             query = query.where("s.email", "=", email);
@@ -210,7 +233,7 @@ class SharkRepository
                 celula: { id: data.id_celula, nome: data.nome_celula },
                 numProjeto: data.num_projeto,
                 metragem: data.metragem,
-                admin: data.admin,
+                role: { id: data.id_role, nome: data.nome_role },
                 membroAtivo: data.membro_ativo,
                 dataCriacao: data.data_criacao
             };
@@ -229,7 +252,7 @@ class SharkRepository
     {
         if( col === "email" || col === "matricula" || col === "cpf")
         {
-            const result = await db.raw(`SELECT * FROM shark WHERE id = ${id} AND ${col} = '${data}';`)
+            const result = await db.raw(`SELECT * FROM ${TableNames.shark} WHERE id = ${id} AND ${col} = '${data}';`)
                 .then(result => { return result.rows; }); // ignora os buffers
 
             // Retorna true se o usuário for dono
@@ -246,40 +269,57 @@ class SharkRepository
     }
 
     /**
-     * Insere o item na tabela shark no banco de dados.
-     * @param shark - um objeto do tipo Shark.
-     * @returns uma promise com as informações da inserção.
+     * Insere os dados do shark na tabela shark, o email pessoal na tabela email_pessoal.
+     * @param shark - os dados do tipo Shark
+     * @param emailPessoal - os dados do tipo EmailPessoal
+     * @returns uma promise com o id que foi inserido.
      */
-    async insert(shark: Shark): Promise<any | undefined>
+    async insertAllData(shark: Shark, emailPessoal: EmailPessoal)
     {
-        return await db(TableNames.shark).insert({
-            nome: shark.nome,
-            email: shark.email,
-            telefone: shark.telefone,
-            id_distancia_residencia: shark.distancia?.id ?? null,
-            cpf: shark.cpf,
-            matricula: shark.matricula,
-            senha: shark.senha,
-            id_celula: shark.celula.id,
-            num_projeto: shark.numProjeto,
-            metragem: shark.metragem,
-            admin: shark.admin,
-            membro_ativo: shark.membroAtivo,
-            data_criacao: shark.dataCriacao
-        })
-            .returning("id")
-            .then(row => { return row[0].id; });
+        try
+        {
+            return await db.transaction(async (trx) => {
+                // Insere na tabela shark
+                const idSharkIserted = await trx(TableNames.shark).insert({
+                    nome: shark.nome,
+                    email: shark.email,
+                    telefone: shark.telefone,
+                    id_distancia_residencia: shark.distancia?.id,
+                    cpf: shark.cpf,
+                    matricula: shark.matricula,
+                    senha: shark.senha,
+                    id_celula: shark.celula.id,
+                    num_projeto: shark.numProjeto,
+                    metragem: shark.metragem,
+                    id_role: shark.role?.id,
+                    membro_ativo: shark.membroAtivo,
+                    data_criacao: shark.dataCriacao
+                })
+                    .returning("id")
+                    .then(row => { return row[0].id; });
+                
+                // Insere na tabela email_pessoal
+                await trx(TableNames.email_pessoal).insert({
+                    id_shark: idSharkIserted,
+                    email: emailPessoal.email
+                });
+
+                return idSharkIserted;
+            });
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**
-     * Atualiza o item na tabela shark no banco de dados.
-     * @param shark - um objeto do tipo Shark.
-     * @returns uma promise com as informações da atualização.
+     * Insere os dados do shark na tabela shark, o email pessoal na tabela email_pessoal.
+     * @param shark - os dados do tipo Shark
+     * @param emailPessoal - os dados do tipo EmailPessoal
+     * @returns uma promise com o id que foi inserido.
      */
-    async update(shark: Shark): Promise<any | undefined>
+    async updateAllData(shark: Shark, emailPessoal: EmailPessoal)
     {
-        let cols;
-
+        let cols: any;
+        
         try
         {
             if(shark.senha)
@@ -295,7 +335,7 @@ class SharkRepository
                     id_celula: shark.celula.id,
                     num_projeto: shark.numProjeto,
                     metragem: shark.metragem,
-                    admin: shark.admin,
+                    id_role: shark.role?.id,
                     membro_ativo: shark.membroAtivo
                 };
             }
@@ -311,22 +351,35 @@ class SharkRepository
                     id_celula: shark.celula.id,
                     num_projeto: shark.numProjeto,
                     metragem: shark.metragem,
-                    admin: shark.admin,
+                    id_role: shark.role?.id,
                     membro_ativo: shark.membroAtivo
                 };
             }
 
-            if(shark.id == 1)
-                throw new BadRequestError("Não foi possível atualizar este usuário.");
+            return await db.transaction(async (trx) => {
+                // Impede de atualizar o user admin
+                if(shark.id == 1)
+                    throw new BadRequestError("Não foi possível atualizar este usuário.");
 
-            return await db(TableNames.shark)
-                .update(cols)
-                .where({ id: shark.id })
-                .returning("id")
-                .then(row => { return row[0].id; });
+                // Atualiza na tabela shark
+                const idSharkUpdated = await db(TableNames.shark)
+                    .update(cols)
+                    .where({ id: shark.id })
+                    .returning("id")
+                    .then(row => { return row[0].id; });
+                
+                // Atualiza na tabela email_pessoal
+                await trx(TableNames.email_pessoal)
+                    .update({
+                        id_shark: shark.id,
+                        email: emailPessoal.email
+                    })
+                    .where({ id_shark: shark.id });
+
+                return idSharkUpdated;
+            });
         }
-        catch (err) { 
-            throw new InternalServerError(String(err)); }
+        catch (err) { throw new InternalServerError(String(err)); }
     }
 
     /**
@@ -339,8 +392,158 @@ class SharkRepository
         return await db(TableNames.shark)
             .select()
             .where({ id: id })
-            .where("id", "<>", 1) // Não permite deletar o usuário base
+            .andWhere("id", "<>", 1) // Não permite deletar o usuário base
             .del();
+    }
+
+    /**
+     * Atuliza o membro ativo de um shark para false.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
+    async softDelete(id: number): Promise<any | undefined>
+    {
+        return await db(TableNames.shark)
+            .update({ membro_ativo: false})
+            .where({ id: id })
+            .andWhere("id", "<>", 1);
+    }
+
+    /**
+     * Remove o item na tabela shark no banco de dados.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise com informações do item removido.
+     */
+    async resetMetragem(): Promise<any | undefined>
+    {
+        return await db(TableNames.shark)
+            .update({ metragem: 24 })
+            .where("id", ">", 0);
+    }
+
+    /**
+     * Atualiza a senha do shark.
+     * @param shark - os dados do tipo Shark
+     * @returns uma promise com o id que foi inserido.
+     */
+    async resetPassword(shark: Shark)
+    {
+        try
+        {
+            return await db(TableNames.shark)
+                .update({
+                    senha: shark.senha
+                })
+                .where({ id: shark.id });
+        }
+        catch (err) { throw new InternalServerError(String(err)); }
+    }
+
+
+    /* SEÇÃO DO LOG DE SHARKS */
+
+    /**
+     * Traz todos os logs das ações realizadas na tabela shark no banco de dados.
+     * @param size - (opcional) limita o número de registros durante a seleção.
+     * @param page - (opcional) indica o início da leitura dos registros. Este item precisa ser usado junto do parâmetro limit.
+     * @param order - (opcional) especifica se a ordenação é crescente ou decrescente.
+     * @returns uma promise contendo uma coleção de objetos. 
+     */
+    async selectSharkLog(size?:number, page?:number, order?: string): Promise<LogShark[] | undefined>
+    {
+        size = sizeParameter(size);
+        page = pageParameter(page);
+        order = orderByParameter(order, "DESC");
+        
+        let query = db(TableNames.ocorrencia_log)
+            .select(
+                "sl.id",
+                "tal.id as id_tipo_acao_log",
+                "tal.nome as tipo_acao",
+                "s.id as id_shark_editado",
+                "s.nome as nome_shark_editado",
+                "s.email as email_shark_editado",
+                "se.id as id_shark_criador",
+                "se.nome as nome_shark_criador",
+                "se.email as email_shark_criador",
+                "sl.data_acao"
+            )
+            .from(`${TableNames.shark_log} as sl`)
+            .innerJoin(`${TableNames.tipo_acao_log} as tal`, "tal.id", "sl.id_tipo_acao_log")
+            .leftJoin(`${TableNames.shark} as s`, "s.id", "sl.id_shark")
+            .innerJoin(`${TableNames.shark} as se`, "se.id", "sl.id_shark_editor");
+
+        if(size) query = query.limit(size);
+        if(page) query = query.offset(page);
+
+        const data = await query.orderBy("sl.id", order);
+
+        const LogSharks: LogShark[] = data.map(data => {
+            return {
+                id: data.id,
+                tipoAcaoLog: { id: data.id_tipo_acao_log, nome: data.tipo_acao },
+                shark: { 
+                    id: data.id_shark_editado, 
+                    nome: data.nome_shark_editado, 
+                    email: data.email_shark_editado
+                },
+                sharkEditor: { 
+                    id: data.id_shark_criador, 
+                    nome: data.nome_shark_criador, 
+                    email:  data.email_shark_criador
+                },
+                dataAcao: data.data_acao
+            } as LogShark;
+        });
+            
+        return LogSharks;
+    }
+
+    /**
+     * Traz todos os logs das ações realizadas na tabela shark de acordo com o id.
+     * @param id - identificador relacionado a um item do banco de dados.
+     * @returns uma promise contendo um objeto. 
+     */
+    async getByIdSharkLog(id: number): Promise<LogShark | undefined>
+    {
+        const data = await db(TableNames.shark_log)
+            .select(
+                "sl.id",
+                "tal.id as id_tipo_acao_log",
+                "tal.nome as tipo_acao",
+                "s.id as id_shark_editado",
+                "s.nome as nome_shark_editado",
+                "s.email as email_shark_editado",
+                "se.id as id_shark_criador",
+                "se.nome as nome_shark_criador",
+                "se.email as email_shark_criador",
+                "sl.data_acao"
+            )
+            .from(`${TableNames.shark_log} as sl`)
+            .innerJoin(`${TableNames.tipo_acao_log} as tal`, "tal.id", "sl.id_tipo_acao_log")
+            .leftJoin(`${TableNames.shark} as s`, "s.id", "sl.id_shark")
+            .innerJoin(`${TableNames.shark} as se`, "se.id", "sl.id_shark_editor")
+            .andWhere("sl.id", "=", id)
+            .first();
+
+        if(!data)
+            return undefined;
+
+        return {
+            id: data.id,
+            tipoAcaoLog: { id: data.id_tipo_acao_log, nome: data.tipo_acao },
+            shark: { 
+                id: data.id_shark_editado, 
+                nome: data.nome_shark_editado, 
+                email: data.email_shark_editado
+            },
+            sharkEditor: { 
+                id: data.id_shark_criador, 
+                nome: data.nome_shark_criador, 
+                email:  data.email_shark_criador
+            },
+            dataAcao: data.data_acao
+        } as LogShark;
     }
 
     /**

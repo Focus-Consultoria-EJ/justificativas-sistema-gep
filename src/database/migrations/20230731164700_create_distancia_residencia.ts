@@ -10,9 +10,9 @@ export async function up(knex: Knex): Promise<void>
         console.log("Tabela " + TableNames.distancia_residencia + " criada.");
 
         return knex(TableNames.distancia_residencia).insert([
-            { distancia: "Perto" },
-            { distancia: "Longe" },
-            { distancia: "Muito Longe" },
+            { distancia: "perto" },
+            { distancia: "longe" },
+            { distancia: "muito longe" },
         ]);
     }).then(()=> console.log("Registros inseridos na tabela " + TableNames.distancia_residencia + "." ));
 }

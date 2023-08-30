@@ -1,3 +1,4 @@
+import EmailPessoalRepository from "../../database/repositories/EmailPessoalRepository";
 import SharkRepository from "../../database/repositories/SharkRepository";
 import { errMsg } from "../../helpers/ErrorMessages";
 import { sharkFormValidation } from "../../helpers/sharkValidation";
@@ -5,6 +6,7 @@ import { checkId } from "../../helpers/validation";
 import { BadRequestError, InternalServerError } from "../../middlewares/Error.middleware";
 import getByIdCelulaService from "../celula/getById.celula.service";
 import getByIdDistanciaPercorridaService from "../gestaoNotificacao/distanciaPercorrida/getById.distanciaPercorrida.service";
+import getByIdRoleService from "../role/getById.role.service";
 
 class SaveSharkService 
 {
@@ -16,38 +18,50 @@ class SaveSharkService
     async execute(data: any, reqShark: any): Promise<void>
     {
         data.id = checkId(data.id);
-        let shark;
+        let dataForm;
 
         if(data.id)
-            shark = await sharkFormValidation(data, true);
+            dataForm = await sharkFormValidation(data, true);
         else
-            shark = await sharkFormValidation(data);
+            dataForm = await sharkFormValidation(data);
 
-        if(typeof shark === "string")
-            throw new BadRequestError(shark);
-
-        if(shark.id)
-            if(!await SharkRepository.getById(shark.id!))
+        if(typeof dataForm === "string")
+            throw new BadRequestError(dataForm);
+            
+        if(dataForm.shark.id)
+            if(!await SharkRepository.getById(dataForm.shark.id!))
                 throw new BadRequestError(errMsg.SHARK.NOT_FOUND);   
 
         // Verifica se o E-mail já está cadastrado e se ele é do próprio usuário
-        if(await SharkRepository.userExists("email", shark.email))
+        if(await SharkRepository.userExists("email", dataForm.shark.email))
         {
-            if(shark.id)
+            if(dataForm.shark.id)
             {
-                if( !(await SharkRepository.verifyIfDataIsFromOwnUser(shark.id!, "email", shark.email)) )
+                if( !(await SharkRepository.verifyIfDataIsFromOwnUser(dataForm.shark.id!, "email", dataForm.shark.email)) )
                     throw new BadRequestError(errMsg.SHARK.EMAIL_EXISTS);
             }
             else
                 throw new BadRequestError(errMsg.SHARK.EMAIL_EXISTS);     
         }
 
-        // Verifica se o cpf já está cadastrado e se ele é do próprio usuário
-        if(await SharkRepository.userExists("cpf", shark.cpf!))
+        // Verifica se o E-mail Pessoal já está cadastrado e se ele é do próprio usuário
+        if(await EmailPessoalRepository.userExists("email", dataForm.emailPessoal.email!))
         {
-            if(shark.id)
+            if(dataForm.shark.id)
             {
-                if( !(await SharkRepository.verifyIfDataIsFromOwnUser(shark.id!, "cpf", shark.cpf!)) )
+                if( !(await EmailPessoalRepository.verifyIfDataIsFromOwnUser(dataForm.shark.id!, "email", dataForm.emailPessoal.email!)) )
+                    throw new BadRequestError(errMsg.SHARK.EMAIL_PESSOAL_EXISTS);
+            }
+            else
+                throw new BadRequestError(errMsg.SHARK.EMAIL_PESSOAL_EXISTS);     
+        }
+
+        // Verifica se o cpf já está cadastrado e se ele é do próprio usuário
+        if(await SharkRepository.userExists("cpf", dataForm.shark.cpf!))
+        {
+            if(dataForm.shark.id)
+            {
+                if( !(await SharkRepository.verifyIfDataIsFromOwnUser(dataForm.shark.id!, "cpf", dataForm.shark.cpf!)) )
                     throw new BadRequestError(errMsg.SHARK.CPF_EXISTS);
             }
             else
@@ -55,11 +69,11 @@ class SaveSharkService
         }
 
         // Verifica se a Matrícula já está cadastrada e se ela é do próprio usuário
-        if(await SharkRepository.userExists("matricula", shark.matricula!))
+        if(await SharkRepository.userExists("matricula", dataForm.shark.matricula!))
         {
-            if(shark.id)
+            if(dataForm.shark.id)
             {
-                if( !(await SharkRepository.verifyIfDataIsFromOwnUser(shark.id!, "matricula", shark.matricula!)) )
+                if( !(await SharkRepository.verifyIfDataIsFromOwnUser(dataForm.shark.id!, "matricula", dataForm.shark.matricula!)) )
                     throw new BadRequestError(errMsg.SHARK.MATRICULA_EXISTS);
             }
             else
@@ -67,18 +81,21 @@ class SaveSharkService
         }
 
         // Verifica se o id da célula é válida
-        await getByIdCelulaService.execute(shark.celula.id);
+        await getByIdCelulaService.execute(dataForm.shark.celula.id);
 
         // Verifica se o id da distâcia é válida
-        await getByIdDistanciaPercorridaService.execute(shark.distancia?.id);
-        
+        await getByIdDistanciaPercorridaService.execute(dataForm.shark.distancia?.id);
+
+        // Verifica se o id da role é válida
+        await getByIdRoleService.execute(dataForm.shark.role?.id);
+
         /* UPDATE */
-        if(shark.id)
+        if(dataForm.shark.id)
         {   
-            // Salva o log de usuário
             if(reqShark)
             {
-                await SharkRepository.update(shark).then( async(idShark) => {
+                await SharkRepository.updateAllData(dataForm.shark, dataForm.emailPessoal).then(async (idShark) => {
+                    // Salva o log de usuário
                     await SharkRepository.insertSharkLog(2, idShark, reqShark.id!);
                 });
             }
@@ -89,13 +106,12 @@ class SaveSharkService
         /* INSERT */
         else
         {   
-            // Salva o log de usuário
             if(reqShark)
-            {
-                await SharkRepository.insert(shark).then(async (idShark) => {
+            {   
+                await SharkRepository.insertAllData(dataForm.shark, dataForm.emailPessoal).then(async (idShark) => {
+                    // Salva o log de usuário
                     await SharkRepository.insertSharkLog(1, idShark, reqShark.id!);
-                });
-                
+                }); 
             }
             else
                 throw new InternalServerError("O shark da requisição não está setado");

@@ -22,7 +22,6 @@ app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/", routes);
 
-
 // Agenda 
 agendaJobs();
 

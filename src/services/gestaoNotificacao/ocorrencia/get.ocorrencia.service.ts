@@ -14,6 +14,7 @@ interface IRequestParams
     emailSharkReferente: any;
     tipoAssunto: any;
     tipoOcorrencia:any;
+    order: any;
 }
 
 class getOcorrenciaService 
@@ -40,7 +41,8 @@ class getOcorrenciaService
             reqParam?.emailSharkCriador,
             reqParam?.emailSharkReferente,
             reqParam?.tipoOcorrencia,
-            reqParam?.tipoAssunto
+            reqParam?.tipoAssunto,
+            reqParam?.order
         );
     }
 }

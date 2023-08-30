@@ -6,16 +6,16 @@ export async function up(knex: Knex): Promise<void>
     return await knex.schema.createTable(TableNames.shark, (table) => {
         table.increments("id").primary().index();
         table.string("nome", 300).notNullable();
-        table.string("email", 100).notNullable();
-        table.string("cpf", 14).notNullable();
+        table.string("email", 100).notNullable().unique();
+        table.string("cpf", 14).notNullable().unique();
         table.string("telefone", 14);
-        table.smallint("id_distancia_residencia");
-        table.string("matricula", 15).notNullable();
+        table.smallint("id_distancia_residencia").notNullable();
+        table.string("matricula", 15).notNullable().unique();
         table.string("senha", 120).notNullable();
         table.smallint("id_celula").notNullable();
         table.smallint("num_projeto").notNullable().defaultTo(0);
         table.smallint("metragem").notNullable().defaultTo(24);
-        table.boolean("admin").notNullable().defaultTo(false);
+        table.smallint("id_role").notNullable().defaultTo(1);
         table.boolean("membro_ativo").defaultTo(true);
         table.timestamp("data_criacao").notNullable().defaultTo(knex.fn.now());
   
@@ -33,6 +33,13 @@ export async function up(knex: Knex): Promise<void>
             .onDelete("CASCADE")
             .onUpdate("CASCADE");
 
+        table
+            .foreign("id_role")
+            .references("id")
+            .inTable(TableNames.role)
+            .onDelete("RESTRICT")
+            .onUpdate("CASCADE");
+
     }).then(() => {
         console.log("Tabela " + TableNames.shark + " criada.");
         
@@ -44,7 +51,7 @@ export async function up(knex: Knex): Promise<void>
             id_distancia_residencia: 1,
             senha: "$2b$10$nFpL8mEl54cDYFYSQriSBOt1qqp2h9rg2x2gAmgAXbOlKJVo7XRb6",
             id_celula: 3,
-            admin: true,
+            id_role: 3,
         });
     }).then(()=> console.log("Registro inserido na tabela " + TableNames.shark + "."));
 }

@@ -3,9 +3,15 @@ import { errMsg } from "../../helpers/ErrorMessages";
 import { isNumber } from "../../helpers/validation";
 import { BadRequestError } from "../../middlewares/Error.middleware";
 
-interface IRequestParams { size: any, page: any, membroAtivo: any, nome: any }
+interface IRequestParams { 
+    size: any; 
+    page: any; 
+    membroAtivo: any; 
+    nome: any;
+    order: any;
+}
 
-class getSharkService 
+class GetSharkService 
 {
     /**
      * Serviço responsável por trazer todos os dados de shark.
@@ -20,8 +26,9 @@ class getSharkService
         if(reqParam?.page && !isNumber(reqParam.page))
             throw new BadRequestError(errMsg.INVALID_DATA + " (page)");
         
-        return await SharkRepository.select(reqParam?.size, reqParam?.page, reqParam?.membroAtivo, reqParam?.nome);
+        return await SharkRepository.select(reqParam?.size, 
+            reqParam?.page, reqParam?.membroAtivo, reqParam?.nome, reqParam?.order);
     }
 }
 
-export default new getSharkService;
+export default new GetSharkService;

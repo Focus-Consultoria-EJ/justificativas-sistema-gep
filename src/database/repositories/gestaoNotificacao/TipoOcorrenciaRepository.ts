@@ -88,8 +88,8 @@ class TipoOcorrenciaRepository
                 nome: tipoOcorrencia.nome
             })
             .where({ id: tipoOcorrencia.id })
-            // Impede de atualizar os índices de 1 a 7 na tabela.
-            .andWhereNotBetween("id", [1, 7]);
+            // Impede de atualizar os índices de 1 a 6 na tabela.
+            .andWhereNotBetween("id", [1, 6]);
     }
 
     /**
@@ -103,8 +103,8 @@ class TipoOcorrenciaRepository
             .select()
             .where({ id: id })
 
-            // Impede de deletar os índices de 1 a 7 na tabela
-            .andWhereNotBetween("id", [1, 7])
+            // Impede de deletar os índices de 1 a 6 na tabela
+            .andWhereNotBetween("id", [1, 6])
             .del();
     }
 }

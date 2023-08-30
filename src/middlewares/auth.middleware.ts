@@ -45,7 +45,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
                 celula: { id: dataShark.celula.id, nome: dataShark.celula.nome },
                 numProjeto: dataShark.numProjeto,
                 metragem: dataShark.metragem,
-                admin: dataShark.admin,
+                role: { id: dataShark.role?.id, nome: dataShark.role?.nome },
                 jwt: {
                     iat: jwtData.iat,
                     exp: jwtData.exp

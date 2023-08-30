@@ -39,7 +39,7 @@ export const CPFValidation = (cpf: string) =>
 /**
  * Verifica se um texto é um número.
  * @param num - o valor a ser testado.
- * @returns um boolean indicando se o e-mail é válido.
+ * @returns um boolean indicando se o número é válido.
  */
 export const isNumber = (num: any):boolean =>
 {
@@ -122,6 +122,3 @@ export const phoneFormat = (phone: string) =>
         return phone.replace(/\D/g, ""); 
     return null;
 };
-
-    
-

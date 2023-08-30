@@ -10,12 +10,12 @@ export async function up(knex: Knex): Promise<void>
         console.log("Tabela " + TableNames.celula + " criada.");
 
         return knex(TableNames.celula).insert([
-            { nome: "Presidência" },
-            { nome: "Administração Financeira" },
-            { nome: "Gestão estratégica de pessoas" },
-            { nome: "Marketing" },
-            { nome: "Comercial" },
-            { nome: "Projetos" },
+            { nome: "presidência" },
+            { nome: "administração financeira" },
+            { nome: "gestão estratégica de pessoas" },
+            { nome: "marketing" },
+            { nome: "comercial" },
+            { nome: "projetos" },
         ]);
     }).then(()=> console.log("Registros inseridos na tabela " + TableNames.celula + "."));
 }
