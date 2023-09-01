@@ -16,14 +16,12 @@ const GOOGLE_CREDENTIALS = credentialsJSON;
 // Verificar se o arquivo de credenciais existe
 if (!GOOGLE_CREDENTIALS && ENABLE_UPLOAD_FILES) {
     console.error("O arquivo de credenciais não foi encontrado.");
-    process.exit(1);
 }
 
 // Verificar se o id da pasta do google foi passado
 if(ID_FOLDER_GOOGLE_DRIVE === "" && ENABLE_UPLOAD_FILES)
 {
     console.error("O id da pasta do google drive não foi passado nas variáveis de ambiente.");
-    process.exit(1);
 }
 
 // Configuração da API do Google Drive
