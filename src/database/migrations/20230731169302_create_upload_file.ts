@@ -1,7 +1,6 @@
 import { Knex } from "knex";
 import { TableNames } from "../TableNames";
 
-
 export async function up(knex: Knex): Promise<void> 
 {
     return await knex.schema.createTable(TableNames.upload_file, (table) => {
