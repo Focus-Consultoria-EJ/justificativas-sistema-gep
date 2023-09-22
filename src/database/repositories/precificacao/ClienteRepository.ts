@@ -27,6 +27,7 @@ class ClienteRepository
                     "c.idade",
                     "c.negociador",
                     "c.estado",
+                    "c.cidade",
                     "c.sexo",
                     "pc.id as id_porte_cliente",
                     "pc.tipo as tipo_porte_cliente",
@@ -138,7 +139,7 @@ class ClienteRepository
             estado: cliente.estado,
             cidade: cliente.cidade,
             sexo: cliente.sexo,
-            id_porte_cliente: cliente.porteCliente.id
+            id_porte_cliente: cliente.porteCliente!.id
         });
     }
 
@@ -159,7 +160,7 @@ class ClienteRepository
                 estado: cliente.estado,
                 cidade: cliente.cidade,
                 sexo: cliente.sexo,
-                id_porte_cliente: cliente.porteCliente.id
+                id_porte_cliente: cliente.porteCliente!.id
             })
             .where({ id: cliente.id });
     }

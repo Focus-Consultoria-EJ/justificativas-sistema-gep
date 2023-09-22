@@ -11,8 +11,6 @@ export async function up(knex: Knex): Promise<void>
         table.smallint("quantidade").notNullable();
         table.float("preco").notNullable();
         table.smallint("numero_dias");
-        table.boolean("valido");
-        table.string("justificativa", 1200); // É preenchido pelo adm fin quando recusar
         table.smallint("id_total_custo").notNullable();
 
         table
