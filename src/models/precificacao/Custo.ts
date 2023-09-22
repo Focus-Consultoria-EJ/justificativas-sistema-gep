@@ -8,7 +8,5 @@ export interface Custo
     quantidade?: number;
     preco?: number;
     numeroDias?: number;
-    valido?: boolean;
-    justificativa?: string;
     totalCusto?: TotalCusto;
 }

@@ -22,10 +22,10 @@ class CustoRepository
                     "c.quantidade",
                     "c.preco",
                     "c.numero_dias",
-                    "c.valido",
-                    "c.justificativa",
                     "tc.id as id_total_custo",
                     "tc.resultado",
+                    "tc.valido",
+                    "tc.justificativa",
                     "tc.data_criacao"
                 )
                 .from(`${TableNames.total_custo} as tc`)
@@ -39,9 +39,7 @@ class CustoRepository
                 quantidade: data.quantidade,
                 preco: data.preco,
                 numeroDias: data.numero_dias,
-                valido: data.valido,
-                justificativa: data.justificativa,
-                totalCusto: { id: data.id_total_custo, resultado: data.resultado, dataCriacao: data.data_criacao }
+                totalCusto: { id: data.id_total_custo, resultado: data.resultado, valido: data.valido, justificativa: data.justificativa, dataCriacao: data.data_criacao }
             }));
 
             return custos;
@@ -66,10 +64,10 @@ class CustoRepository
                     "c.quantidade",
                     "c.preco",
                     "c.numero_dias",
-                    "c.valido",
-                    "c.justificativa",
                     "tc.id as id_total_custo",
                     "tc.resultado",
+                    "tc.valido",
+                    "tc.justificativa",
                     "tc.data_criacao"
                 )
                 .from(`${TableNames.total_custo} as tc`)
@@ -88,7 +86,7 @@ class CustoRepository
                 numeroDias: data.numero_dias,
                 valido: data.valido,
                 justificativa: data.justificativa,
-                totalCusto: { id: data.id_total_custo, resultado: data.resultado, dataCriacao: data.data_criacao }
+                totalCusto: { id: data.id_total_custo, resultado: data.resultado, valido: data.valido, justificativa: data.justificativa, dataCriacao: data.data_criacao }
             }));
 
             return custos;
@@ -109,9 +107,11 @@ class CustoRepository
 
                 // Calcula o somatório total do atributo "preco"
                 const somatorioPrecos = custos.reduce((total, custo) => total + (custo.preco || 0), 0);
-
+                
                 return await trx(TableNames.total_custo).insert({
-                    resultado: somatorioPrecos
+                    resultado: somatorioPrecos,
+                    valido: null, 
+                    justificativa: null,
                 })
                     .returning("id")
                     .then(row => { return row[0].id; })
@@ -125,8 +125,6 @@ class CustoRepository
                                 quantidade: custo.quantidade,
                                 preco: custo.preco,
                                 numero_dias: custo.numeroDias,
-                                valido: custo.valido,
-                                justificativa: custo.justificativa,
                                 id_total_custo: idTotalCusto
                             });
                         });
@@ -151,20 +149,21 @@ class CustoRepository
                 await trx(TableNames.total_custo)
                     .where({ id: idTotalCusto })
                     .update({
-                        resultado: somatorioPrecos
+                        resultado: somatorioPrecos,
+                        valido: custos[0].totalCusto?.valido, 
+                        justificativa: custos[0].totalCusto?.justificativa,
                     });
     
                 const atualizacoesCusto = custos.map(async (custo) => {
                     await trx(TableNames.custo)
                         .where({ id: custo.id }) // Substitua pelo critério correto para atualizar o custo
-                        .update({
+                        .update({ 
                             nome: custo.nome,
                             mes_inicio: custo.mesInicio,
                             quantidade: custo.quantidade,
                             preco: custo.preco,
                             numero_dias: custo.numeroDias,
-                            valido: custo.valido,
-                            justificativa: custo.justificativa
+                            id_total_custo: idTotalCusto
                         });
                 });
     

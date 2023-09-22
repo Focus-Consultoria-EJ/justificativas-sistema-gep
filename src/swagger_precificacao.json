@@ -1,0 +1,981 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API do Sistema de Precificação",
+    "description": "Essa API tem como objetivo a manipulação de dados que envolvem custos.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "API de teste"
+    },
+    {
+      "url": "https://backend-gep-postgresql.herokuapp.com/api",
+      "description": "API de produção"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Login na plataforma",
+        "description": "Rota responsável por gerar o token JWT",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              },
+              "examples": {
+                "Login 1": {
+                  "value": {
+                    "login": "emailtest6@hotmail.com",
+                    "senha": "123456789"
+                  }
+                },
+                "Login 2": {
+                  "value": {
+                    "login": "test2@hotmail.com",
+                    "senha": "123456789"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validateToken": {
+      "get": {
+        "tags": [
+          "Sharks"
+        ],
+        "summary": "Valida o Token e traz os dados do usuário",
+        "description": "Rota responsável por retornar todos os dados contidos no usuário salvo na requisição",
+        "responses": {
+          "200": {
+            "description": "data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/servicos": {
+      "get": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Obtém todos os serviços oferecidos pela empresa",
+        "responses": {
+          "200": {
+            "description": "Lista de serviços obtida com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Cria um novo serviço",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Servico"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Serviço criado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/servicos/{id}": {
+      "put": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Atualiza um serviço existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do serviço a ser atualizado",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Servico"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Serviço atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Serviços"
+        ],
+        "summary": "Exclui um serviço existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do serviço a ser excluído",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Serviço excluído com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/clientes": {
+      "get": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Obtém todos os clientes",
+        "responses": {
+          "200": {
+            "description": "Lista de clientes obtida com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Cria um novo cliente",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cliente"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Cliente criado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/clientes/{id}": {
+      "put": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Atualiza um cliente existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do cliente a ser atualizado",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cliente"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Cliente atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Clientes"
+        ],
+        "summary": "Exclui um cliente existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do serviço a ser excluído",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cliente excluído com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/precificacoes": {
+      "get": {
+        "tags": [
+          "Precificações"
+        ],
+        "summary": "Obtém todos as precificações",
+        "responses": {
+          "200": {
+            "description": "Lista de precificações obtida com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Precificações"
+        ],
+        "summary": "Cria uma nova precificação",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Precificacao"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Cliente criado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/precificacoes/{id}": {
+      "put": {
+        "tags": [
+          "Precificações"
+        ],
+        "summary": "Atualiza um precificação existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da precificação a ser atualizado",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Precificacao"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Cliente atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Precificações"
+        ],
+        "summary": "Exclui uma precificação existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do precificação a ser excluído",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Precificação excluído com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/portes-cliente": {
+      "get": {
+        "tags": [
+          "Portes de Cliente"
+        ],
+        "summary": "Obtém todos os portes que um cliente pode assumir",
+        "responses": {
+          "200": {
+            "description": "Lista de portes de cliente obtida com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Portes de Cliente"
+        ],
+        "summary": "Cria um novo porte de cliente",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PorteCliente"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Porte de cliente criado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/portes-cliente/{id}": {
+      "put": {
+        "tags": [
+          "Portes de Cliente"
+        ],
+        "summary": "Atualiza um porte de cliente existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do porte de cliente a ser atualizado",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PorteCliente"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Porte de cliente atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Portes de Cliente"
+        ],
+        "summary": "Exclui um porte de cliente existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do porte de cliente a ser excluído",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Porte de cliente excluído com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipo-precos": {
+      "get": {
+        "tags": [
+          "Tipos de Preço"
+        ],
+        "summary": "Obtém todos os tipos que um preço pode assumir",
+        "responses": {
+          "200": {
+            "description": "Lista de tipos de preço obtida com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Tipos de Preço"
+        ],
+        "summary": "Cria um novo tipo de preço",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoPreco"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Tipo de preço criado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipo-precos/{id}": {
+      "put": {
+        "tags": [
+          "Tipos de Preço"
+        ],
+        "summary": "Atualiza um tipo de preço existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do tipo de preço a ser atualizado",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoPreco"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Tipo de preço atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Tipos de Preço"
+        ],
+        "summary": "Exclui um tipo de preço existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do tipo de preço a ser excluído",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tipo de preço excluído com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/custos": {
+      "get": {
+        "tags": [
+          "Custos"
+        ],
+        "summary": "Obtém todos os custos",
+        "responses": {
+          "200": {
+            "description": "Lista de custos obtida com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Custos"
+        ],
+        "summary": "Cria um novo custo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListaCusto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Custo(s) criado(s) com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/custos/{id}": {
+      "put": {
+        "tags": [
+          "Custos"
+        ],
+        "summary": "Atualiza um custo existente",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do totalCusto a ser atualizado",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListaCusto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Custo(s) atualizado(s) com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Custos"
+        ],
+        "summary": "Exclui um ou mais custos existentes de acordo com o ID totalCusto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do totalCusto a ser excluído",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Custo(s) excluído(s) com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserLogin": {
+        "required": [
+          "login",
+          "senha"
+        ],
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "Servico": {
+        "required": [
+          "nome"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "Cliente": {
+        "required": [
+          "cidade",
+          "estado",
+          "negociador",
+          "nome",
+          "nomeEmpresa",
+          "porteCliente",
+          "tipoCliente"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "nomeEmpresa": {
+            "type": "string"
+          },
+          "tipoCliente": {
+            "type": "string"
+          },
+          "idade": {
+            "type": "integer"
+          },
+          "negociador": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "sexo": {
+            "type": "string"
+          },
+          "porteCliente": {
+            "type": "integer"
+          }
+        }
+      },
+      "Precificacao": {
+        "required": [
+          "cliente",
+          "custoVariavel",
+          "entrada",
+          "margemIncerteza",
+          "modalidade",
+          "parcelado",
+          "qtdMembros",
+          "servico",
+          "tipoNegocio",
+          "tipoPreco",
+          "valorAVista",
+          "valorParcelas"
+        ],
+        "type": "object",
+        "properties": {
+          "composta": {
+            "type": "boolean",
+            "description": "Se true, deve ser passado o servicoComposto"
+          },
+          "servico": {
+            "type": "integer"
+          },
+          "servicoComposto": {
+            "type": "integer"
+          },
+          "cliente": {
+            "type": "integer"
+          },
+          "tipoNegocio": {
+            "type": "string"
+          },
+          "margemIncerteza": {
+            "type": "number"
+          },
+          "qtdMembros": {
+            "type": "integer"
+          },
+          "custoVariavel": {
+            "type": "number"
+          },
+          "modalidade": {
+            "type": "string"
+          },
+          "tipoPreco": {
+            "type": "integer"
+          },
+          "entrada": {
+            "type": "number"
+          },
+          "parcelado": {
+            "type": "integer"
+          },
+          "valorParcelas": {
+            "type": "number"
+          },
+          "valorAVista": {
+            "type": "number"
+          }
+        }
+      },
+      "PorteCliente": {
+        "required": [
+          "desconto",
+          "tipo"
+        ],
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string"
+          },
+          "desconto": {
+            "type": "number"
+          }
+        }
+      },
+      "TipoPreco": {
+        "required": [
+          "nome"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "Custo": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "mesInicio": {
+            "type": "string"
+          },
+          "quantidade": {
+            "type": "integer"
+          },
+          "preco": {
+            "type": "number"
+          },
+          "numeroDias": {
+            "type": "integer"
+          }
+        }
+      },
+      "ListaCusto": {
+        "required": [
+          "nome"
+        ],
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Custo"
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

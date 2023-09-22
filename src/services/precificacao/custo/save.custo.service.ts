@@ -3,14 +3,13 @@ import { errMsg } from "../../../helpers/ErrorMessages";
 import { checkId } from "../../../helpers/validation";
 import { BadRequestError } from "../../../middlewares/Error.middleware";
 import { Custo } from "../../../models/precificacao/Custo";
-
 class SaveCustoClienteService 
 {
     /**
      * Serviço responsável pela inserção ou atualização de multiplos dados do tipo Custo. Eles precisam ser do tipo array JSON.
      * @param data - os dados vindos do header.
      */
-    async execute(datas: Custo[], contentType?: string): Promise<void>
+    async execute(datas: any, contentType?: string): Promise<void>
     {
         const custos: Custo[] = [];
         let idTotalCusto;
@@ -18,7 +17,7 @@ class SaveCustoClienteService
         // Verifica se o que vem do body é do tipo JSON
         if(!contentType || contentType !== "application/json")
             throw new BadRequestError("Os dados precisam ser um array do tipo JSON.");
-        
+            
         for (const key in datas) {
             const idx = parseInt(key);
             const data = datas[key];
@@ -29,7 +28,7 @@ class SaveCustoClienteService
                 idTotalCusto = checkId(data);
                 break;
             }
-
+            
             if(!data.nome || data.nome.length <= 3 || data.nome.length >= 250) 
                 throw new BadRequestError("Digite um nome com 3 ou mais caracteres. (max: 250) > item " + idx);
 
@@ -44,9 +43,14 @@ class SaveCustoClienteService
 
             if(!data.numeroDias || isNaN(data.numeroDias) || Number(data.numeroDias) < 0) 
                 throw new BadRequestError("Digite um número de dias maior que 0. > item " + idx);
+            
 
-            if(data.valido && (!data.justificativa || data.justificativa.length < 10 || data.justificativa.length > 900))
-                throw new BadRequestError("Digite uma uma justificativa com 10 ou mais caracteres. (max: 900) > item " + idx);
+            if(data.totalCusto)
+            {
+                
+                if(data.totalCusto.valido && (!data.totalCusto.justificativa || data.totalCusto.justificativa.length < 10 || data.totalCusto.justificativa.length > 900))
+                    throw new BadRequestError("Digite uma uma justificativa com 10 ou mais caracteres. (max: 900) > item " + idx);
+            }
 
             const custo: Custo = { 
                 nome: data.nome, 
@@ -54,30 +58,38 @@ class SaveCustoClienteService
                 quantidade: data.quantidade,
                 preco: data.preco,
                 numeroDias: data.numeroDias,
-                valido: data.valido,
-                justificativa: data.justificativa
+                totalCusto: {
+                    valido: data.totalCusto ? data.totalCusto.valido : null,
+                    justificativa: data.totalCusto ? data.totalCusto.justificativa : null
+                }
             };  
-
+            
             custos.push(custo);
         }
-
+        
         if(idTotalCusto)
             if(!await CustoRepository.getById(Number(idTotalCusto)))
                 throw new BadRequestError(errMsg.CUSTO.NOT_FOUND);   
-
+        
         if(idTotalCusto)
         {
             // Pega os ids de cada custo na tabela custo
             const custosOldData = await CustoRepository.getById(idTotalCusto);
-
+            if(!custosOldData)
+                throw new BadRequestError("Custo não encontrado.");
+            
             if(custosOldData?.length === 0)
                 throw new BadRequestError("Custo vazio.");   
+            else if (custosOldData?.length < custos.length)
+                throw new BadRequestError("O número de itens a ser atualizado é maior que os itens no banco de dados.");
+            else if (custosOldData?.length > custos.length)
+                throw new BadRequestError("O número de itens a ser atualizado é menor que os itens no banco de dados.");
 
             // Associa os ids dos custos do banco de dados com os do forms
             custos.forEach((custo, idx) => {
                 custo.id = custosOldData![idx].id;
             });
-
+            
             await CustoRepository.update(custos, idTotalCusto);
         }
         else

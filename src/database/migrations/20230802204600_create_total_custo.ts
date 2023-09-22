@@ -7,6 +7,8 @@ export async function up(knex: Knex): Promise<void>
     return await knex.schema.createTable(TableNames.total_custo, (table) => {
         table.increments("id").primary().index();
         table.float("resultado").notNullable();
+        table.boolean("valido");
+        table.string("justificativa", 1200); // É preenchido pelo adm fin quando recusar
         table.timestamp("data_criacao").defaultTo(knex.fn.now());
 
     }).then(()=> console.log("Registros inseridos na tabela " + TableNames.total_custo + "."));
