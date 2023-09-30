@@ -1,0 +1,35 @@
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
+import bodyParser from "body-parser";
+import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocGestao from "./swagger_gestao_rh.json";
+import swaggerDocPrecificacao from "./swagger_precificacao.json";
+import ErrorMiddleware from "./middlewares/Error.middleware";
+import routes from "./routes/routes";
+import { agendaJobs } from "./database/schedules/agendaJobs";
+
+const PORT = process.env.PORT;
+const app = express();
+
+/* Middlewares */
+//application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
+
+// Rotas
+app.use("/api-docs/gestao", swaggerUi.serveFiles(swaggerDocGestao, {}), swaggerUi.setup(swaggerDocGestao));
+app.use("/api-docs/precificacao", swaggerUi.serveFiles(swaggerDocPrecificacao, {}), swaggerUi.setup(swaggerDocPrecificacao));
+app.use("/api/", routes);
+
+// Agenda 
+agendaJobs();
+
+// Este middleware precisa sempre estar abaixo das rotas!
+app.use(ErrorMiddleware.handle);
+
+app.listen(PORT, () => { console.log(`Server listen in ${PORT}`); });
+
+    
