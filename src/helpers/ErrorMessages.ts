@@ -64,5 +64,36 @@ export const errMsg =
         NOT_FOUND: "A ocorrência não foi encontrada.",
         ALREADY_EXISTS: "A ocorrência já existe.",
         UNINFORMED_MSG: "A mensagem da ocorrência não foi informada."
+    },
+    
+    /* Precificação */
+    SERVICO:
+    {
+        NOT_FOUND: "O serviço não foi encontrado.",
+        ALREADY_EXISTS: "O serviço já existe."
+    },
+    PORTE_CLIENTE:
+    {
+        NOT_FOUND: "O porte de cliente não foi encontrado.",
+        ALREADY_EXISTS: "O porte de cliente já existe."
+    },
+    CLIENTE:
+    {
+        NOT_FOUND: "O cliente não foi encontrado.",
+        ALREADY_EXISTS: "O cliente já existe."
+    },
+    TIPO_PRECO:
+    {
+        NOT_FOUND: "O tipo de preço não foi encontrado.",
+        ALREADY_EXISTS: "O tipo de preço já existe."
+    },
+    PRECIFICACAO: 
+    {
+        NOT_FOUND: "A precificação não foi encontrada.",
+        ALREADY_EXISTS: "A precificação já existe."
+    },
+    CUSTO: 
+    {
+        NOT_FOUND: "O Custo não encontrado."
     }
 };
