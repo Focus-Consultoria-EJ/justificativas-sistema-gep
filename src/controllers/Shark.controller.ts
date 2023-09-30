@@ -1,0 +1,181 @@
+import { NextFunction, Request, Response } from "express";
+import getSharkService from "../services/shark/get.shark.service";
+import saveSharkService from "../services/shark/save.shark.service";
+import deleteSharkService from "../services/shark/delete.shark.service";
+import { BadRequestError, CustomError } from "../middlewares/Error.middleware";
+import getByUsernameService from "../services/shark/getByUsername.service";
+import { passwordCompare, passwordEncrypt } from "../middlewares/password.middleware";
+import JWTService from "../services/jwt/JWT.service";
+import getByIdSharkService from "../services/shark/getById.shark.service";
+import getByIdLogSharkService from "../services/shark/getByIdLog.shark.service";
+import getLogSharkService from "../services/shark/getLog.shark.service";
+import SharkRepository from "../database/repositories/SharkRepository";
+import emailForgotSharkService from "../services/shark/emailForgot.shark.service";
+import { sharkPasswordCheck } from "../helpers/sharkValidation";
+import { errMsg } from "../helpers/ErrorMessages";
+
+class SharkController
+{
+    // Responsável por gerar o Token JWT com os dados do usuário
+    async signIn(req: Request, res: Response, next: NextFunction)
+    { 
+        const data = { ...req.body };
+
+        try
+        {
+            // Verifica se os campos existem
+            if (!data.login || !data.senha)
+                throw new CustomError("Informe um usuário e senha.", 400);
+
+            const shark = await getByUsernameService.execute(data.login);
+            
+            if(!shark)
+                throw new CustomError("O shark não foi encontrado.", 400);
+
+            // Proíbe o usuário inativo de realizar o login
+            if(!shark.membroAtivo)
+                throw new CustomError("O shark não está ativo.", 400);
+        
+            // Verifica se a senha digitada é igual ao do banco de dados
+            if(!await passwordCompare(data.senha, shark.senha))
+                throw new CustomError("Senha inválida!", 401);
+
+            const token = JWTService.sign({ id: shark.id });
+
+            res.status(200).json({ token });
+        }
+        catch(err) { next(err); }
+    }
+
+    // Responsável por enviar um email ao usuário para a redefinição de senha
+    async forgotPassword(req: Request, res: Response, next: NextFunction)
+    {
+        try
+        {
+            const data = { ...req.body };
+
+            // Verifica se os campos existem
+            if (!data.email)
+                throw new CustomError("Informe um e-mail.", 400);
+
+            const shark = await SharkRepository.getByEmail(data.email);
+
+            if(!shark)
+                throw new BadRequestError(errMsg.SHARK.NOT_FOUND);
+            
+            const token = JWTService.sign({ id: shark?.id }, "30m");
+
+            emailForgotSharkService.sendMail(emailForgotSharkService.forgotTemplateHTML(shark, token));
+            
+            res.status(200).json({ message: "Um email de redefinição de senha foi enviado para o endereço fornecido." });
+        }
+        catch(err) { next(err); }
+    }
+
+    // Responsável por alterar a senha do usuário
+    async resetPassword(req: Request, res: Response, next: NextFunction)
+    {
+        try
+        {
+            const data = { ...req.body };
+
+            // Verifica se os campos existem
+            if (!data.token)
+                throw new CustomError("Token não informado.", 400);
+
+            if (!data.senha)
+                throw new CustomError("A senha não foi informada.", 400);
+
+            const decoded = JWTService.verify(data.token);
+
+            if(!sharkPasswordCheck(data.senha))
+                throw new CustomError("Digite uma senha com 8 ou mais caracteres. (max: 30)", 400);
+
+            if(typeof decoded === "string")
+                throw new BadRequestError(decoded);
+            
+            const shark = await SharkRepository.getById(decoded.id);
+
+            if(!shark)
+                throw new BadRequestError(errMsg.SHARK.NOT_FOUND);
+            
+            shark.senha = await passwordEncrypt(data.senha);
+
+            await SharkRepository.resetPassword(shark);
+
+            res.status(200).json({ message: "Senha alterada com sucesso." });
+        }
+        catch(err) { next(err); }
+    }
+    
+    async select(req: Request, res: Response, next: NextFunction)
+    { 
+        try
+        {
+            const { size, page, membroAtivo, nome, order } = req.query;
+            let result;
+
+            if(req.params.id)
+                result = await getByIdSharkService.execute(req.params.id);
+            else
+                result = await getSharkService.execute({ size, page, membroAtivo, nome, order});
+
+            res.status(200).json(result);
+        }
+        catch(err) { next(err); }
+    }
+
+    async getSharkFromRequest(req: Request, res: Response, next: NextFunction)
+    { 
+        try
+        {
+            res.status(200).json(req.shark);
+        }
+        catch(err) { next(err); }
+    }
+
+    async save(req: Request, res: Response, next: NextFunction)
+    {
+        const data = { ...req.body };
+        if(req.params.id) data.id = req.params.id;
+
+        try
+        {
+            await saveSharkService.execute(data, req.shark);
+
+            return res.status(204).send();
+        }
+        catch(err) { next(err); }
+    }
+
+    async delete(req: Request, res: Response, next: NextFunction)
+    {
+        try
+        {
+            await deleteSharkService.execute(req.params.id, req.shark);
+
+            return res.status(204).send();
+        }
+        catch(err) { next(err); }
+    }
+
+    async selectLog(req: Request, res: Response, next: NextFunction)
+    { 
+        try
+        {
+            const { size, page, order } = req.query;
+            
+            let result;
+
+            if(req.params.id)
+                result = await getByIdLogSharkService.execute(req.params.id);
+            else
+                result = await getLogSharkService.execute({ size, page, order });
+
+            res.status(200).json(result);
+        }
+        catch(err) { next(err); }
+    }
+}
+
+export default new SharkController;
