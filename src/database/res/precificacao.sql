@@ -74,6 +74,8 @@ CREATE TABLE custo (
 
 CREATE TABLE total_custo (
 	id SERIAL PRIMARY KEY,
+	valido BOOLEAN,
+	justificativa VARCHAR(1200), -- É preenchido pelo adm fin quando recusar
 	resultado FLOAT NOT NULL,
 	data_criacao TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -86,8 +88,6 @@ CREATE TABLE custo_variavel (
 	preco FLOAT NOT NULL,
 	numero_dias SMALLINT NOT NULL,
 	resultado FLOAT NOT NULL,
-	valido BOOLEAN,
-	justificativa VARCHAR(1200), -- É preenchido pelo adm fin quando recusar
 	data_criacao TIMESTAMP NOT NULL DEFAULT NOW(),
 );
 	
