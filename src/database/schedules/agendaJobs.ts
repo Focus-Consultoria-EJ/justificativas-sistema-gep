@@ -5,9 +5,9 @@ import { jobResetMetragemSharks } from "./gestaoNotificacao/reset_metragem_shark
 /**
  * Agenda funções que serão executadas em determinada data.
  */
-export function agendaJobs() 
+export async function agendaJobs() 
 {
-    jobRemoveTodasOsArquivosDoDrive(); // 3º
-    jobResetMetragemSharks(); // 2º
-    jobApagaOcorrencias(); // 1º
+    await jobResetMetragemSharks(); // 2º
+    await jobRemoveTodasOsArquivosDoDrive(); // 3º
+    await jobApagaOcorrencias(); // 1º
 }

@@ -13,7 +13,7 @@ const removeAllFilesOnDrive = async () =>
 /**
  * Job responsável por apagar todos os arquivos dentro do google drive
  */
-export function jobRemoveTodasOsArquivosDoDrive() {
+export async function jobRemoveTodasOsArquivosDoDrive() {
    
     const job1 = schedule.scheduleJob(DateSchedules.primeiroCiclo, () => {
         removeAllFilesOnDrive().then(() => {
