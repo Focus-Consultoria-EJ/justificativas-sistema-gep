@@ -5,7 +5,7 @@ import SharkRepository from "../../repositories/SharkRepository";
 /**
  * Job responsável por apagar todas as ocorrências
  */
-export function jobResetMetragemSharks() {
+export async function jobResetMetragemSharks() {
    
     const job1 = schedule.scheduleJob(DateSchedules.primeiroCiclo, () => {
         SharkRepository.resetMetragem().then(() => {
