@@ -4,8 +4,7 @@ dotenv.config();
 import bodyParser from "body-parser";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocGestao from "./swagger_gestao_rh.json";
-import swaggerDocPrecificacao from "./swagger_precificacao.json";
+import swaggerDocs from "./swagger.json";
 import ErrorMiddleware from "./middlewares/Error.middleware";
 import routes from "./routes/routes";
 import { agendaJobs } from "./database/schedules/agendaJobs";
@@ -20,8 +19,7 @@ app.use(express.json());
 app.use(cors());
 
 // Rotas
-app.use("/api-docs/gestao", swaggerUi.serveFiles(swaggerDocGestao, {}), swaggerUi.setup(swaggerDocGestao));
-app.use("/api-docs/precificacao", swaggerUi.serveFiles(swaggerDocPrecificacao, {}), swaggerUi.setup(swaggerDocPrecificacao));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/", routes);
 
 // Agenda 

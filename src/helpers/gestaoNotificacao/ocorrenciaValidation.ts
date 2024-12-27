@@ -15,8 +15,8 @@ export const ocorrenciaFormValidation = async (ocorrencia: any): Promise<Ocorren
     if(!ocorrencia.tipoOcorrencia || !isNumber(ocorrencia.tipoOcorrencia) || parseInt(ocorrencia.tipoOcorrencia) < 0)
         return "Digite um tipo de ocorrência válido.";
 
-    if(!ocorrencia.mensagem || String(ocorrencia.mensagem).length < 10 || String(ocorrencia.mensagem).length > 2000)
-        return "A mensagem precisa ser maior que 10 caracteres. (max: 2000)"; 
+    if(!ocorrencia.mensagem || String(ocorrencia.mensagem).length < 10 || String(ocorrencia.mensagem).length > 300)
+        return "A mensagem precisa ser maior que 10 caracteres. (max: 300)"; 
 
     // Campos Opcionais abaixo:    
 
