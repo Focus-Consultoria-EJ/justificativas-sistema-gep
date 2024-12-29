@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://backend-gep-postgresql.herokuapp.com/api",
+      "url": "http://159.112.191.100:3000/api",
       "description": "API de produção"
     },
     {
@@ -18,9 +18,7 @@
   "paths": {
     "/login": {
       "post": {
-        "tags": [
-          "Public"
-        ],
+        "tags": ["Public"],
         "summary": "Login na plataforma",
         "description": "Rota responsável por gerar o token JWT",
         "requestBody": {
@@ -101,9 +99,7 @@
     },
     "/forgot-password": {
       "post": {
-        "tags": [
-          "Public"
-        ],
+        "tags": ["Public"],
         "summary": "Envia e-mail para resetar a senha do shark",
         "description": "Rota responsável por enviar um email de redefinição de senha.",
         "requestBody": {
@@ -175,9 +171,7 @@
     },
     "/reset-password": {
       "post": {
-        "tags": [
-          "Public"
-        ],
+        "tags": ["Public"],
         "summary": "Faz a atualização da senha do shark",
         "description": "Rota responsável por atualizar a senha do shark.",
         "requestBody": {
@@ -241,9 +235,7 @@
     },
     "/validateToken": {
       "get": {
-        "tags": [
-          "Sharks"
-        ],
+        "tags": ["Sharks"],
         "summary": "Valida o Token e traz os dados do usuário",
         "description": "Rota responsável por retornar todos os dados contidos no usuário salvo na requisição",
         "responses": {
@@ -284,9 +276,7 @@
     },
     "/sharks": {
       "get": {
-        "tags": [
-          "Sharks"
-        ],
+        "tags": ["Sharks"],
         "summary": "Select de todos os sharks",
         "description": "Rota responsável retornar todos os sharks (usuários)",
         "parameters": [
@@ -399,9 +389,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Sharks"
-        ],
+        "tags": ["Sharks"],
         "summary": "Insere um novo shark",
         "description": "Rota responsável inserir um shark (usuário)",
         "requestBody": {
@@ -564,9 +552,7 @@
     },
     "/sharks/{id}": {
       "get": {
-        "tags": [
-          "Sharks"
-        ],
+        "tags": ["Sharks"],
         "summary": "Busca um shark pelo id",
         "description": "Rota responsável retornar um shark (usuário) pelo id",
         "parameters": [
@@ -643,9 +629,7 @@
         ]
       },
       "put": {
-        "tags": [
-          "Sharks"
-        ],
+        "tags": ["Sharks"],
         "summary": "Atualiza um shark",
         "description": "Rota responsável atualizar um shark (usuário)",
         "parameters": [
@@ -842,9 +826,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Sharks"
-        ],
+        "tags": ["Sharks"],
         "summary": "Remove um shark",
         "description": "Rota responsável remover um shark (usuário)",
         "parameters": [
@@ -916,9 +898,7 @@
     },
     "/celulas": {
       "get": {
-        "tags": [
-          "Celulas"
-        ],
+        "tags": ["Celulas"],
         "summary": "Select de celulas",
         "description": "Rota responsável retornar todas as células",
         "responses": {
@@ -976,9 +956,7 @@
     },
     "/celulas/{id}": {
       "get": {
-        "tags": [
-          "Celulas"
-        ],
+        "tags": ["Celulas"],
         "summary": "Busca uma célula pelo id",
         "description": "Rota responsável retornar uma célula pelo id",
         "parameters": [
@@ -1057,9 +1035,7 @@
     },
     "/ocorrencias": {
       "get": {
-        "tags": [
-          "Ocorrências"
-        ],
+        "tags": ["Ocorrências"],
         "summary": "Select de todas as ocorrências",
         "description": "Rota responsável retornar todas as ocorrências",
         "parameters": [
@@ -1272,9 +1248,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Ocorrências"
-        ],
+        "tags": ["Ocorrências"],
         "summary": "Insere um novo shark",
         "description": "Rota responsável inserir um shark (usuário)",
         "requestBody": {
@@ -1407,9 +1381,7 @@
     },
     "/ocorrencias/{id}": {
       "get": {
-        "tags": [
-          "Ocorrências"
-        ],
+        "tags": ["Ocorrências"],
         "summary": "busca uma ocorrência",
         "description": "Rota responsável retornar uma ocorrência pelo id",
         "parameters": [
@@ -1520,9 +1492,7 @@
         ]
       },
       "put": {
-        "tags": [
-          "Ocorrências"
-        ],
+        "tags": ["Ocorrências"],
         "summary": "Atualiza uma ocorrência",
         "description": "Rota responsável por atualizar uma ocorrência",
         "parameters": [
@@ -1676,9 +1646,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Ocorrências"
-        ],
+        "tags": ["Ocorrências"],
         "summary": "Remove uma ocorrência",
         "description": "Rota responsável remover uma ocorrência",
         "parameters": [
@@ -1760,9 +1728,7 @@
     },
     "/tipo-assuntos": {
       "get": {
-        "tags": [
-          "Tipos de Assunto"
-        ],
+        "tags": ["Tipos de Assunto"],
         "summary": "Select de todos os tipos de assuntos das ocorrências",
         "description": "Rota responsável retornar todos tipos de assuntos que uma ocorrência pode ter",
         "responses": {
@@ -1828,9 +1794,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Tipos de Assunto"
-        ],
+        "tags": ["Tipos de Assunto"],
         "summary": "Insere um novo tipo de assunto das ocorrências",
         "description": "Rota responsável inserir mais um tipo de assunto que uma ocorrência pode ter",
         "requestBody": {
@@ -1919,9 +1883,7 @@
     },
     "/tipo-assuntos/{id}": {
       "get": {
-        "tags": [
-          "Tipos de Assunto"
-        ],
+        "tags": ["Tipos de Assunto"],
         "summary": "Busca um tipo de assunto pelo id",
         "description": "Rota responsável por retornar um tipo de assunto pelo id",
         "parameters": [
@@ -2008,9 +1970,7 @@
         ]
       },
       "put": {
-        "tags": [
-          "Tipos de Assunto"
-        ],
+        "tags": ["Tipos de Assunto"],
         "summary": "Atualiza um tipo de assunto das ocorrências",
         "description": "Rota responsável atualizar um tipo de assunto que uma ocorrência pode ter",
         "parameters": [
@@ -2126,9 +2086,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Tipos de Assunto"
-        ],
+        "tags": ["Tipos de Assunto"],
         "summary": "Remove um tipo de assunto das ocorrências",
         "description": "Rota responsável remover um tipo de assunto que uma ocorrência pode ter",
         "parameters": [
@@ -2210,9 +2168,7 @@
     },
     "/tipo-ocorrencias": {
       "get": {
-        "tags": [
-          "Tipos de Ocorrência"
-        ],
+        "tags": ["Tipos de Ocorrência"],
         "summary": "Select de todos os tipos de ocorrências",
         "description": "Rota responsável retornar todos tipos que uma ocorrencia pode assumir",
         "responses": {
@@ -2278,9 +2234,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Tipos de Ocorrência"
-        ],
+        "tags": ["Tipos de Ocorrência"],
         "summary": "Insere um novo tipo de ocorrência",
         "description": "Rota responsável inserir mais um tipo que uma ocorrência pode assumir",
         "requestBody": {
@@ -2354,9 +2308,7 @@
     },
     "/tipo-ocorrencias/{id}": {
       "get": {
-        "tags": [
-          "Tipos de Ocorrência"
-        ],
+        "tags": ["Tipos de Ocorrência"],
         "summary": "Busca um  tipo de ocorrência pelo id",
         "description": "Rota responsável por retornar um tipo que uma ocorrência pode assumir",
         "parameters": [
@@ -2443,9 +2395,7 @@
         ]
       },
       "put": {
-        "tags": [
-          "Tipos de Ocorrência"
-        ],
+        "tags": ["Tipos de Ocorrência"],
         "summary": "Atualiza um tipo de ocorrência",
         "description": "Rota responsável atualizar um tipo que uma ocorrência pode assumir",
         "parameters": [
@@ -2562,9 +2512,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Tipos de Ocorrência"
-        ],
+        "tags": ["Tipos de Ocorrência"],
         "summary": "Remove um tipo de ocorrência",
         "description": "Rota responsável remover um tipo uma ocorrência pode assumir",
         "parameters": [
@@ -2652,9 +2600,7 @@
     },
     "/distancias": {
       "get": {
-        "tags": [
-          "Distâncias de residência"
-        ],
+        "tags": ["Distâncias de residência"],
         "summary": "Select de todos as distancias de residência",
         "description": "Rota responsável retornar todos distâncias de residência que um shark pode ter",
         "responses": {
@@ -2712,9 +2658,7 @@
     },
     "/distancias/{id}": {
       "get": {
-        "tags": [
-          "Distâncias de residência"
-        ],
+        "tags": ["Distâncias de residência"],
         "summary": "Busca uma distância pelo id",
         "description": "Rota responsável por retornar uma distância de residência",
         "parameters": [
@@ -2793,9 +2737,7 @@
     },
     "/niveis-gratificacao": {
       "get": {
-        "tags": [
-          "Níveis de Gratificação"
-        ],
+        "tags": ["Níveis de Gratificação"],
         "summary": "Select de todos os níveis de uma gratificação",
         "description": "Rota responsável retornar todos níveis de gratificação que uma ocorrência do tipo gratificação pode ter.",
         "responses": {
@@ -2861,9 +2803,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Níveis de Gratificação"
-        ],
+        "tags": ["Níveis de Gratificação"],
         "summary": "Insere um novo nível de gratificação",
         "description": "Rota responsável inserir mais um nível de gratificação que uma ocorrência pode ter.",
         "requestBody": {
@@ -2948,9 +2888,7 @@
     },
     "/niveis-gratificacao/{id}": {
       "get": {
-        "tags": [
-          "Níveis de Gratificação"
-        ],
+        "tags": ["Níveis de Gratificação"],
         "summary": "Busca um nível de uma gratificação",
         "description": "Rota responsável por retornar um nível de uma gratificação que uma ocorrência do tipo gratificação pode ter.",
         "parameters": [
@@ -3037,9 +2975,7 @@
         ]
       },
       "put": {
-        "tags": [
-          "Níveis de Gratificação"
-        ],
+        "tags": ["Níveis de Gratificação"],
         "summary": "Atualiza um nível de gratificação",
         "description": "Rota responsável atualizar nível de gratificação que uma ocorrência do tipo gratificação pode ter.",
         "parameters": [
@@ -3151,9 +3087,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Níveis de Gratificação"
-        ],
+        "tags": ["Níveis de Gratificação"],
         "summary": "Remove um nível de gratificação",
         "description": "Rota responsável remover um nível de gratificação que uma ocorrência do tipo gratificação pode ter.",
         "parameters": [
@@ -3235,9 +3169,7 @@
     },
     "/niveis-advertencia": {
       "get": {
-        "tags": [
-          "Níveis de Advertência"
-        ],
+        "tags": ["Níveis de Advertência"],
         "summary": "Select de todos os níveis de uma advertência",
         "description": "Rota responsável retornar todos níveis de gratificação que uma ocorrência do tipo advertência pode ter.",
         "responses": {
@@ -3303,9 +3235,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "Níveis de Advertência"
-        ],
+        "tags": ["Níveis de Advertência"],
         "summary": "Insere um novo nível de advertência",
         "description": "Rota responsável inserir mais um nível de advertência que uma ocorrência pode ter.",
         "requestBody": {
@@ -3390,9 +3320,7 @@
     },
     "/niveis-advertencia/{id}": {
       "get": {
-        "tags": [
-          "Níveis de Advertência"
-        ],
+        "tags": ["Níveis de Advertência"],
         "summary": "Busca um nível de uma advertência",
         "description": "Rota responsável por retornar um nível de uma advertência que uma ocorrência do tipo advertência pode ter.",
         "parameters": [
@@ -3479,9 +3407,7 @@
         ]
       },
       "put": {
-        "tags": [
-          "Níveis de Advertência"
-        ],
+        "tags": ["Níveis de Advertência"],
         "summary": "Atualiza um nível de advertência",
         "description": "Rota responsável atualizar nível de advertência que uma ocorrência do tipo advertência pode ter.",
         "parameters": [
@@ -3593,9 +3519,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Níveis de Advertência"
-        ],
+        "tags": ["Níveis de Advertência"],
         "summary": "Remove um nível de advertência",
         "description": "Rota responsável remover um nível de advertência que uma ocorrência do tipo advertência pode ter.",
         "parameters": [
@@ -3677,9 +3601,7 @@
     },
     "/log-ocorrencias/": {
       "get": {
-        "tags": [
-          "Logs"
-        ],
+        "tags": ["Logs"],
         "summary": "Retorna todas os dados do log de ocorrências",
         "description": "Rota responsável por retornar o log de ações executada nas ocorrências.",
         "parameters": [
@@ -3782,9 +3704,7 @@
     },
     "/log-ocorrencias/{id}": {
       "get": {
-        "tags": [
-          "Logs"
-        ],
+        "tags": ["Logs"],
         "summary": "Busca um item do log de ocorrência",
         "description": "Rota responsável por retornar um item do log de ocorrências.",
         "parameters": [
@@ -3873,9 +3793,7 @@
     },
     "/log-sharks/": {
       "get": {
-        "tags": [
-          "Logs"
-        ],
+        "tags": ["Logs"],
         "summary": "Retorna todas os dados do log de sharks",
         "description": "Rota responsável por retornar o log de ações executada nos sharks.",
         "parameters": [
@@ -3978,9 +3896,7 @@
     },
     "/log-sharks/{id}": {
       "get": {
-        "tags": [
-          "Logs"
-        ],
+        "tags": ["Logs"],
         "summary": "Busca um item do log de shark",
         "description": "Rota responsável por retornar um item do log de sharks.",
         "parameters": [
@@ -4196,11 +4112,7 @@
         }
       },
       "Ocorrencia": {
-        "required": [
-          "mensagem",
-          "tipoAssunto",
-          "tipoOcorrencia"
-        ],
+        "required": ["mensagem", "tipoAssunto", "tipoOcorrencia"],
         "type": "object",
         "properties": {
           "tipoOcorrencia": {
@@ -4232,11 +4144,7 @@
         }
       },
       "OcorrenciaJSONForm": {
-        "required": [
-          "mensagem",
-          "tipoAssunto",
-          "tipoOcorrencia"
-        ],
+        "required": ["mensagem", "tipoAssunto", "tipoOcorrencia"],
         "type": "object",
         "properties": {
           "id": {
@@ -4279,11 +4187,7 @@
         }
       },
       "OcorrenciaForm": {
-        "required": [
-          "mensagem",
-          "tipoAssunto",
-          "tipoOcorrencia"
-        ],
+        "required": ["mensagem", "tipoAssunto", "tipoOcorrencia"],
         "type": "object",
         "properties": {
           "tipoOcorrencia": {
@@ -4315,9 +4219,7 @@
         }
       },
       "Celula": {
-        "required": [
-          "nome"
-        ],
+        "required": ["nome"],
         "type": "object",
         "properties": {
           "nome": {
@@ -4326,9 +4228,7 @@
         }
       },
       "TipoOcorrencia": {
-        "required": [
-          "nome"
-        ],
+        "required": ["nome"],
         "type": "object",
         "properties": {
           "nome": {
@@ -4337,9 +4237,7 @@
         }
       },
       "TipoOcorrenciaForms": {
-        "required": [
-          "nome"
-        ],
+        "required": ["nome"],
         "type": "object",
         "properties": {
           "nome": {
@@ -4348,9 +4246,7 @@
         }
       },
       "TipoAssunto": {
-        "required": [
-          "nome"
-        ],
+        "required": ["nome"],
         "type": "object",
         "properties": {
           "nome": {
@@ -4359,9 +4255,7 @@
         }
       },
       "TipoAssuntoForms": {
-        "required": [
-          "nome"
-        ],
+        "required": ["nome"],
         "type": "object",
         "properties": {
           "nome": {
@@ -4370,9 +4264,7 @@
         }
       },
       "Distancia": {
-        "required": [
-          "distancia"
-        ],
+        "required": ["distancia"],
         "type": "object",
         "properties": {
           "distancia": {
@@ -4389,10 +4281,7 @@
         }
       },
       "UserLogin": {
-        "required": [
-          "login",
-          "senha"
-        ],
+        "required": ["login", "senha"],
         "type": "object",
         "properties": {
           "login": {
@@ -4430,10 +4319,7 @@
         }
       },
       "NivelGratificacao": {
-        "required": [
-          "nome",
-          "valor"
-        ],
+        "required": ["nome", "valor"],
         "type": "object",
         "properties": {
           "id": {
@@ -4448,10 +4334,7 @@
         }
       },
       "NivelGratificacaoForms": {
-        "required": [
-          "nome",
-          "valor"
-        ],
+        "required": ["nome", "valor"],
         "type": "object",
         "properties": {
           "nome": {
@@ -4463,10 +4346,7 @@
         }
       },
       "NivelAdvertencia": {
-        "required": [
-          "nome",
-          "valor"
-        ],
+        "required": ["nome", "valor"],
         "type": "object",
         "properties": {
           "id": {
@@ -4481,10 +4361,7 @@
         }
       },
       "NivelAdvertenciaForms": {
-        "required": [
-          "nome",
-          "valor"
-        ],
+        "required": ["nome", "valor"],
         "type": "object",
         "properties": {
           "nome": {
