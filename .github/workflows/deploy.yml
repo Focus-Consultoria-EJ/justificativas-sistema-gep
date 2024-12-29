@@ -31,5 +31,5 @@ jobs:
             cd ~/app
             docker-compose pull  # Baixa as imagens mais recentes
             docker-compose down  # Para containers em execução
-            docker-compose up -d  # Inicia os containers em segundo plano
-            docker-compose logs -f  # Exibe os logs dos containers em tempo real
+            docker-compose up --build -d  # Inicia os containers em segundo plano
+            docker-compose logs  # Exibe os logs dos containers em tempo real
