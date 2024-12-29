@@ -14,7 +14,7 @@ const deleteData = async () =>
 /**
  * Job responsável por apagar todas as ocorrências
  */
-export async function jobApagaOcorrencias() {
+export function jobApagaOcorrencias() {
    
     const job1 = schedule.scheduleJob(DateSchedules.primeiroCiclo, () => {
         deleteData().then(() => {

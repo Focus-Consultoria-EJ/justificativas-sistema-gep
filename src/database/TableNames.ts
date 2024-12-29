@@ -16,14 +16,5 @@ export enum TableNames {
     ocorrencia_log = "ocorrencia_log",
     evento = "evento",
     presenca = "presenca",
-    upload_file = "upload_file",
-    
-    // Precificacao
-    servico = "servico",
-    tipo_preco = "tipo_preco",
-    porte_cliente = "porte_cliente",
-    cliente = "cliente",
-    custo = "custo",
-    total_custo = "total_custo",
-    precificacao = "precificacao"
+    upload_file = "upload_file"
 }
