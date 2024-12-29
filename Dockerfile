@@ -13,6 +13,9 @@ RUN npm install
 # Copiar o restante do código para dentro do container
 COPY . .
 
+# Aumentar o limite de memória do Node.js
+ENV NODE_OPTIONS=--max-old-space-size=4096
+
 # Compilar o TypeScript
 RUN npm run build
 
