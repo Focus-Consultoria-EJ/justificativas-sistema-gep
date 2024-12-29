@@ -17,21 +17,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy project files to VPS
+      - name: Copy all project files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: "${{ secrets.VPS_HOST }}"
           username: "${{ secrets.VPS_USER }}"
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: |
-            docker-compose.yml
-            Dockerfile
-            .env
-            dist
-            package.json
-          target: ~/app/
+          source: "./" # Copia todos os arquivos do repositório
+          target: "~/app/" # Destino no VPS
 
-      - name: Deploy with Docker Compose
+      - name: Deploy with Docker Compose on VPS
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: "${{ secrets.VPS_HOST }}"
@@ -39,6 +34,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/app
-            docker-compose pull
-            docker-compose down
-            docker-compose up -d
+            docker-compose pull  # Baixa as imagens mais recentes
+            docker-compose down  # Para containers em execução
+            docker-compose up -d  # Inicia os containers em segundo plano
+            docker-compose logs -f  # Exibe os logs dos containers em tempo real
