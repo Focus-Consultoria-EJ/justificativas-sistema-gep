@@ -22,12 +22,12 @@ app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/", routes);
 
-// Agenda 
+// Agenda
 agendaJobs();
 
 // Este middleware precisa sempre estar abaixo das rotas!
 app.use(ErrorMiddleware.handle);
 
-app.listen(PORT, () => { console.log(`Server listen in ${PORT}`); });
-
-    
+app.listen(PORT, () => {
+  console.log(`Server listen in ${PORT}`);
+});
