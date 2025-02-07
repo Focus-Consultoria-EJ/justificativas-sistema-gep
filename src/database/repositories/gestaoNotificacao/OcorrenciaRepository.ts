@@ -348,11 +348,10 @@ class OcorrenciaRepository {
     try {
       const result = await db(TableNames.ocorrencia)
         .where("id_tipo_ocorrencia", "=", ocorrencia.tipoOcorrencia.id!)
-        .andWhere("id_tipo_assunto", "=", ocorrencia.tipoAssunto.id!)
         .andWhere("id_shark_referente", "=", ocorrencia.sharkReferente.id!)
         .andWhere("data_criacao", ">=", db.raw("NOW() - INTERVAL '6 months' "));
 
-      if (result.length) return true;
+      if (result.length % 2 == 0) return true;
       else return false;
     } catch (err) {
       throw new InternalServerError(String(err));
