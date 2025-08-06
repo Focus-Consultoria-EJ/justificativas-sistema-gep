@@ -3,3 +3,5 @@ node_modules
 dist
 tmp/uploads
 uploads
+src/google_api_credentials.json
+src/config/google_api_credentials.json
