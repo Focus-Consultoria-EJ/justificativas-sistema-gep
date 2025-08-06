@@ -6,12 +6,11 @@ Este software tem como objetivo auxiliar os membros do setor de gestão de pesso
 
 - A documentação de diagramação, código SQL e outros, estão dentro do sistema está dentro da pasta de Ciência da computação no Google Drive da Focus Consultoria.
 
-- A diagramação também pode ser encontrada no seguinte link: 
-https://whimsical.com/documentacao-do-backend-de-gep-focus-DUvjXX6VNbuWLJR8BQaq1Y
+- A diagramação também pode ser encontrada no seguinte link:
+  https://whimsical.com/documentacao-do-backend-de-gep-focus-DUvjXX6VNbuWLJR8BQaq1Y
 
 - Já a documentação do código está no arquivo STRUCTURE.md
-[Confira](./STRUCTURE.md)
+  [Confira](./STRUCTURE.md)
 
 - O passo a passo para o deploy está no arquivo DEPLOY.md
-[Confira](./DEPLOY.md)
-
+  [Confira](./DEPLOY.md)
