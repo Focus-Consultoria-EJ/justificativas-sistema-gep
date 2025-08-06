@@ -1,0 +1,35 @@
+name: Deploy to Oracle VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy all project files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: "${{ secrets.VPS_HOST }}"
+          username: "${{ secrets.VPS_USER }}"
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "./" # Copia todos os arquivos do repositório
+          target: "~/app/" # Destino no VPS
+
+      - name: Deploy with Docker Compose on VPS
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: "${{ secrets.VPS_HOST }}"
+          username: "${{ secrets.VPS_USER }}"
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/app
+            docker-compose pull  # Baixa as imagens mais recentes
+            docker-compose down  # Para containers em execução
+            docker-compose up --build -d  # Inicia os containers em segundo plano
+            docker-compose logs  # Exibe os logs dos containers em tempo real

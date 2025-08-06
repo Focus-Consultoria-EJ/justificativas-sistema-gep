@@ -1,0 +1,4634 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API do Sistema de Gestão de Recursos Humanos - SGRH",
+    "description": "Essa API tem como objetivo a manipulação de usuários (sharks) e ocorrências",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://159.112.191.100:3000/api",
+      "description": "API de produção"
+    },
+    {
+      "url": "http://localhost:3000/api",
+      "description": "API de teste"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["Public"],
+        "summary": "Login na plataforma",
+        "description": "Rota responsável por gerar o token JWT",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              },
+              "examples": {
+                "Login 1": {
+                  "value": {
+                    "login": "emailtest6@hotmail.com",
+                    "senha": "123456789"
+                  }
+                },
+                "Login 2": {
+                  "value": {
+                    "login": "test2@hotmail.com",
+                    "senha": "123456789"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "Usuário não encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "E-mail ou senha inválidos!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "tags": ["Public"],
+        "summary": "Envia e-mail para resetar a senha do shark",
+        "description": "Rota responsável por enviar um email de redefinição de senha.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotpassword_body"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotpassword_body_1"
+              },
+              "examples": {
+                "Example 1": {
+                  "value": {
+                    "email": "emailtest6@hotmail.com"
+                  }
+                },
+                "Example 2": {
+                  "value": {
+                    "email": "test2@hotmail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token inválido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Um email de redefinição de senha foi enviado para o endereço fornecido."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "O email não está associado a nenhum shark."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "tags": ["Public"],
+        "summary": "Faz a atualização da senha do shark",
+        "description": "Rota responsável por atualizar a senha do shark.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/resetpassword_body"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resetpassword_body_1"
+              },
+              "examples": {
+                "Login 1": {
+                  "value": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkxNjgwODgwLCJleHAiOjE2OTE2ODI2ODB9.jG2VofhJzOoAvNL-ty5Jlz6W7DxcaD7hqcbXyI4prVA",
+                    "senha": "123456789"
+                  }
+                },
+                "Login 2": {
+                  "value": {
+                    "token": "asdfsgafhgahIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjkxNjgwODgwLCJleHAiOjE2OTE2ODI2ODB9.jG2VofhJzOoAvNL-ty5Jlz6W7DxcaD7hqcbXyI4prVA",
+                    "senha": "asberfw3432"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validateToken": {
+      "get": {
+        "tags": ["Sharks"],
+        "summary": "Valida o Token e traz os dados do usuário",
+        "description": "Rota responsável por retornar todos os dados contidos no usuário salvo na requisição",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTokenData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "E-mail ou senha inválidos!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sharks": {
+      "get": {
+        "tags": ["Sharks"],
+        "summary": "Select de todos os sharks",
+        "description": "Rota responsável retornar todos os sharks (usuários)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "limita o número de registros retornados por uma consulta. (default 20)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default ASC)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "membroAtivo",
+            "in": "query",
+            "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false).",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "nome",
+            "in": "query",
+            "description": "retorna o shark pelo nome.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shark"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Sharks"],
+        "summary": "Insere um novo shark",
+        "description": "Rota responsável inserir um shark (usuário)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SharkForm"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shark"
+              },
+              "examples": {
+                "Shark 1": {
+                  "value": {
+                    "nome": "Clara da Silva",
+                    "emailFocus": "clarasilva100@consultoriafocus.com",
+                    "emailPessoal": "clarasilva100@hotmail.com",
+                    "matricula": 123456789,
+                    "cpf": "123.456.789-10",
+                    "distancia": 2,
+                    "senha": "123456789",
+                    "celula": 3,
+                    "numProjeto": 2,
+                    "role": 2
+                  }
+                },
+                "Shark 2": {
+                  "value": {
+                    "nome": "Paulo Miguel de Carvalho",
+                    "emailFocus": "clarasilva100@consultoriafocus.com",
+                    "emailPessoal": "clarasilva100@hotmail.com",
+                    "matricula": 1234567892,
+                    "cpf": "123.456.789-10",
+                    "distancia": 1,
+                    "senha": "12345678910",
+                    "telefone": "22999923100",
+                    "celula": 1,
+                    "metragem": 30,
+                    "membroAtivo": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Digite uma senha com 8 ou mais caracteres. (max: 30)"
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite uma senha com 8 ou mais caracteres. (max: 30)"
+                    }
+                  },
+                  "Erro 4": {
+                    "value": {
+                      "message": "Digite uma senha com 8 ou mais caracteres. (max: 30)"
+                    }
+                  },
+                  "Erro 5": {
+                    "value": {
+                      "message": "Digite uma email válido."
+                    }
+                  },
+                  "Erro 6": {
+                    "value": {
+                      "message": "Digite uma matrícula válida."
+                    }
+                  },
+                  "Erro 7": {
+                    "value": {
+                      "message": "Digite uma distância válida."
+                    }
+                  },
+                  "Erro 8": {
+                    "value": {
+                      "message": "Digite uma célula válida."
+                    }
+                  },
+                  "Erro 9": {
+                    "value": {
+                      "message": "O e-mail já existe."
+                    }
+                  },
+                  "Erro 10": {
+                    "value": {
+                      "message": "A matrícula já existe."
+                    }
+                  },
+                  "Erro 11": {
+                    "value": {
+                      "message": "A distância não foi encontrada."
+                    }
+                  },
+                  "Erro 12": {
+                    "value": {
+                      "message": "A célula não foi encontrada."
+                    }
+                  },
+                  "Erro 13": {
+                    "value": {
+                      "message": "Digite um telefone válido."
+                    }
+                  },
+                  "Erro 14": {
+                    "value": {
+                      "message": "Digite um membro ativo válido."
+                    }
+                  },
+                  "Erro 15": {
+                    "value": {
+                      "message": "Digite um membro ativo válido."
+                    }
+                  },
+                  "Erro 16": {
+                    "value": {
+                      "message": "Digite um número de projeto válido."
+                    }
+                  },
+                  "Erro 17": {
+                    "value": {
+                      "message": "Digite um valor válido para o administrador."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sharks/{id}": {
+      "get": {
+        "tags": ["Sharks"],
+        "summary": "Busca um shark pelo id",
+        "description": "Rota responsável retornar um shark (usuário) pelo id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dados do shark pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shark"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O shark não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Sharks"],
+        "summary": "Atualiza um shark",
+        "description": "Rota responsável atualizar um shark (usuário)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dados do shark pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SharkForm"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shark"
+              },
+              "examples": {
+                "Shark 1": {
+                  "value": {
+                    "nome": "Clara da Silva",
+                    "email": "clarasilva100@hotmail.com",
+                    "matricula": 123456789,
+                    "cpf": "123.456.789-10",
+                    "distancia": 2,
+                    "senha": "123456789",
+                    "celula": 3,
+                    "numProjeto": 2,
+                    "admin": 1
+                  }
+                },
+                "Shark 2": {
+                  "value": {
+                    "nome": "Paulo Miguel de Carvalho",
+                    "email": "pmicar22@hotmail.com",
+                    "matricula": 1234567892,
+                    "cpf": "123.456.789-10",
+                    "distancia": 1,
+                    "senha": "12345678910",
+                    "telefone": "22999923100",
+                    "celula": 1,
+                    "metragem": 30,
+                    "membroAtivo": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Digite uma senha com 8 ou mais caracteres. (max: 30)"
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite uma senha com 8 ou mais caracteres. (max: 30)"
+                    }
+                  },
+                  "Erro 4": {
+                    "value": {
+                      "message": "Digite uma senha com 8 ou mais caracteres. (max: 30)"
+                    }
+                  },
+                  "Erro 5": {
+                    "value": {
+                      "message": "Digite uma email válido."
+                    }
+                  },
+                  "Erro 6": {
+                    "value": {
+                      "message": "Digite uma matrícula válida."
+                    }
+                  },
+                  "Erro 7": {
+                    "value": {
+                      "message": "Digite uma distância válida."
+                    }
+                  },
+                  "Erro 8": {
+                    "value": {
+                      "message": "Digite uma célula válida."
+                    }
+                  },
+                  "Erro 9": {
+                    "value": {
+                      "message": "O e-mail já existe."
+                    }
+                  },
+                  "Erro 10": {
+                    "value": {
+                      "message": "A matrícula já existe."
+                    }
+                  },
+                  "Erro 11": {
+                    "value": {
+                      "message": "A distância não foi encontrada."
+                    }
+                  },
+                  "Erro 12": {
+                    "value": {
+                      "message": "A célula não foi encontrada."
+                    }
+                  },
+                  "Erro 13": {
+                    "value": {
+                      "message": "Digite um telefone válido."
+                    }
+                  },
+                  "Erro 14": {
+                    "value": {
+                      "message": "Digite um membro ativo válido."
+                    }
+                  },
+                  "Erro 15": {
+                    "value": {
+                      "message": "Digite um membro ativo válido."
+                    }
+                  },
+                  "Erro 16": {
+                    "value": {
+                      "message": "Digite um número de projeto válido."
+                    }
+                  },
+                  "Erro 17": {
+                    "value": {
+                      "message": "Digite um valor válido para o administrador."
+                    }
+                  },
+                  "Erro 18": {
+                    "value": {
+                      "message": "O shark não foi encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso nagado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Sharks"],
+        "summary": "Remove um shark",
+        "description": "Rota responsável remover um shark (usuário)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de assunto pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O shark não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/celulas": {
+      "get": {
+        "tags": ["Celulas"],
+        "summary": "Select de celulas",
+        "description": "Rota responsável retornar todas as células",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Celula"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/celulas/{id}": {
+      "get": {
+        "tags": ["Celulas"],
+        "summary": "Busca uma célula pelo id",
+        "description": "Rota responsável retornar uma célula pelo id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome da célula pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Celula"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de assunto não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/ocorrencias": {
+      "get": {
+        "tags": ["Ocorrências"],
+        "summary": "Select de todas as ocorrências",
+        "description": "Rota responsável retornar todas as ocorrências",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "limita o número de registros retornados por uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default DESC)  .",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "membroAtivo",
+            "in": "query",
+            "description": "especifica se o membro é ativo ou não ao retornar uma consulta (true ou false). (default true)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "nomeSharkCriador",
+            "in": "query",
+            "description": "retorna as ocorrências relacionadas ao nome do shark as criou.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nomeSharkReferente",
+            "in": "query",
+            "description": "retorna as ocorrências relacionadas ao nome do shark que a ocorrência foi destinada.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "emailSharkCriador",
+            "in": "query",
+            "description": "retorna as ocorrências relacionadas ao email do shark as criou.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "emailSharkReferente",
+            "in": "query",
+            "description": "retorna as ocorrências relacionadas ao email do shark que a ocorrência foi destinada.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tipoOcorrencia",
+            "in": "query",
+            "description": "retorna as ocorrências relacionadas ao tipo de ocorrência.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tipoAssunto",
+            "in": "query",
+            "description": "retorna as ocorrências relacionadas ao tipo de assunto.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OcorrenciaJSONForm"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Digite um tipo de ocorrência válido."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um tipo de assunto válido."
+                    }
+                  },
+                  "Erro 4": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 5": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 6": {
+                    "value": {
+                      "message": "Digite um valor de metragem que seja maior que 0."
+                    }
+                  },
+                  "Erro 7": {
+                    "value": {
+                      "message": "A data do ocorrido está inválida."
+                    }
+                  },
+                  "Erro 8": {
+                    "value": {
+                      "message": "O shark referente não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Ocorrências"],
+        "summary": "Insere um novo shark",
+        "description": "Rota responsável inserir um shark (usuário)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/OcorrenciaForm"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ocorrencia"
+              },
+              "examples": {
+                "Ocorrência 1": {
+                  "value": {
+                    "tipoOcorrencia": 1,
+                    "tipoAssunto": 3,
+                    "mensagem": "Mussum Ipsum, cacilds vidis litro abertis. Praesent malesuada urna nisi, quis.",
+                    "valorMetragem": 0,
+                    "sharkReferente": 10,
+                    "dataOcorrido": "2023-03-20"
+                  }
+                },
+                "Ocorrência 2": {
+                  "value": {
+                    "tipoOcorrencia": 7,
+                    "tipoAssunto": 2,
+                    "mensagem": "Não participou da RG",
+                    "valorMetragem": 8,
+                    "dataOcorrido": "2023-03-12"
+                  }
+                },
+                "Ocorrência 3": {
+                  "description": "Usuário não de GEP",
+                  "value": {
+                    "tipoOcorrencia": 1,
+                    "description": "Um usuário que não é de GEP só pode criar ocorrência do tipo justificativa, no caso 1",
+                    "tipoAssunto": 2,
+                    "mensagem": "Não participou da RG",
+                    "dataOcorrido": "2023-03-12"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Digite um tipo de ocorrência válido."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um tipo de assunto válido."
+                    }
+                  },
+                  "Erro 4": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 5": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 6": {
+                    "value": {
+                      "message": "Digite um valor de metragem que seja maior que 0."
+                    }
+                  },
+                  "Erro 7": {
+                    "value": {
+                      "message": "A data do ocorrido está inválida."
+                    }
+                  },
+                  "Erro 8": {
+                    "value": {
+                      "message": "O shark referente não foi encontrado."
+                    }
+                  },
+                  "Erro 9": {
+                    "value": {
+                      "message": "Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo."
+                    }
+                  },
+                  "Erro 10": {
+                    "value": {
+                      "message": "Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo."
+                    }
+                  },
+                  "Erro 11": {
+                    "value": {
+                      "message": "Um usuário que não é de Gestão Estratégica de Pessoas só pode enviar ocorrências do tipo justificativa."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado."
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/ocorrencias/{id}": {
+      "get": {
+        "tags": ["Ocorrências"],
+        "summary": "busca uma ocorrência",
+        "description": "Rota responsável retornar uma ocorrência pelo id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dados da ocorrência pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OcorrenciaJSONForm"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Digite um tipo de ocorrência válido."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um tipo de assunto válido."
+                    }
+                  },
+                  "Erro 4": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 5": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 6": {
+                    "value": {
+                      "message": "Digite um valor de metragem que seja maior que 0."
+                    }
+                  },
+                  "Erro 7": {
+                    "value": {
+                      "message": "A data do ocorrido está inválida."
+                    }
+                  },
+                  "Erro 8": {
+                    "value": {
+                      "message": "O shark referente não foi encontrado."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Ocorrências"],
+        "summary": "Atualiza uma ocorrência",
+        "description": "Rota responsável por atualizar uma ocorrência",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Dados da ocorrência pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/OcorrenciaForm"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Ocorrencia"
+              },
+              "examples": {
+                "Ocorrência 1": {
+                  "value": {
+                    "tipoOcorrencia": 1,
+                    "tipoAssunto": 3,
+                    "mensagem": "Mussum Ipsum, cacilds vidis litro abertis. Praesent malesuada urna nisi, quis.",
+                    "valorMetragem": 0,
+                    "sharkReferente": 10,
+                    "dataOcorrido": "2023-03-20"
+                  }
+                },
+                "Ocorrência 2": {
+                  "value": {
+                    "tipoOcorrencia": 7,
+                    "tipoAssunto": 2,
+                    "mensagem": "Não participou da RG",
+                    "valorMetragem": 8,
+                    "dataOcorrido": "2023-03-12"
+                  }
+                },
+                "Ocorrência 3": {
+                  "description": "Usuário não de GEP",
+                  "value": {
+                    "tipoOcorrencia": 1,
+                    "description": "Um usuário que não é de GEP só pode criar ocorrência do tipo justificativa, no caso 1",
+                    "tipoAssunto": 2,
+                    "mensagem": "Não participou da RG",
+                    "dataOcorrido": "2023-03-12"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "Digite um tipo de ocorrência válido."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um tipo de assunto válido."
+                    }
+                  },
+                  "Erro 4": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 5": {
+                    "value": {
+                      "message": "A mensagem precisa ser maior que 4 caracteres. (max: 300)"
+                    }
+                  },
+                  "Erro 6": {
+                    "value": {
+                      "message": "Digite um valor de metragem que seja maior que 0."
+                    }
+                  },
+                  "Erro 7": {
+                    "value": {
+                      "message": "A data do ocorrido está inválida."
+                    }
+                  },
+                  "Erro 8": {
+                    "value": {
+                      "message": "O shark referente não foi encontrado."
+                    }
+                  },
+                  "Erro 9": {
+                    "value": {
+                      "message": "Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo."
+                    }
+                  },
+                  "Erro 10": {
+                    "value": {
+                      "message": "Um usuário que não é de Gestão Estratégica de Pessoas só pode criar ocorrências referente a ele mesmo."
+                    }
+                  },
+                  "Erro 11": {
+                    "value": {
+                      "message": "Um usuário que não é de Gestão Estratégica de Pessoas só pode enviar ocorrências do tipo justificativa."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado."
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Ocorrências"],
+        "summary": "Remove uma ocorrência",
+        "description": "Rota responsável remover uma ocorrência",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de assunto pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "A ocorrência não foi encontrada."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipo-assuntos": {
+      "get": {
+        "tags": ["Tipos de Assunto"],
+        "summary": "Select de todos os tipos de assuntos das ocorrências",
+        "description": "Rota responsável retornar todos tipos de assuntos que uma ocorrência pode ter",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoAssunto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Tipos de Assunto"],
+        "summary": "Insere um novo tipo de assunto das ocorrências",
+        "description": "Rota responsável inserir mais um tipo de assunto que uma ocorrência pode ter",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoAssuntoForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoAssunto"
+              },
+              "examples": {
+                "Tipo de assunto 1": {
+                  "value": {
+                    "nome": "Faltou um evento"
+                  }
+                },
+                "Tipo de assunto 2": {
+                  "value": {
+                    "nome": "Não enviou o formulário"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de assunto já existe."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipo-assuntos/{id}": {
+      "get": {
+        "tags": ["Tipos de Assunto"],
+        "summary": "Busca um tipo de assunto pelo id",
+        "description": "Rota responsável por retornar um tipo de assunto pelo id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de assunto pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoAssunto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de assunto não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Tipos de Assunto"],
+        "summary": "Atualiza um tipo de assunto das ocorrências",
+        "description": "Rota responsável atualizar um tipo de assunto que uma ocorrência pode ter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de assunto pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoAssuntoForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoAssunto"
+              },
+              "examples": {
+                "Tipo de assunto 1": {
+                  "value": {
+                    "nome": "Faltou um evento"
+                  }
+                },
+                "Tipo de assunto 2": {
+                  "value": {
+                    "nome": "Não enviou o formulário"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de assunto não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "O tipo de assunto já existe."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um tipo de assunto com mais de 3 caracteres. (max: 120)"
+                    }
+                  },
+                  "Erro 4": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 5": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Tipos de Assunto"],
+        "summary": "Remove um tipo de assunto das ocorrências",
+        "description": "Rota responsável remover um tipo de assunto que uma ocorrência pode ter",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de assunto pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de assunto não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipo-ocorrencias": {
+      "get": {
+        "tags": ["Tipos de Ocorrência"],
+        "summary": "Select de todos os tipos de ocorrências",
+        "description": "Rota responsável retornar todos tipos que uma ocorrencia pode assumir",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoOcorrencia"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Tipos de Ocorrência"],
+        "summary": "Insere um novo tipo de ocorrência",
+        "description": "Rota responsável inserir mais um tipo que uma ocorrência pode assumir",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoOcorrenciaForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoOcorrencia"
+              },
+              "examples": {
+                "Tipo de assunto 1": {
+                  "value": {
+                    "nome": "Temporário"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de ocorrência já existe."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado."
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tipo-ocorrencias/{id}": {
+      "get": {
+        "tags": ["Tipos de Ocorrência"],
+        "summary": "Busca um  tipo de ocorrência pelo id",
+        "description": "Rota responsável por retornar um tipo que uma ocorrência pode assumir",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de ocorrência pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoOcorrencia"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de ocorrência não foi encontrada."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Tipos de Ocorrência"],
+        "summary": "Atualiza um tipo de ocorrência",
+        "description": "Rota responsável atualizar um tipo que uma ocorrência pode assumir",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de ocorrência pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoOcorrenciaForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TipoAssunto"
+              },
+              "examples": {
+                "Tipo de ocorrência 1": {
+                  "value": {
+                    "nome": "Temporário"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de ocorrência não foi encontrada."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "O tipo de ocorrência já existe."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um tipo de ocorrência com mais de 3 caracteres. (max: 120)"
+                    }
+                  },
+                  "Erro 4": {
+                    "description": "Não é possível atualizar os índices de 1 a 7, pois eles são importantes para o lançamento de e-mails e aplicação da metragem",
+                    "value": {
+                      "message": "Não é possível atualizar o índice, pois ele faz parte da lógica do sistema."
+                    }
+                  },
+                  "Erro 5": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 6": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Tipos de Ocorrência"],
+        "summary": "Remove um tipo de ocorrência",
+        "description": "Rota responsável remover um tipo uma ocorrência pode assumir",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Nome do tipo de ocorrência pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O tipo de ocorrência não foi encontrada."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Não é possível remover os índices de 1 a 7, pois eles são importantes para o lançamento de e-mails e aplicação da metragem",
+                    "value": {
+                      "message": "Não é possível remover o índice, pois ele faz parte da lógica do sistema."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 4": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/distancias": {
+      "get": {
+        "tags": ["Distâncias de residência"],
+        "summary": "Select de todos as distancias de residência",
+        "description": "Rota responsável retornar todos distâncias de residência que um shark pode ter",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Distancia"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/distancias/{id}": {
+      "get": {
+        "tags": ["Distâncias de residência"],
+        "summary": "Busca uma distância pelo id",
+        "description": "Rota responsável por retornar uma distância de residência",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Distância de residência pelo identificador",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Distancia"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "A Distância não foi encontrada."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/niveis-gratificacao": {
+      "get": {
+        "tags": ["Níveis de Gratificação"],
+        "summary": "Select de todos os níveis de uma gratificação",
+        "description": "Rota responsável retornar todos níveis de gratificação que uma ocorrência do tipo gratificação pode ter.",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NivelGratificacao"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Níveis de Gratificação"],
+        "summary": "Insere um novo nível de gratificação",
+        "description": "Rota responsável inserir mais um nível de gratificação que uma ocorrência pode ter.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelGratificacaoForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelGratificacao"
+              },
+              "examples": {
+                "Nível de Gratificação 1": {
+                  "value": {
+                    "nome": "Parabéns",
+                    "valor": 6
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de gratificação já existe."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/niveis-gratificacao/{id}": {
+      "get": {
+        "tags": ["Níveis de Gratificação"],
+        "summary": "Busca um nível de uma gratificação",
+        "description": "Rota responsável por retornar um nível de uma gratificação que uma ocorrência do tipo gratificação pode ter.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um nível de gratificação já existente.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NivelGratificacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de gratificação não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Níveis de Gratificação"],
+        "summary": "Atualiza um nível de gratificação",
+        "description": "Rota responsável atualizar nível de gratificação que uma ocorrência do tipo gratificação pode ter.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um nível de gratificação já existente.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelGratificacaoForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelGratificacao"
+              },
+              "examples": {
+                "Nível de Gratificação 1": {
+                  "value": {
+                    "nome": "Sucesso",
+                    "valor": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de gratificação não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "O nível de gratificação já existe."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um nível de gratificação com mais de 3 caracteres. (max: 120)"
+                    }
+                  },
+                  "Erro 4": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 5": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Níveis de Gratificação"],
+        "summary": "Remove um nível de gratificação",
+        "description": "Rota responsável remover um nível de gratificação que uma ocorrência do tipo gratificação pode ter.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um nível de gratificação já existente.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de gratificação não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/niveis-advertencia": {
+      "get": {
+        "tags": ["Níveis de Advertência"],
+        "summary": "Select de todos os níveis de uma advertência",
+        "description": "Rota responsável retornar todos níveis de gratificação que uma ocorrência do tipo advertência pode ter.",
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NivelAdvertencia"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Níveis de Advertência"],
+        "summary": "Insere um novo nível de advertência",
+        "description": "Rota responsável inserir mais um nível de advertência que uma ocorrência pode ter.",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelAdvertenciaForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelAdvertencia"
+              },
+              "examples": {
+                "Nível de Advertência 1": {
+                  "value": {
+                    "nome": "Crítico",
+                    "valor": 12
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de advertência já existe."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/niveis-advertencia/{id}": {
+      "get": {
+        "tags": ["Níveis de Advertência"],
+        "summary": "Busca um nível de uma advertência",
+        "description": "Rota responsável por retornar um nível de uma advertência que uma ocorrência do tipo advertência pode ter.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um nível de advertência já existente.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NivelAdvertencia"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de advertência não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Níveis de Advertência"],
+        "summary": "Atualiza um nível de advertência",
+        "description": "Rota responsável atualizar nível de advertência que uma ocorrência do tipo advertência pode ter.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um nível de advertência já existente.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelGratificacaoForms"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NivelGratificacao"
+              },
+              "examples": {
+                "Nível de Advertência 1": {
+                  "value": {
+                    "nome": "crítico",
+                    "valor": 14
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de advertência não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "value": {
+                      "message": "O nível de advertência já existe."
+                    }
+                  },
+                  "Erro 3": {
+                    "value": {
+                      "message": "Digite um nível de advertência com mais de 3 caracteres. (max: 120)"
+                    }
+                  },
+                  "Erro 4": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 5": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Níveis de Advertência"],
+        "summary": "Remove um nível de advertência",
+        "description": "Rota responsável remover um nível de advertência que uma ocorrência do tipo advertência pode ter.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um nível de advertência já existente.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O nível de advertência não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/log-ocorrencias/": {
+      "get": {
+        "tags": ["Logs"],
+        "summary": "Retorna todas os dados do log de ocorrências",
+        "description": "Rota responsável por retornar o log de ações executada nas ocorrências.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "limita o número de registros retornados por uma consulta. (default 20)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default DESC)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LogOcorrencia"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/log-ocorrencias/{id}": {
+      "get": {
+        "tags": ["Logs"],
+        "summary": "Busca um item do log de ocorrência",
+        "description": "Rota responsável por retornar um item do log de ocorrências.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um item do log de ocorrência.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogOcorrencia"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O item do log de ocorrência não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/log-sharks/": {
+      "get": {
+        "tags": ["Logs"],
+        "summary": "Retorna todas os dados do log de sharks",
+        "description": "Rota responsável por retornar o log de ações executada nos sharks.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "especifica o número de registros a serem pulados ao retornar uma consulta.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "limita o número de registros retornados por uma consulta. (default 20)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "retorno os dados em ordem crescente ou decrescente. (default DESC)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LogShark"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/log-sharks/{id}": {
+      "get": {
+        "tags": ["Logs"],
+        "summary": "Busca um item do log de shark",
+        "description": "Rota responsável por retornar um item do log de sharks.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id relacionado a um item do log de shark.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogShark"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "examples": {
+                  "Erro 1": {
+                    "value": {
+                      "message": "O item do log de shark não foi encontrado."
+                    }
+                  },
+                  "Erro 2": {
+                    "description": "Erro referente ao token JWT utilizado no Bearer",
+                    "value": {
+                      "message": "Token inválido."
+                    }
+                  },
+                  "Erro 3": {
+                    "description": "O parâmetro não é um inteiro",
+                    "value": {
+                      "message": "Id inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Acesso não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                },
+                "example": {
+                  "message": "Acesso não autorizado."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Acesso negado. O usuário não é de Gestão de Estratégica de Pessoas."
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Shark": {
+        "required": [
+          "celula",
+          "distancia",
+          "emailFocus",
+          "emailPessoal",
+          "matricula",
+          "nome",
+          "senha"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "emailPessoal": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Se não passado o padrão é null"
+          },
+          "cpf": {
+            "type": "string",
+            "description": "ex formato 123.456.789-10"
+          },
+          "distancia": {
+            "$ref": "#/components/schemas/Shark_distancia"
+          },
+          "matricula": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          },
+          "celula": {
+            "$ref": "#/components/schemas/Shark_celula"
+          },
+          "numProjeto": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 0"
+          },
+          "metragem": {
+            "type": "string",
+            "description": "Se não passado o padrão é 24"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Shark_role"
+          },
+          "membroAtivo": {
+            "type": "boolean",
+            "description": "Se não passado o padrão é 1"
+          },
+          "dataCriacao": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual"
+          }
+        }
+      },
+      "SharkForm": {
+        "required": [
+          "celula",
+          "cpf",
+          "distancia",
+          "emailFocus",
+          "emailPessoal",
+          "matricula",
+          "nome",
+          "senha"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "emailFocus": {
+            "type": "string"
+          },
+          "emailPessoal": {
+            "type": "string"
+          },
+          "matricula": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string",
+            "description": "ex formato 123.456.789-10"
+          },
+          "distancia": {
+            "type": "integer"
+          },
+          "senha": {
+            "type": "string"
+          },
+          "celula": {
+            "type": "integer"
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Se não passado o padrão é null"
+          },
+          "metragem": {
+            "type": "string",
+            "description": "Se não passado o padrão é 24"
+          },
+          "membroAtivo": {
+            "type": "boolean",
+            "description": "Se não passado o padrão é 1"
+          },
+          "numProjeto": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 0"
+          },
+          "role": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 1"
+          }
+        }
+      },
+      "Ocorrencia": {
+        "required": ["mensagem", "tipoAssunto", "tipoOcorrencia"],
+        "type": "object",
+        "properties": {
+          "tipoOcorrencia": {
+            "type": "integer"
+          },
+          "tipoAssunto": {
+            "type": "integer"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "nivelGratificacao": {
+            "type": "integer",
+            "description": "Deve ser passado um id caso o tipoOcorrencia seja igual a 5."
+          },
+          "nivelAdvertencia": {
+            "type": "integer",
+            "description": "Deve ser passado um id caso o tipoOcorrencia seja igual a 6."
+          },
+          "sharkReferente": {
+            "type": "integer",
+            "description": "Se não passado pega o id do shark logado"
+          },
+          "dataOcorrido": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual",
+            "format": "date-time"
+          }
+        }
+      },
+      "OcorrenciaJSONForm": {
+        "required": ["mensagem", "tipoAssunto", "tipoOcorrencia"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "tipoOcorrencia": {
+            "$ref": "#/components/schemas/Shark_celula"
+          },
+          "tipoAssunto": {
+            "$ref": "#/components/schemas/Shark_celula"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "valorMetragem": {
+            "type": "integer"
+          },
+          "nivelGratificacao": {
+            "$ref": "#/components/schemas/OcorrenciaJSONForm_nivelGratificacao"
+          },
+          "nivelAdvertencia": {
+            "$ref": "#/components/schemas/OcorrenciaJSONForm_nivelGratificacao"
+          },
+          "sharkCriador": {
+            "$ref": "#/components/schemas/OcorrenciaJSONForm_sharkCriador"
+          },
+          "sharkReferente": {
+            "$ref": "#/components/schemas/OcorrenciaJSONForm_sharkReferente"
+          },
+          "dataOcorrido": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual (YYYY-MM-DD).",
+            "format": "date-time"
+          },
+          "dataCriacao": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual.",
+            "format": "date-time"
+          }
+        }
+      },
+      "OcorrenciaForm": {
+        "required": ["mensagem", "tipoAssunto", "tipoOcorrencia"],
+        "type": "object",
+        "properties": {
+          "tipoOcorrencia": {
+            "type": "integer"
+          },
+          "tipoAssunto": {
+            "type": "integer"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "nivelGratificacao": {
+            "type": "integer",
+            "description": "Obrigatório caso o tipoOcorrencia seja igual a 5."
+          },
+          "nivelAdvertencia": {
+            "type": "integer",
+            "description": "Obrigatório  caso o tipoOcorrencia seja igual a 6."
+          },
+          "sharkReferente": {
+            "type": "integer",
+            "description": "Se não passado pega o id do shark logado."
+          },
+          "dataOcorrido": {
+            "type": "string",
+            "description": "Se não passado pega o dia atual (YYYY-MM-DD).",
+            "format": "date-time"
+          }
+        }
+      },
+      "Celula": {
+        "required": ["nome"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "TipoOcorrencia": {
+        "required": ["nome"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "TipoOcorrenciaForms": {
+        "required": ["nome"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "TipoAssunto": {
+        "required": ["nome"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "TipoAssuntoForms": {
+        "required": ["nome"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "Distancia": {
+        "required": ["distancia"],
+        "type": "object",
+        "properties": {
+          "distancia": {
+            "type": "string"
+          }
+        }
+      },
+      "BadRequest": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "UserLogin": {
+        "required": ["login", "senha"],
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidateTokenData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "celula": {
+            "$ref": "#/components/schemas/ValidateTokenData_celula"
+          },
+          "numProjeto": {
+            "type": "integer"
+          },
+          "metragem": {
+            "type": "integer"
+          },
+          "role": {
+            "$ref": "#/components/schemas/ValidateTokenData_celula"
+          },
+          "jwt": {
+            "$ref": "#/components/schemas/ValidateTokenData_jwt"
+          }
+        }
+      },
+      "NivelGratificacao": {
+        "required": ["nome", "valor"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "integer"
+          }
+        }
+      },
+      "NivelGratificacaoForms": {
+        "required": ["nome", "valor"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "integer"
+          }
+        }
+      },
+      "NivelAdvertencia": {
+        "required": ["nome", "valor"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "integer"
+          }
+        }
+      },
+      "NivelAdvertenciaForms": {
+        "required": ["nome", "valor"],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "integer"
+          }
+        }
+      },
+      "TipoAcaoLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "LogOcorrencia": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "tipoAcaoLog": {
+            "$ref": "#/components/schemas/TipoAcaoLog"
+          },
+          "ocorrencia": {
+            "$ref": "#/components/schemas/LogOcorrencia_ocorrencia"
+          },
+          "sharkEditor": {
+            "$ref": "#/components/schemas/LogOcorrencia_sharkEditor"
+          },
+          "dataAcao": {
+            "type": "string"
+          }
+        }
+      },
+      "LogShark": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "tipoAcaoLog": {
+            "$ref": "#/components/schemas/TipoAcaoLog"
+          },
+          "ocorrencia": {
+            "$ref": "#/components/schemas/LogOcorrencia_ocorrencia"
+          },
+          "sharkEditor": {
+            "$ref": "#/components/schemas/LogOcorrencia_sharkEditor"
+          },
+          "dataAcao": {
+            "type": "string"
+          }
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "forgotpassword_body": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "forgotpassword_body_1": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "resetpassword_body": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "resetpassword_body_1": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "Shark_distancia": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "distancia": {
+            "type": "string"
+          }
+        }
+      },
+      "Shark_celula": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "Shark_role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Se não passado o padrão é 1"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Se não passado o padrão é member"
+          }
+        }
+      },
+      "OcorrenciaJSONForm_nivelGratificacao": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "valor": {
+            "type": "integer"
+          }
+        }
+      },
+      "OcorrenciaJSONForm_sharkCriador": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "celula": {
+            "$ref": "#/components/schemas/Shark_celula"
+          }
+        },
+        "description": "id do shark que criou a ocorrência"
+      },
+      "OcorrenciaJSONForm_sharkReferente": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "celula": {
+            "$ref": "#/components/schemas/Shark_celula"
+          }
+        },
+        "description": "Se não passado pega o id do shark logado"
+      },
+      "ValidateTokenData_celula": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidateTokenData_jwt": {
+        "type": "object",
+        "properties": {
+          "iat": {
+            "type": "number",
+            "description": "timestamp de quando o token foi criado"
+          },
+          "exp": {
+            "type": "number",
+            "description": "timestamp de quando o token irá expirar"
+          }
+        }
+      },
+      "LogOcorrencia_ocorrencia_sharkCriador": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "LogOcorrencia_ocorrencia": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "sharkCriador": {
+            "$ref": "#/components/schemas/LogOcorrencia_ocorrencia_sharkCriador"
+          }
+        }
+      },
+      "LogOcorrencia_sharkEditor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

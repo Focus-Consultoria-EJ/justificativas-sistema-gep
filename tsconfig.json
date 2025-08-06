@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist", // Pasta de saída
+    "rootDir": "./src", // Pasta de entrada
+    "target": "ES2021", // Compatível com Node.js 18
+    "module": "CommonJS", // Padrão do Node.js
+    "strict": true, // Habilita verificações estritas
+    "esModuleInterop": true, // Suporte para importação de módulos CommonJS
+    "resolveJsonModule": true, // Permite importar arquivos JSON
+    "skipLibCheck": true, // Ignora verificações em arquivos .d.ts
+    "forceConsistentCasingInFileNames": true // Garante consistência em imports
+  },
+  "include": ["src/**/*"], // Inclui todos os arquivos na pasta src
+  "exclude": ["node_modules", "dist"] // Exclui node_modules e arquivos compilados
+}
