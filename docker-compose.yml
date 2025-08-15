@@ -25,6 +25,7 @@ services:
       POSTGRES_DB: db_focus
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./latest.dump:/tmp/latest.dump
     ports:
       - "5432:5432"
 

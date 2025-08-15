@@ -5,6 +5,7 @@ import saveOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/s
 import getByIdOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/getById.ocorrencia.service";
 import getLogOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/getLog.ocorrencia.service";
 import getByIdLogOcorrenciaService from "../../services/gestaoNotificacao/ocorrencia/getByIdLog.ocorrencia.service";
+import ocorrenciaTelegramNotificacao from "../../services/gestaoNotificacao/ocorrenciaTelegramNotificacao/ocorrenciaTelegramNotificacao.service"
 
 class OcorrenciaController
 {
@@ -46,11 +47,14 @@ class OcorrenciaController
         const data = { ...req.body };
         if(req.params.id) data.id = req.params.id;
         const file = req.file;
-
+        
         try
         {
             await saveOcorrenciaService.execute(data, req.shark, file);
-
+            if(data.tipoOcorrencia==1)
+            {
+                await ocorrenciaTelegramNotificacao.enviarParaTelegram(data,req.shark);
+            }
             return res.status(204).send();
         }
         catch(err) { next(err); }
