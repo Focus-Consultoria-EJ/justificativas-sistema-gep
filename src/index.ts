@@ -28,6 +28,6 @@ agendaJobs();
 // Este middleware precisa sempre estar abaixo das rotas!
 app.use(ErrorMiddleware.handle);
 
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`Server listen in ${PORT}`);
 });
