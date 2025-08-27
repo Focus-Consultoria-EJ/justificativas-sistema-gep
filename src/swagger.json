@@ -7,10 +7,6 @@
   },
   "servers": [
     {
-      "url": "http://159.112.191.100:3000/api",
-      "description": "API de produção"
-    },
-    {
       "url": "http://localhost:3000/api",
       "description": "API de teste"
     }
