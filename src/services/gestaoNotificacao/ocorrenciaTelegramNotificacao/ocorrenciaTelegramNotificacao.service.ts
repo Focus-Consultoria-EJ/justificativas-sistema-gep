@@ -12,13 +12,11 @@ enum Assuntos_Ocorrencia {
     "Acompanhamento" = 13
 }
 
-class OcorrenciaTelegram
-{
+class OcorrenciaTelegram {
     async enviarParaTelegram(
-        Mensagem : any,
+        Mensagem: any,
         SharkRemetente: any
-    ): Promise <void>
-    {
+    ): Promise<void> {
         /**
          * @param Mensagem - Informações da mensagem
          * @param SharkRemetente - Informações do Shark
@@ -27,48 +25,55 @@ class OcorrenciaTelegram
         // Pegando as credenciais do bot e do chat do telegram
         const token_bot = process.env.TELEGRAM_TOKEN_BOT;
         const id_chat = process.env.TELEGRAM_ID_CHAT;
+        
         // Verificação de erro
-        if(!token_bot || !id_chat)
-        {
-            throw new CustomError("token do bot ou id do chat inválidos",500);
+        if (!token_bot || !id_chat) {
+            throw new CustomError("token do bot ou id do chat inválidos", 500);
         }
 
-/* Formatando a mensagem que será enviada pelo telegram */
-        const mensagemTexto = 
-`*🚨 Ocorrência Recebida 🚨*
+        // Função para escapar os caracteres especiais do Markdown
+        const escapeMarkdown = (text: string) => {
+            return text.replace(/([_*[\]()~`>#+-=|{}.!])/g, '\\$1');
+        };
+
+        /* Formatando a mensagem que será enviada pelo telegram */
+        const mensagemTexto =
+            `*🚨 Ocorrência Recebida 🚨*
 
 *Informações do shark:*
-Nome: ${SharkRemetente.nome}
-Email: ${SharkRemetente.email}
+Nome: ${escapeMarkdown(SharkRemetente.nome)}
+Email: ${escapeMarkdown(SharkRemetente.email)}
 
 *Informações da ocorrência:*
 Tipo da ocorrência: Justificativa
 Tipo de assunto: ${Assuntos_Ocorrencia[Mensagem.tipoAssunto]}
 
 *Mensagem:*
-${Mensagem.mensagem}`
-/* Fim da formatação da mensagem */
+${escapeMarkdown(Mensagem.mensagem)}`;
+
+        /* Fim da formatação da mensagem */
 
         const url = `https://api.telegram.org/bot${token_bot}/sendMessage`; // API do Telegram
+        
         // Utilizando o Fetch
         const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=UTF-8",
-                },
-                body: JSON.stringify({
-                    chat_id: id_chat,
-                    text: mensagemTexto,
-                    parse_mode: 'Markdown'
-                }),
-            });
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+            },
+            body: JSON.stringify({
+                chat_id: id_chat,
+                text: mensagemTexto,
+                parse_mode: 'Markdown',
+            }),
+        });
 
         const result = await response.json();
 
-        if (!result.ok)
-        {
-            throw new CustomError("erro de requisição",500);
-        }   
+        if (!result.ok) {
+            console.log(result);
+            throw new CustomError("erro de requisição", 500);
+        }
     }
 }
 
